@@ -45,8 +45,9 @@ postForm.addEventListener('submit', async (e) => {
         // Display uploading status
         statusDiv.textContent = "Uploading post...";
 
-        // Get the display name of the currently authenticated user
+        // Get the display name and uid of the currently authenticated user
         const userDisplayName = auth.currentUser.displayName;
+        const userId = auth.currentUser.uid; // Get the user ID (uid)
 
         // Create a storage reference for the image
         const storageRefPath = storageRef(storage, `posts/${file.name}`);
@@ -66,11 +67,12 @@ postForm.addEventListener('submit', async (e) => {
                 const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
 
                 try {
-                    // Save post data to Firestore, using the display name
+                    // Save post data to Firestore, now including the user's uid
                     await addDoc(collection(db, 'posts'), {
                         itemName: itemName,
                         imageUrl: downloadURL,
                         account: userDisplayName, // Use the display name instead of email
+                        uid: userId, // Include the user ID (uid)
                         timestamp: new Date() // Optionally, add a timestamp
                     });
 
