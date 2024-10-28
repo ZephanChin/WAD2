@@ -99,4 +99,21 @@ nav {
         margin-top: 20px; /* Space between boxes */
       }
   
+/* Styles for each post item */
+.post-item {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Styles for the post image */
+.post-image {
+  max-width: 50%;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
   
