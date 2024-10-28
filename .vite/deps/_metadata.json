@@ -1,0 +1,37 @@
+{
+  "hash": "f727aa0b",
+  "configHash": "c7895506",
+  "lockfileHash": "e3b0c442",
+  "browserHash": "cfbbc9eb",
+  "optimized": {
+    "firebase/app": {
+      "src": "../../node_modules/firebase/app/dist/esm/index.esm.js",
+      "file": "firebase_app.js",
+      "fileHash": "b46bdf49",
+      "needsInterop": false
+    },
+    "firebase/auth": {
+      "src": "../../node_modules/firebase/auth/dist/esm/index.esm.js",
+      "file": "firebase_auth.js",
+      "fileHash": "e03c6dd5",
+      "needsInterop": false
+    },
+    "firebase/firestore": {
+      "src": "../../node_modules/firebase/firestore/dist/esm/index.esm.js",
+      "file": "firebase_firestore.js",
+      "fileHash": "4f8ef289",
+      "needsInterop": false
+    },
+    "firebase/storage": {
+      "src": "../../node_modules/firebase/storage/dist/esm/index.esm.js",
+      "file": "firebase_storage.js",
+      "fileHash": "4f611670",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-BHTR2G6V": {
+      "file": "chunk-BHTR2G6V.js"
+    }
+  }
+}
