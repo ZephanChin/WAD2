@@ -1,3 +1,7 @@
+nav {
+    background-color: #DDC7BB;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,7 +10,7 @@
 }
 
 body {
-    background-color: #d9b8a9;
+    background-color: white;
     height: 100vh;
     display: flex;
     justify-content: center;
