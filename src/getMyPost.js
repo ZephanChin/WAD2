@@ -58,13 +58,16 @@ async function retrieveUserPosts() {
     });
 }
 
-// Function to dynamically create and display post elements, including a delete button
+// Function to dynamically create and display post elements, including a delete button and a more details button
 function displayPost(postId, postData, container) {
     const postElement = document.createElement('div');
     postElement.classList.add('post-item');
 
     const itemName = document.createElement('h3');
     itemName.textContent = postData.itemName;
+
+    const imageContainer = document.createElement('div');
+    imageContainer.classList.add('image-container');
 
     const image = document.createElement('img');
     image.src = postData.imageUrl;
@@ -74,14 +77,27 @@ function displayPost(postId, postData, container) {
     const account = document.createElement('p');
     account.textContent = `Posted by: ${postData.account}`;
 
-    // Create and configure the delete button
+    // Create the "More Details" button
+    const moreDetailsButton = document.createElement('button');
+    moreDetailsButton.textContent = "More Details";
+    moreDetailsButton.classList.add('more-details'); // Style this in CSS to overlay on the image
+    moreDetailsButton.onclick = () => {
+        window.location.href = `postDetails.html?id=${postId}`;
+    };
+
+    // Create and configure the "Delete Post" button
     const deleteButton = document.createElement('button');
     deleteButton.textContent = "Delete Post";
-    deleteButton.classList.add('btn', 'btn-danger', 'mt-2');
+    deleteButton.classList.add('delete-button'); // Use CSS to style this button
+
     deleteButton.onclick = () => deletePost(postId, container);
 
+    // Append elements to the image container
+    imageContainer.appendChild(image);
+    imageContainer.appendChild(moreDetailsButton);
+
     // Append elements to the post element
-    postElement.appendChild(image);
+    postElement.appendChild(imageContainer);
     postElement.appendChild(itemName);
     postElement.appendChild(account);
     postElement.appendChild(deleteButton);
