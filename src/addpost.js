@@ -30,6 +30,10 @@ const db = getFirestore(app);
 // Get form elements
 const postForm = document.getElementById('post-form');
 const itemNameInput = document.getElementById('itemName');
+const postDescriptionInput = document.getElementById('postDescription');
+const categorySelect = document.getElementById('category');
+const priceInput = document.getElementById('price');
+const mrtStationInput = document.getElementById('mrtStation');
 const itemImageInput = document.getElementById('itemImage');
 const statusDiv = document.getElementById('status');
 
@@ -37,23 +41,23 @@ const statusDiv = document.getElementById('status');
 postForm.addEventListener('submit', async (e) => {
     e.preventDefault(); // Prevent form from reloading the page
 
-    // Get the item name and file
     const itemName = itemNameInput.value;
+    const postDescription = postDescriptionInput.value;
+    const category = categorySelect.value;
+    const price = parseFloat(priceInput.value);
+    const mrtStationName = mrtStationInput.value; // Just the name of MRT station
     const file = itemImageInput.files[0];
 
-    if (itemName && file) {
+    if (itemName && postDescription && category && !isNaN(price) && mrtStationName && file) {
         // Display uploading status
         statusDiv.textContent = "Uploading post...";
 
-        // Get the display name and uid of the currently authenticated user
         const userDisplayName = auth.currentUser.displayName;
-        const userId = auth.currentUser.uid; // Get the user ID (uid)
+        const userId = auth.currentUser.uid;
 
-        // Create a storage reference for the image
         const storageRefPath = storageRef(storage, `posts/${file.name}`);
         const uploadTask = uploadBytesResumable(storageRefPath, file);
 
-        // Handle the image upload
         uploadTask.on('state_changed', 
             (snapshot) => {
                 // Optional: Show upload progress if needed
@@ -63,21 +67,25 @@ postForm.addEventListener('submit', async (e) => {
                 statusDiv.textContent = "Error uploading image.";
             }, 
             async () => {
-                // Get the download URL after successful upload
                 const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
 
                 try {
-                    // Save post data to Firestore, now including the user's uid
                     await addDoc(collection(db, 'posts'), {
                         itemName: itemName,
+                        postDescription: postDescription,
+                        category: category,
+                        price: price,
+                        mrtStationName: mrtStationName, // Only the name
                         imageUrl: downloadURL,
-                        account: userDisplayName, // Use the display name instead of email
-                        uid: userId, // Include the user ID (uid)
-                        timestamp: new Date() // Optionally, add a timestamp
+                        account: userDisplayName,
+                        uid: userId,
+                        timestamp: new Date()
                     });
 
                     statusDiv.textContent = "Post created successfully!";
                     postForm.reset(); // Reset the form
+                    // Redirect to marketplace.html after a successful post
+                    window.location.href = "marketplace.html";
                 } catch (error) {
                     console.error("Error saving post:", error);
                     statusDiv.textContent = "Error creating post.";

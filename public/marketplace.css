@@ -1,119 +1,206 @@
+/* Navbar styling */
 nav {
-    background-color: #DDC7BB;
+  background-color: #DDC7BB;
 }
 
 /* Featured Title Styling */
 .featured-title {
-    text-align: center;
-    margin-top: 15px;
-    font-size: 40px;
-    font-weight: bold;
-  }
-  
-  /* Card Styling */
-  .featured-card {
-    border-radius: 20px;
-    overflow: hidden;
-    background-image: url('img/placeholder.jpg'); /* Update with the actual path */
-    background-size: cover;
-    background-position: center;
-    height: 400px;
-    width: auto;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  /* Overlay Styling for Card Body */
-  .overlay {
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-  }
+  text-align: center;
+  margin-top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+}
 
-  .cart-icon {
-    margin-top: 5px;
-    margin-right: 250px;
-    font-size: 35px;
-    margin-bottom: 25px;
-  }
+/* Card Styling */
+.featured-card {
+  border-radius: 20px;
+  overflow: hidden;
+  background-image: url('img/placeholder.jpg'); /* Update with the actual path */
+  background-size: cover;
+  background-position: center;
+  height: 400px;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
 
-  /* Initially hide the "More Details" button */
-.more-details {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    font-size: 0.8rem; /* Reduce the font size */
-    padding: 5px 5px; /* Adjust the padding to make the button smaller */
-    width: 100px; /* Set width to auto to fit the content */
-    margin-top: 15px; /* Optional: Adjust margin for spacing */
-    align-self: flex-end;
-    background-color: #DDC7BB;
-    color: black;
-  }
-  
-  /* Show the button when hovering over the card */
-  .featured-card:hover .more-details {
-    opacity: 1;
-  }
+/* Overlay Styling for Card Body */
+.overlay {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+}
 
-  .hmarket {
-    /* text-align: center; */
-    margin-top: 40px;
-    font-size: 40px;
-    font-weight: bold;
-    margin-left: 125px;
-  }
-  
-  .hmbox {
-    background-color: white; /* White background */
-    padding: 20px; /* Add padding inside the container */
-    border-radius: 10px; /* Optional: Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for a modern look */
-  }
+/* Cart Icon Styling */
+.cart-icon {
+  margin-top: 5px;
+  margin-right: 250px;
+  font-size: 35px;
+  margin-bottom: 25px;
+}
 
-  .filter-btn {
-    border-radius: 10px; /* Makes the buttons rounded */
-    margin: 0 2px; /* Add space between buttons */
-    padding: 10px 20px; /* Adjust padding for bigger button look */
-    width: 100px;
-  }
+/* Marketplace Heading Styling */
+.hmarket {
+  margin-top: 40px;
+  font-size: 40px;
+  font-weight: bold;
+  margin-left: 125px;
+}
 
-  .add-post-btn{
-    border-radius: 10px;
-    margin-left: auto;
-  }
+/* Content Box Styling */
+.hmbox {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-  .filter-container {
-    display: flex;
-    justify-content: left; /* Centers the buttons horizontally */
-    margin-bottom: 20px;
-  }
+/* Filter Button Styling */
+.filter-btn {
+  border-radius: 10px;
+  margin: 0 2px;
+  padding: 10px 20px;
+  width: 100px;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: #DDC7BB;
+  color: black;
+  border: none;
+  transition: background-color 0.3s ease;
+}
 
-      /* Example styling for the boxes */
-      .box {
-        background-color: lightgray; /* Box color */
-        height: 250px; /* Adjust height */
-        border-radius: 10px; /* Rounded corners for boxes */
-      }
-  
-      /* Add spacing between boxes */
-      .box + .box {
-        margin-top: 20px; /* Space between boxes */
-      }
-  
-/* Styles for each post item */
+.filter-btn:hover {
+  background-color: #c9b5a8;
+}
+
+/* Add Post Button Styling */
+.add-post-btn {
+  border-radius: 10px;
+  margin-left: auto;
+  padding: 10px 20px;
+  background-color: #DDC7BB;
+  color: black;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-post-btn:hover {
+  background-color: #c9b5a8;
+}
+
+/* Filter Button Container */
+.filter-container {
+  display: flex;
+  justify-content: left;
+  margin-bottom: 20px;
+}
+
+/* Styling for the boxes */
+.box {
+  background-color: lightgray;
+  height: 250px;
+  border-radius: 10px;
+}
+
+/* Add spacing between boxes */
+.box + .box {
+  margin-top: 10px;
+}
+
+/* Container for Posts */
+#posts-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start; /* Align items to the left */
+  gap: 5px; /* Consistent gap between items */
+  padding: 10px;
+  max-width: 1300px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+
+/* Post container with consistent colors and shadow */
 .post-item {
+  flex: 1 1 calc(33.33% - 10px); /* Each item takes up about 33% of the row */
+  max-width: calc(33.33% - 10px);
   padding: 15px;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-bottom: 20px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+  height: 370px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Styles for the post image */
+/* Consistent Image container styling */
+.image-container {
+  position: relative;
+  overflow: hidden;
+  height: 250px; /* Consistent height */
+  width: 100%;
+}
+
+/* Styling for Post Images */
 .post-image {
-  max-width: 50%;
-  height: auto;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   border-radius: 5px;
-  margin-bottom: 10px;
 }
 
-  
+/* More Details Button styling */
+.more-details {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  font-size: 0.8rem;
+  padding: 5px 10px;
+  background-color: #DDC7BB;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.image-container:hover .more-details {
+  opacity: 1; /* Show button on hover */
+}
+
+/* Styling for Post Titles */
+.post-item h3 {
+  margin: 10px 0 5px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Styling for Account Name */
+.post-item p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .post-item {
+    flex: 1 1 calc(48% - 10px); /* 2 items per row on smaller screens */
+    max-width: calc(48% - 10px);
+  }
+}
+
+@media (max-width: 480px) {
+  .post-item {
+    flex: 1 1 100%; /* 1 item per row on very small screens */
+    max-width: 100%;
+  }
+}
