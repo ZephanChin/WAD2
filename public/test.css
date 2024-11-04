@@ -6,3 +6,26 @@ h1 {
     color: white;
     font-weight: bold;
 }
+
+
+/* Jh's */
+button[aria-selected="true"]{
+    background-color: white;
+    color: rgba(221, 199, 187, 1);
+}
+
+button[aria-selected="false"]{
+    background-color: rgba(221, 199, 187, 1);
+    color: white;
+}
+
+.nav .nav-item .active {
+    background-color: white;
+    color: rgba(221, 199, 187, 1);
+}
+
+.item-img {
+    height: 200px;
+    width: 200px;
+}
+
