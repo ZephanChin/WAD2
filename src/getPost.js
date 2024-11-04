@@ -22,6 +22,7 @@ if (!getApps().length) {
 }
 
 const db = getFirestore(app);
+let allPosts = []; // Array to store all posts
 
 // Function to retrieve posts from Firestore
 async function retrievePosts() {
@@ -34,6 +35,8 @@ async function retrievePosts() {
     // Loop through the documents and display each post
     querySnapshot.forEach((doc) => {
         const postData = doc.data();
+        postData.id = doc.id; // Add the document ID to the post data
+        allPosts.push(postData); // Add to the allPosts array
         displayPost(postData, postsContainer);
     });
 }
@@ -41,28 +44,67 @@ async function retrievePosts() {
 // Function to dynamically create and display post elements
 function displayPost(postData, container) {
     const postElement = document.createElement('div');
-    postElement.classList.add('col-md-4', 'mb-3');
+    postElement.classList.add('col-md-4', 'mb-3', 'post-item');
+    postElement.setAttribute('data-category', postData.category); // Add category for filtering
 
-    // Create elements for item name, image, and user display name
     const itemName = document.createElement('h3');
     itemName.textContent = postData.itemName;
+
+    const imageContainer = document.createElement('div');
+    imageContainer.classList.add('image-container');
 
     const image = document.createElement('img');
     image.src = postData.imageUrl;
     image.alt = postData.itemName;
-    image.classList.add('img-fluid');
+    image.classList.add('post-image'); // Use post-image class for consistent styling with CSS
 
     const account = document.createElement('p');
-    account.textContent = `Posted by: ${postData.account}`; // Use display name saved as `account`
+    account.textContent = `Posted by: ${postData.account}`;
+
+    // Create the "More Details" button
+    const moreDetailsButton = document.createElement('button');
+    moreDetailsButton.textContent = "More Details";
+    moreDetailsButton.classList.add('more-details'); // Use consistent class name with CSS
+
+    // Add click event to the "More Details" button to navigate to post details page
+    moreDetailsButton.addEventListener('click', () => {
+        window.location.href = `postDetails.html?id=${postData.id}`;
+    });
+
+    // Append the image and button to the image container
+    imageContainer.appendChild(image);
+    imageContainer.appendChild(moreDetailsButton);
 
     // Append the elements to the post element
-    postElement.appendChild(image);
+    postElement.appendChild(imageContainer);
     postElement.appendChild(itemName);
     postElement.appendChild(account);
 
     // Append the post element to the container
     container.appendChild(postElement);
 }
+
+// Function to filter posts based on selected category
+function filterPosts(category) {
+    const postsContainer = document.getElementById('posts-container');
+    postsContainer.innerHTML = ''; // Clear current posts
+
+    const filteredPosts = allPosts.filter(post => {
+        return category === 'All' || post.category === category;
+    });
+
+    // Display filtered posts
+    filteredPosts.forEach(post => displayPost(post, postsContainer));
+}
+
+// Event listeners for filter buttons
+const filterButtons = document.querySelectorAll('.filter-btn');
+filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const category = button.textContent; // Get the button's text
+        filterPosts(category); // Call the filter function
+    });
+});
 
 // Call the function to retrieve and display the posts when the page loads
 window.onload = retrievePosts;

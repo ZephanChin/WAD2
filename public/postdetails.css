@@ -1,0 +1,111 @@
+/* Center the container and add some margin for spacing */
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f8f9fa; /* Light gray background */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Style for the title */
+h1 {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Style for the post title */
+h2 {
+    font-size: 1.8rem;
+    color: #007bff;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+/* Style for post details text */
+p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 0.8rem;
+}
+
+/* Highlight labels in the post details */
+p strong {
+    color: #333;
+    font-weight: 600;
+}
+
+/* Styling for the image */
+.img-fluid {
+    width: 100%;
+    max-width: 400px; /* Limit the width of the image */
+    height: auto;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add smooth transition */
+}
+
+.img-fluid:hover {
+    transform: scale(1.05); /* Slight zoom on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Container for location and map */
+.location-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+    padding: 15px; /* Adds breathing room */
+}
+
+/* Map styling */
+#map {
+    width: 100%;
+    height: 300px;
+    border-radius: 8px;
+    border: 1px solid #ddd; /* Soft border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Date and author styling */
+small {
+    display: block;
+    color: #888;
+    text-align: right;
+    margin-top: 1.5rem;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.8rem; /* Slightly smaller */
+    }
+
+    h2 {
+        font-size: 1.4rem; /* Slightly smaller */
+    }
+
+    p {
+        font-size: 0.9rem;
+    }
+
+    #map {
+        width: 100%;
+        height: 300px; /* Set a fixed height */
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    
+}
