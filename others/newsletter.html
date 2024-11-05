@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Poppins:wght@100..900&display=swap');
+
+        body {
+            background-color: #DDC7BB;
+            font-family: 'Poppins', 'Montserrat', serif;
+        }
+
+        .carousel-inner {
+            border-radius: 15%;
+        }
+
+        .img-square {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 15%;
+        }
+
+        .store-card img {
+            width: 200px;
+            height: 200px;
+        }
+
+        button.btn-custom-2 {
+            background-color: #2B1B12;
+            color: white;
+        }
+
+        button.btn-custom-2:hover {
+            background-color:#DDC7BB;
+            color: #2B1B12;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="navbar"></div>
+
+    <header class="text-center p-3" style="background-color:#2B1B12; color:white">
+        <h1>Your latest trends all in one newsletter!</h1>
+        <h6>By: Hustlers@Home</h6>
+        <p class="font-italic" style="color:#DDC7BB;">Date Updated: 01/11/2024</p>
+        <a href="#footer">
+            <button class="btn btn-light">Subscribe Now!</button>
+        </a>
+    </header>
+
+    <section>
+        <h1 class="text-center p-3">#1 trending stores this November!</h1>
+        <div class="container d-flex justify-content-center">
+            <div class="row">
+                <div class="col text-center mx-3 store-card">
+                    <img src="./assets/news-applestore.png" alt="AppleStore">
+                    <h5>#1 Food</h5>
+                    <h1>AppleStore</h1>
+                    <a href="#">
+                        <button class="btn btn-custom-2">View listings</button>
+                    </a>
+                    <p><small class="text-muted">190 listings</small></p>
+                </div>
+                <div class="col text-center mx-3 store-card">
+                    <img src="./assets/news-specware.png" alt="Specware">
+                    <h5>#1 Fashion</h5>
+                    <h1>George</h1>
+                    <a href="#">
+                        <button class="btn btn-custom-2">View listings</button>
+                    </a>
+                    <p><small class="text-muted">1.1k listings</small></p>
+                </div>
+                <div class="col text-center mx-3 store-card">
+                    <img src="./assets/news-nails4u.png" alt="Nails4U">
+                    <h5>#1 Service</h5>
+                    <h1>NailsTech</h1>
+                    <a href="#">
+                        <button class="btn btn-custom-2">View listings</button>
+                    </a>
+                    <p><small class="text-muted">1k listings</small></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <section class="bg-white p-2">
+        <h1 class="text-center p-3">STAR business this November!</h1>
+        <div class="container d-flex p-3" style="border-radius: 15px;">
+            <div class="row">
+                <div class="col-md-6">
+                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></li>
+                            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></li>
+                            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img class="d-block img-square" src="./assets/news-mj1.jpg" alt="Mandy's Jewellery 1">
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block img-square" src="./assets/news-mj2.jpg" alt="Mandy's Jewellery 2">
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block img-square" src="./assets/news-mj3.jpg" alt="Mandy's Jewellery 3">
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-6 text-center">
+                    <h3><img src="./assets/news-star-label.png" alt="Star Label" style="width: 200px; height: 200px; object-fit: cover;">Mandy's</h3>
+                    <p>Mandy's specializes in handcrafted, custom-made jewelry, offering a wide range of elegant pieces including necklaces, bracelets, earrings, and rings. Each item is meticulously designed with premium materials like silver, gold, and vibrant gemstones, making every piece unique and personal.</p>
+                    <a href="#">
+                        <button class="btn btn-custom-2">View listings</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="p-5">
+        <h3 class="text-center p-3">Top reviews for Mandy's Jewellery</h3>
+        <div class="row g-4 justify-content-center">
+            <div class="card col-sm-5 col-lg-4">
+                <div class="card-header text-center">
+                    <h5>Very demure :0</h5>
+                </div>
+                <img class="card-img-top" src="./assets/news-mj4.jpg" alt="Review 1">
+                <div class="card-body text-center">
+                    <h5 class="card-title">By: Sally</h5>
+                    <p class="card-text">The design is absolutely gorgeous, and the attention to detail is incredible.</p>
+                    <p class="card-text"><small class="text-muted">Reviewed on: 11/12/2024</small></p>
+                </div>
+            </div>
+            <div class="card col-sm-5 col-lg-4">
+                <div class="card-header text-center">
+                    <h5>Very cutesy :0</h5>
+                </div>
+                <img class="card-img-top" src="./assets/news-mj2.jpg" alt="Review 2">
+                <div class="card-body text-center">
+                    <h5 class="card-title">By: Molly</h5>
+                    <p class="card-text">I also loved how the packaging made the experience feel even more special.</p>
+                    <p class="card-text"><small class="text-muted">Reviewed on: 11/13/2024</small></p>
+                </div>
+            </div>
+            <div class="card col-sm-5 col-lg-4">
+                <div class="card-header text-center">
+                    <h5>Very mindful :0</h5>
+                </div>
+                <img class="card-img-top" src="./assets/news-mj3.jpg" alt="Review 3">
+                <div class="card-body text-center">
+                    <h5 class="card-title">By: Willy</h5>
+                    <p class="card-text">I love the stunning craftsmanship and exceptional quality by Mandy!</p>
+                    <p class="card-text"><small class="text-muted">Reviewed on: 11/14/2024</small></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="footer" class="footer-bg"></div>
+
+    <script>
+        // Load the navbar and footer
+        $('#navbar').load('navbar.html');
+        $('#footer').load('footer.html');
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+       
