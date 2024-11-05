@@ -29,6 +29,9 @@ const db = getFirestore(app);
 const urlParams = new URLSearchParams(window.location.search);
 const postId = urlParams.get("id");
 
+// Google Maps API key from .env file
+const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+
 // Function to add item to cart
 async function addToCart(postData) {
     onAuthStateChanged(auth, async (user) => {
@@ -78,12 +81,44 @@ async function displayPostDetails() {
 
 // Function to render post details and add the Add to Cart button
 function renderPostDetails(container, postData) {
-    container.querySelector(".post-title").textContent = postData.itemName;
-    container.querySelector(".post-description").textContent = `Description: ${postData.postDescription}`;
-    container.querySelector(".post-category").textContent = `Category: ${postData.category}`;
-    container.querySelector(".post-price").textContent = `Price: SGD ${postData.price}`;
-    container.querySelector(".post-account").textContent = `Posted by: ${postData.account}`;
-    
+    const title = container.querySelector(".post-title");
+    title.textContent = postData.itemName;
+
+    const description = container.querySelector(".post-description");
+    description.textContent = "Description: ";
+    const descriptionContent = document.createElement("span");
+    descriptionContent.classList.add("editable-content");
+    descriptionContent.textContent = postData.postDescription;
+    description.appendChild(descriptionContent);
+
+    const category = container.querySelector(".post-category");
+    category.textContent = "Category: ";
+
+    const categoryContent = document.createElement("span");
+    categoryContent.classList.add("editable-content");
+    categoryContent.textContent = postData.category;
+    category.appendChild(categoryContent);
+
+    const categoryDropdown = document.createElement("select");
+    categoryDropdown.classList.add("category-dropdown");
+    categoryDropdown.style.display = "none"; // Initially hidden
+    ["Crafts", "Fashion", "Food", "Services"].forEach(optionText => {
+        const option = document.createElement("option");
+        option.value = optionText;
+        option.textContent = optionText;
+        if (postData.category === optionText) {
+            option.selected = true;
+        }
+        categoryDropdown.appendChild(option);
+    });
+    category.appendChild(categoryDropdown);
+
+    const price = container.querySelector(".post-price");
+    price.textContent = `Price: SGD ${postData.price}`;
+
+    const account = container.querySelector(".post-account");
+    account.textContent = `Posted by: ${postData.account}`;
+
     const image = container.querySelector(".post-image");
     image.src = postData.imageUrl;
     image.alt = postData.itemName;
@@ -93,14 +128,13 @@ function renderPostDetails(container, postData) {
     addToCartButton.textContent = "Add to Cart";
     addToCartButton.classList.add("btn", "btn-primary", "add-to-cart");
     addToCartButton.addEventListener("click", () => addToCart(postData));
-    addToCartButton.style.position = "absolute"; // Position at the top-right
+    addToCartButton.style.position = "absolute";
     addToCartButton.style.top = "10px";
     addToCartButton.style.right = "10px";
     container.appendChild(addToCartButton);
 
     if (postData.mrtStationName) {
-        const mapContainer = document.getElementById("map");
-        initMapWithGeocoding(postData.mrtStationName);
+        loadGoogleMapsScript(postData.mrtStationName);
     }
 
     onAuthStateChanged(auth, (user) => {
@@ -110,7 +144,19 @@ function renderPostDetails(container, postData) {
     });
 }
 
-// Initialize map with location name
+// Load Google Maps script with API key and initialize map with location name
+function loadGoogleMapsScript(locationName) {
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initMapWithGeocoding`;
+    script.async = true;
+    document.head.appendChild(script);
+
+    window.initMapWithGeocoding = function () {
+        initMapWithGeocoding(locationName);
+    };
+}
+
+// Initialize map with geocoding location name
 function initMapWithGeocoding(locationName) {
     const mapContainer = document.getElementById("map");
     const geocoder = new google.maps.Geocoder();
@@ -154,29 +200,32 @@ function addEditAndDeleteOptions() {
     const saveButton = document.createElement("button");
     saveButton.textContent = "Save Changes";
     saveButton.classList.add("btn", "btn-success");
-    saveButton.style.display = "none"; // Initially hidden
+    saveButton.style.display = "none";
     saveButton.addEventListener("click", () => savePostChanges(postId));
 
     buttonsContainer.append(editButton, deleteButton, saveButton);
     reviewFormContainer.insertAdjacentElement("afterend", buttonsContainer);
 
-    // Store saveButton reference to toggle visibility in enableEditing
     buttonsContainer.saveButton = saveButton;
 }
 
 // Enable editing for post details and show Save button
 function enableEditing() {
     const title = document.querySelector(".post-title");
-    const description = document.querySelector(".post-description");
-    const category = document.querySelector(".post-category");
+    const descriptionContent = document.querySelector(".post-description .editable-content");
+    const categoryContent = document.querySelector(".post-category .editable-content");
+    const categoryDropdown = document.querySelector(".post-category .category-dropdown");
     const price = document.querySelector(".post-price");
 
-    title.contentEditable = "true";
-    description.contentEditable = "true";
-    category.contentEditable = "true";
-    price.contentEditable = "true";
+    [title, descriptionContent, price].forEach(field => {
+        field.contentEditable = "true";
+        field.classList.add("editable-field");
+    });
+    
+    categoryContent.style.display = "none"; // Hide the text content
+    categoryDropdown.style.display = "inline-block"; // Show the dropdown
+    categoryDropdown.disabled = false;
 
-    // Show the save button in the buttons container
     const buttonsContainer = document.querySelector(".buttons-container");
     buttonsContainer.saveButton.style.display = "inline-block";
 }
@@ -184,19 +233,37 @@ function enableEditing() {
 // Save changes to post details
 async function savePostChanges(postId) {
     const title = document.querySelector(".post-title");
-    const description = document.querySelector(".post-description");
-    const category = document.querySelector(".post-category");
+    const descriptionContent = document.querySelector(".post-description .editable-content");
+    const categoryDropdown = document.querySelector(".post-category .category-dropdown");
     const price = document.querySelector(".post-price");
+
+    const priceText = price.textContent.replace(/[^\d.-]/g, "");
+    const priceValue = parseFloat(priceText);
+
+    if (isNaN(priceValue)) {
+        alert("Invalid price. Please enter a numeric value.");
+        return;
+    }
 
     try {
         await updateDoc(doc(db, "posts", postId), {
             itemName: title.textContent,
-            postDescription: description.textContent,
-            category: category.textContent,
-            price: parseFloat(price.textContent.replace("SGD ", ""))
+            postDescription: descriptionContent.textContent,
+            category: categoryDropdown.value,
+            price: priceValue
         });
         alert("Post updated successfully!");
         location.reload();
+
+        [title, descriptionContent, price].forEach(field => {
+            field.classList.remove("editable-field");
+            field.contentEditable = "false";
+        });
+
+        // Hide dropdown and show the text content after saving
+        document.querySelector(".post-category .editable-content").style.display = "inline";
+        categoryDropdown.style.display = "none";
+        categoryDropdown.disabled = true;
     } catch (error) {
         console.error("Error updating post:", error);
         alert("Failed to update post.");
@@ -272,7 +339,7 @@ function setupReviewForm() {
                 const reviewText = reviewTextArea.value;
                 if (reviewText.trim()) {
                     await submitReview(postId, reviewText);
-                    reviewTextArea.value = ""; // Clear input
+                    reviewTextArea.value = "";
                 }
             });
         } else {
