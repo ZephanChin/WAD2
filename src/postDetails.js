@@ -123,15 +123,12 @@ function renderPostDetails(container, postData) {
     image.src = postData.imageUrl;
     image.alt = postData.itemName;
 
-    // Create and position the "Add to Cart" button in the top right
-    const addToCartButton = document.createElement("button");
-    addToCartButton.textContent = "Add to Cart";
-    addToCartButton.classList.add("btn", "btn-primary", "add-to-cart");
-    addToCartButton.addEventListener("click", () => addToCart(postData));
-    addToCartButton.style.position = "absolute";
-    addToCartButton.style.top = "10px";
-    addToCartButton.style.right = "10px";
-    container.appendChild(addToCartButton);
+    // Find the existing "Add to Cart" button in the HTML
+    const addToCartButton = document.getElementById("addToCartButton");
+    if (addToCartButton) {
+        // Attach the click event listener to the existing button
+        addToCartButton.addEventListener("click", () => addToCart(postData));
+    }
 
     if (postData.mrtStationName) {
         loadGoogleMapsScript(postData.mrtStationName);
@@ -219,15 +216,21 @@ function enableEditing() {
 
     [title, descriptionContent, price].forEach(field => {
         field.contentEditable = "true";
-        field.classList.add("editable-field");
+        field.classList.add("editable-field"); // Add the editable-field class
     });
     
     categoryContent.style.display = "none"; // Hide the text content
     categoryDropdown.style.display = "inline-block"; // Show the dropdown
     categoryDropdown.disabled = false;
 
+    // Hide the Add to Cart button
+    const addToCartButton = document.getElementById("addToCartButton");
+    if (addToCartButton) {
+        addToCartButton.style.display = "none"; // Hide the button
+    }
+
     const buttonsContainer = document.querySelector(".buttons-container");
-    buttonsContainer.saveButton.style.display = "inline-block";
+    buttonsContainer.saveButton.style.display = "inline-block"; // Show Save button
 }
 
 // Save changes to post details
@@ -287,31 +290,59 @@ async function deletePost(postId) {
 // Function to load reviews
 async function loadReviews(postId) {
     const reviewsList = document.getElementById("reviews-list");
-    reviewsList.textContent = "";
+    reviewsList.textContent = ""; // Clear existing reviews
 
     const reviewsSnapshot = await getDocs(collection(db, `posts/${postId}/reviews`));
+    const user = auth.currentUser; // Get the current user for comparison
+
     reviewsSnapshot.forEach((doc) => {
         const reviewData = doc.data();
         const reviewElement = document.createElement("div");
         reviewElement.classList.add("review");
         reviewElement.textContent = `${reviewData.account}: ${reviewData.reviewText}`;
-        reviewsList.appendChild(reviewElement);
+
+        // Check if the current user is the owner of the review
+        if (user && user.uid === reviewData.userId) {
+            const deleteReviewButton = document.createElement("button");
+            deleteReviewButton.id = "delete-review";
+            deleteReviewButton.textContent = "Delete";
+            deleteReviewButton.classList.add("btn", "btn-danger"); 
+            deleteReviewButton.addEventListener("click", () => deleteReview(doc.id, postId)); // Pass review ID and post ID to delete function
+            reviewElement.appendChild(deleteReviewButton); // Add delete button to the review
+        }
+
+        reviewsList.appendChild(reviewElement); // Append the review element to the list
     });
 }
 
 // Function to submit a review
 async function submitReview(postId, reviewText) {
-    const userDisplayName = auth.currentUser.displayName || "Anonymous";
+    const user = auth.currentUser; // Get the current user
+    const userDisplayName = user.displayName || "Anonymous";
     try {
         await addDoc(collection(db, `posts/${postId}/reviews`), {
             reviewText: reviewText,
             account: userDisplayName,
+            userId: user.uid, // Store the user's UID with the review
             timestamp: new Date()
         });
         loadReviews(postId);
     } catch (error) {
         console.error("Error adding review:", error);
         alert("Failed to add review.");
+    }
+}
+
+// Delete the review with confirmation
+async function deleteReview(reviewId, postId) {
+    if (confirm("Are you sure you want to delete this review?")) {
+        try {
+            await deleteDoc(doc(db, `posts/${postId}/reviews`, reviewId)); // Delete the review document
+            loadReviews(postId); // Refresh the reviews list
+        } catch (error) {
+            console.error("Error deleting review:", error);
+            alert("Failed to delete review.");
+        }
     }
 }
 
