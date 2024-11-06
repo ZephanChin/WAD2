@@ -8,65 +8,29 @@
     <link rel="stylesheet" href="postdetails.css">
     <link rel="stylesheet" href="marketplace.css">
 
-    <!-- Google Maps JavaScript API script -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA6-vawo-lbppb1emyFd5h-91IEMyeC_4A" async defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47"></script>
 </head>
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-sm">
-        <div class="container-fluid">
-            <!-- Links on the left -->
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="../index.html">Hustlers@Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="marketplace.html">Market</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link 3</a>
-                </li>
-            </ul>
-        
-            <!-- Notifications and Account on the right -->
-            <ul class="navbar-nav ms-auto">
-                <!-- Notifications Link -->
-                <li class="nav-item">
-                    <a class="nav-link" href="#" id="notifications">
-                        Notifications <span class="badge bg-danger" id="notification-count">40</span>
-                    </a>
-                </li>
-        
-                <!-- Account dropdown -->
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Account</a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a href="#" class="dropdown-item">My Account</a></li>
-                        <li><a href="mymarketplace.html" class="dropdown-item">My Marketplace</a></li>
-                        <li><a href="mycart.html" class="dropdown-item">My Cart</a></li>
-                        <li><a href="#" class="dropdown-item">Order History</a></li>
-                        <div class="dropdown-divider"></div>
-                        <li><a href="#" class="dropdown-item" id="login-logout-btn">Login</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    <div id="navbar"></div>
     
-    <!-- Post Details Container -->
-    <div class="container mt-5">
-        <div id="post-details">
-            <!-- Post details will be dynamically inserted by JavaScript -->
-            <h2 class="post-title"></h2>
-            <p class="post-description"></p>
-            <p class="post-category"></p>
-            <p class="post-price"></p>
-            <p class="post-account"></p>
-            <img class="post-image" alt="Post Image">
-            <div id="map" style="height: 300px; margin-top: 20px;"></div>
-        </div>
-        
+<!-- Post Details Container -->
+<div class="post-container mt-5">
+    <div id="post-details">
+        <button id="addToCartButton" class="btn btn-primary add-to-cart">Add to Cart</button>
+
+        <!-- Post details will be dynamically inserted by JavaScript -->
+        <h2 class="post-title"></h2>
+        <p class="post-description"></p>
+        <p class="post-category"></p>
+        <p class="post-price"></p>
+        <p class="post-account"></p>
+        <img class="post-image" alt="Post Image">
+        <div id="map" style="height: 300px; margin-top: 20px;"></div>
+    </div>
+
         <!-- Reviews Section -->
         <div id="reviews-section" class="mt-4">
             <h2>Reviews</h2>
@@ -78,13 +42,23 @@
             </div>
         </div>
     </div>
+</div>
+
+    <div id="footer"></div>
 
     <!-- Bootstrap JS and Popper.js (required for dropdowns to work) -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
+    <script>
+        $('#navbar').load('navbar.html');
+        $('#footer').load('footer.html');
+    </script>
+
     <!-- JavaScript to load post details, handle authentication, and initialize Google Maps -->
     <script type="module" src="../src/app.js"></script>
     <script type="module" src="../src/postDetails.js"></script>
+
+
 </body>
 </html>

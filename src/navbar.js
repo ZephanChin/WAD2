@@ -32,10 +32,10 @@ async function showUsername(user) {
     const usernameElement = document.getElementById("username");
         if (user) {
                 // Get the email from the logged-in user object
-    const email = user.email || "Account";
+    const displayName = user.displayName || "Account";
 
     // Display the user's email
-    usernameElement.textContent = `${email}`;
+    usernameElement.textContent = `${displayName}`;
         } else {
             usernameElement.textContent = "Please log in.";
             setTimeout(() => {

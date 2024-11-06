@@ -44,7 +44,7 @@ async function retrievePosts() {
 // Function to dynamically create and display post elements
 function displayPost(postData, container) {
     const postElement = document.createElement('div');
-    postElement.classList.add('col-md-4', 'mb-3', 'post-item');
+    postElement.classList.add('post-item');
     postElement.setAttribute('data-category', postData.category); // Add category for filtering
 
     const itemName = document.createElement('h3');
