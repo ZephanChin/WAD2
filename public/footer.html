@@ -19,12 +19,7 @@
             width: 100%;
         }
 
-        img {
-            width: 200px;
-            height: 200px;
-        }
-
-        .link-style-1  {
+        .link-style-1 {
             text-decoration: none;
             color: black;
             transition: transform 0.3s ease;
@@ -56,10 +51,32 @@
             background-color: white;
             color: #2B1B12;
         }
+
+        #myBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 99;
+            border: 1px solid #2B1B12;
+            outline: none;
+            background-color: #2B1B12;
+            color: white;
+            cursor: pointer;
+            padding: 10px 15px 10px 15px;
+            border-radius: 50%;
+            font-size: 18px;
+        }
+
+        #myBtn:hover {
+            background-color: #cdac9a;
+        }
     </style>
 </head>
 
 <body>
+    <button onclick="topFunction()" id="myBtn" title="Go to top">^</button>
+
     <div id="app" class="container-fluid" style="background-color: #DDC7BB;">
         <footer style="padding: 20px;">
             <div class="row">
@@ -107,6 +124,22 @@
         crossorigin="anonymous"></script>
 
     <script>
+        let mybutton = document.getElementById("myBtn");
+
+        window.onscroll = function () { scrollFunction() };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+
+        function topFunction() {
+            document.documentElement.scrollTop = 0;
+        }
+
         const app = Vue.createApp({
             data() {
                 return {
@@ -122,13 +155,15 @@
                     } else {
                         this.subscribedEmails.push(this.email);
                         this.message = 'Subscribed to Newsletter! Your newsletter will appear on the 1st of every month!';
-                        this.email = ''; // Clear the input field
+                        this.email = '';
                     }
                 }
             }
         });
 
         app.mount('#app');
+
+
     </script>
 </body>
 
