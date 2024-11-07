@@ -218,7 +218,7 @@ function enableEditing() {
         field.contentEditable = "true";
         field.classList.add("editable-field"); // Add the editable-field class
     });
-    
+
     categoryContent.style.display = "none"; // Hide the text content
     categoryDropdown.style.display = "inline-block"; // Show the dropdown
     categoryDropdown.disabled = false;
@@ -306,7 +306,7 @@ async function loadReviews(postId) {
             const deleteReviewButton = document.createElement("button");
             deleteReviewButton.id = "delete-review";
             deleteReviewButton.textContent = "Delete";
-            deleteReviewButton.classList.add("btn", "btn-danger"); 
+            deleteReviewButton.classList.add("btn", "btn-danger");
             deleteReviewButton.addEventListener("click", () => deleteReview(doc.id, postId)); // Pass review ID and post ID to delete function
             reviewElement.appendChild(deleteReviewButton); // Add delete button to the review
         }
@@ -358,12 +358,33 @@ function setupReviewForm() {
             reviewTextArea.rows = 3;
             reviewTextArea.placeholder = "Write your review here...";
 
+            const stars = document.createElement("span");
+            stars.innerText = "Stars (rate from 1 to 5): "
+
+            const reviewStar = document.createElement("select");
+            reviewStar.id = "review-star";
+            reviewStar.classList.add("form-control", "mt-2");
+
+            // Adding options 1 to 5 in the dropdown
+            for (let i = 1; i <= 5; i++) {
+                const option = document.createElement("option");
+                option.value = i;
+                option.textContent = i;
+                if (i === 5) {
+                    option.selected = true;
+                }
+                reviewStar.appendChild(option);
+            }
+
+
             const submitButton = document.createElement("button");
             submitButton.id = "submit-review";
             submitButton.classList.add("btn", "btn-primary", "mt-2");
             submitButton.textContent = "Submit Review";
 
             reviewFormContainer.appendChild(reviewTextArea);
+            reviewFormContainer.appendChild(stars);
+            reviewFormContainer.appendChild(reviewStar);
             reviewFormContainer.appendChild(submitButton);
 
             submitButton.addEventListener("click", async () => {

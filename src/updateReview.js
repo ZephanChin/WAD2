@@ -67,8 +67,8 @@ async function updateBad() {
 
             // Update the field by incrementing it, for example
             await updateDoc(reportDocRef, {
-                reviews: currentReviews + 1, // Increment the sales field
-                good: currentGood + 1,
+                reviews: currentReviews + 1,
+                bad: currentBad + 1,
                 total_stars: currentStars + 1
             });
 
@@ -84,3 +84,31 @@ async function updateBad() {
 // Call the function to perform the update
 updateBad();
 
+async function updateNeutral() {
+    const reportDocRef = doc(db, "report", "TfgHTy0z8cNSvZ0qFcNM"); // Reference to your document
+
+    try {
+        // Fetch the current document
+        const docSnap = await getDoc(reportDocRef);
+
+        if (docSnap.exists()) {
+            // Get the current value of a specific field
+            const currentReviews = docSnap.data().reviews || 0;
+            const currentStars = docSnap.data().total_stars || 0;
+
+            // Update the field by incrementing it, for example
+            await updateDoc(reportDocRef, {
+                reviews: currentReviews + 1,
+                total_stars: currentStars + 1
+            });
+
+            console.log("Field updated successfully!");
+        } else {
+            console.log("No such document!");
+        }
+    } catch (error) {
+        console.error("Error updating document: ", error);
+    }
+}
+
+updateNeutral();
