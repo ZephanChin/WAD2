@@ -1,12 +1,13 @@
 /* Center the container and add some margin for spacing */
-.container {
-    max-width: 800px;
-    margin: 50px auto;
+.post-container {
+    max-width: 800px;     /* Restrict maximum width */
+    width: 100%;          /* Full width within max-width limit */
+    margin: 50px auto;    /* Center the container horizontally */
     padding: 20px;
     background-color: #f8f9fa; /* Light gray background */
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    position: relative; /* Ensures "Add to Cart" button is positioned relative to this container */
+    position: relative; /* Ensures positioned children like the button are relative to this container */
 }
 
 /* Style for the main title */
@@ -59,14 +60,14 @@ p strong {
 /* Position the "Add to Cart" button at the top right of the post-details container */
 .add-to-cart {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 10;
+    top: 20px; /* Adjust as needed */
+    right: 20px; /* Adjust as needed */
     padding: 8px 16px;
     border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     background-color: #007bff;
     color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 10; /* Ensure it appears above other content */
 }
 
 /* Container for Edit and Delete buttons, aligned in a row */
@@ -107,7 +108,7 @@ small {
 
 /* Responsive styling */
 @media (max-width: 768px) {
-    .container {
+    .post-container {
         padding: 15px;
     }
 
@@ -124,9 +125,7 @@ small {
     }
 
     #map {
-        width: 100%;
         height: 300px; /* Set a fixed height */
-        border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         margin-top: 40px;
     }
@@ -143,7 +142,12 @@ small {
 
 /* Adjust spacing for buttons in the review section */
 #submit-review {
-    margin-right: auto; /* Align Submit Review button to the left */
+    margin-left: auto; /* Align Submit Review button to the left */
+}
+
+/* Adjust spacing for buttons in the review section */
+#delete-review {
+    margin-left: auto; /* Align Submit Review button to the left */
 }
 
 /* Styling for specific post image class */
@@ -154,4 +158,36 @@ small {
     display: block;
     margin: 0 auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Overall styling for post details page */
+#post-details-page {
+    max-width: 800px !important;    /* Restrict maximum width */
+    width: 100%;         /* Set width to 100% within the max-width limit */
+    margin: 50px auto;   /* Center the container horizontally */
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative; /* Ensures button positioning works correctly */
+}
+
+/* Styling for editable fields */
+.editable-field {
+    background-color: #e3f2fd; /* Light blue background to distinguish editable fields */
+    border: 1px solid #007bff; /* Blue border to make it more distinct */
+    border-radius: 4px; /* Slight rounding of corners */
+    padding: 5px; /* Add some padding for aesthetics */
+}
+
+/* Styling for reviews */
+.review {
+    display: flex;              /* Use flexbox for layout */
+    justify-content: space-between; /* Space out the review text and delete button */
+    align-items: center;       /* Center items vertically */
+    margin-bottom: 10px;       /* Space between reviews */
+    padding: 5px;              /* Padding for aesthetics */
+    border: 1px solid black;    /* Optional: Add a border for distinction */
+    border-radius: 5px; 
+    background-color: white;       /* Optional: Rounded corners */
 }

@@ -112,7 +112,7 @@ nav {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start; /* Align items to the left */
-  gap: 5px; /* Consistent gap between items */
+  gap: 10px; /* Adjust gap for spacing */
   padding: 10px;
   max-width: 1300px;
   margin: 0 auto;
@@ -121,23 +121,25 @@ nav {
   border-radius: 10px;
 }
 
+
 /* Post container with consistent colors and shadow */
 .post-item {
-  flex: 1 1 calc(33.33% - 10px); /* Each item takes up about 33% of the row */
+  flex: 0 0 calc(33.33% - 10px); /* Fixed width for each item */
   max-width: calc(33.33% - 10px);
   padding: 15px;
-  border: 1px solid #ddd;
+  border: 5px solid #ddd;
   border-radius: 10px;
   background-color: #f9f9f9;
   box-sizing: border-box;
   height: 370px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 
 /* Consistent Image container styling */
 .image-container {
