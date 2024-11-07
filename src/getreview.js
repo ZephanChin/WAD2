@@ -23,11 +23,8 @@ console.log("working");
 async function fetchData() {
     console.log("functioning");
     onAuthStateChanged(auth, async (user) => {
-        console.log(user);
-        console.log("reached auth")
         if (user) {
             let documentId = user.displayName;
-            console.log(documentId);
 
             document.getElementById('username').textContent = documentId || "Username";
             document.getElementById('profileImage').src = `profile/${documentId}.jpg`;

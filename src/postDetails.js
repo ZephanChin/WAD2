@@ -76,7 +76,7 @@ async function displayPostDetails() {
     const postData = postSnap.data();
     renderPostDetails(postDetailsContainer, postData);
     loadReviews(postId);
-    setupReviewForm();
+    setupReviewForm(postData);
 }
 
 // Function to render post details and add the Add to Cart button
@@ -299,7 +299,7 @@ async function loadReviews(postId) {
         const reviewData = doc.data();
         const reviewElement = document.createElement("div");
         reviewElement.classList.add("review");
-        reviewElement.textContent = `${reviewData.account}: ${reviewData.reviewText}`;
+        reviewElement.textContent = `${reviewData.account} - ${"★".repeat(reviewData.starRating)}: ${reviewData.reviewText}`;
 
         // Check if the current user is the owner of the review
         if (user && user.uid === reviewData.userId) {
@@ -316,7 +316,7 @@ async function loadReviews(postId) {
 }
 
 // Function to submit a review
-async function submitReview(postId, reviewText) {
+async function submitReview(postId, reviewText, starRating, account) {
     const user = auth.currentUser; // Get the current user
     const userDisplayName = user.displayName || "Anonymous";
     try {
@@ -324,8 +324,18 @@ async function submitReview(postId, reviewText) {
             reviewText: reviewText,
             account: userDisplayName,
             userId: user.uid, // Store the user's UID with the review
+            starRating: starRating,
             timestamp: new Date()
         });
+        // Update the report based on the star rating
+        if (starRating >= 4) {
+            await updateGood(starRating, account);
+        } else if (starRating === 3) {
+            await updateNeutral(starRating, account);
+        } else {
+            await updateBad(starRating, account);
+        }
+
         loadReviews(postId);
     } catch (error) {
         console.error("Error adding review:", error);
@@ -347,7 +357,7 @@ async function deleteReview(reviewId, postId) {
 }
 
 // Set up review submission only for authenticated users
-function setupReviewForm() {
+function setupReviewForm(postData) {
     const reviewFormContainer = document.getElementById("review-input-section");
 
     onAuthStateChanged(auth, (user) => {
@@ -388,9 +398,12 @@ function setupReviewForm() {
             reviewFormContainer.appendChild(submitButton);
 
             submitButton.addEventListener("click", async () => {
+                console.log("working review");
                 const reviewText = reviewTextArea.value;
+                const reviewStarValue = parseInt(reviewStar.value); // Convert star rating to an integer
+
                 if (reviewText.trim()) {
-                    await submitReview(postId, reviewText);
+                    await submitReview(postId, reviewText, reviewStarValue, postData.account); // Pass the star rating to `submitReview`
                     reviewTextArea.value = "";
                 }
             });
@@ -401,6 +414,94 @@ function setupReviewForm() {
             reviewFormContainer.appendChild(warningMessage);
         }
     });
+}
+
+// Function to get current value, modify it, and update the document
+async function updateGood(starRating, account) {
+    const reportDocRef = doc(db, "report", account); // Reference to your document
+
+    try {
+        // Fetch the current document
+        const docSnap = await getDoc(reportDocRef);
+
+        if (docSnap.exists()) {
+            // Get the current value of a specific field
+            const currentReviews = docSnap.data().reviews || 0;
+            const currentGood = docSnap.data().good || 0;
+            const currentStars = docSnap.data().total_stars || 0;
+
+            // Update the field by incrementing it, for example
+            await updateDoc(reportDocRef, {
+                reviews: currentReviews + 1, // Increment the sales field
+                good: currentGood + 1,
+                total_stars: currentStars + starRating
+            });
+
+            console.log("Field updated successfully!");
+        } else {
+            console.log("No such document!");
+        }
+    } catch (error) {
+        console.error("Error updating document: ", error);
+    }
+}
+
+
+async function updateBad(starRating, account) {
+    const reportDocRef = doc(db, "report", account); // Reference to your document
+
+    try {
+        // Fetch the current document
+        const docSnap = await getDoc(reportDocRef);
+
+        if (docSnap.exists()) {
+            // Get the current value of a specific field
+            const currentReviews = docSnap.data().reviews || 0;
+            const currentBad = docSnap.data().bad || 0;
+            const currentStars = docSnap.data().total_stars || 0;
+
+            // Update the field by incrementing it, for example
+            await updateDoc(reportDocRef, {
+                reviews: currentReviews + 1,
+                bad: currentBad + 1,
+                total_stars: currentStars + starRating
+            });
+
+            console.log("Field updated successfully!");
+        } else {
+            console.log("No such document!");
+        }
+    } catch (error) {
+        console.error("Error updating document: ", error);
+    }
+}
+
+
+async function updateNeutral(starRating, account) {
+    const reportDocRef = doc(db, "report", account); // Reference to your document
+
+    try {
+        // Fetch the current document
+        const docSnap = await getDoc(reportDocRef);
+
+        if (docSnap.exists()) {
+            // Get the current value of a specific field
+            const currentReviews = docSnap.data().reviews || 0;
+            const currentStars = docSnap.data().total_stars || 0;
+
+            // Update the field by incrementing it, for example
+            await updateDoc(reportDocRef, {
+                reviews: currentReviews + 1,
+                total_stars: currentStars + starRating
+            });
+
+            console.log("Field updated successfully!");
+        } else {
+            console.log("No such document!");
+        }
+    } catch (error) {
+        console.error("Error updating document: ", error);
+    }
 }
 
 // Initialize display of post details on page load
