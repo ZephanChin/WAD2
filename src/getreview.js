@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -13,21 +14,32 @@ const firebaseConfig = {
     appId: import.meta.env.VITE_APP_ID,
     measurementId: import.meta.env.VITE_MEASUREMENT_ID
 };
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
-console.log("working");
+const storage = getStorage(app);
 
 async function fetchData() {
-    console.log("functioning");
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             let documentId = user.displayName;
 
             document.getElementById('username').textContent = documentId || "Username";
             document.getElementById('profileImage').src = `profile/${documentId}.jpg`;
+
+            try {
+                // Check if an additional uploaded image exists
+                const uploadedImageRef = ref(storage, `additionalImages/${documentId}.jpg`);
+                const uploadedImageUrl = await getDownloadURL(uploadedImageRef);
+                document.getElementById('uploadedImage').src = uploadedImageUrl;
+                document.getElementById('uploadedImage').style.display = 'block';
+                document.getElementById('uploadSection').style.display = 'none'; // Hide upload section
+
+            } catch (error) {
+                console.log("No additional uploaded image found.");
+            }
             try {
                 // Reference to the specific document based on the user's display name
                 const docRef = doc(db, "report", documentId);
@@ -52,6 +64,39 @@ async function fetchData() {
         }
     });
 }
+
+async function uploadImage(file) {
+    const user = auth.currentUser;
+    if (user) {
+        const documentId = user.displayName;
+        const imageRef = ref(storage, `additionalImages/${documentId}.jpg`);
+
+        try {
+            await uploadBytes(imageRef, file);
+            console.log("Image uploaded successfully.");
+
+            // Get the download URL and display the uploaded image
+            const imageUrl = await getDownloadURL(imageRef);
+            document.getElementById('uploadedImage').src = imageUrl;
+            document.getElementById('uploadedImage').style.display = 'block';
+
+            // Hide the upload section after a successful upload
+            document.getElementById('uploadSection').style.display = 'none';
+        } catch (error) {
+            console.error("Error uploading image:", error);
+        }
+    }
+}
+
+// Event listener for the upload button
+document.getElementById('uploadButton').addEventListener('click', () => {
+    const file = document.getElementById('imageUpload').files[0];
+    if (file) {
+        uploadImage(file);
+    } else {
+        alert("Please select an image to upload.");
+    }
+});
 
 // Call fetchData to load data when the page loads
 fetchData();
