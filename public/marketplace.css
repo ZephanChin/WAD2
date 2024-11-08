@@ -121,7 +121,6 @@ nav {
   border-radius: 10px;
 }
 
-
 /* Post container with consistent colors and shadow */
 .post-item {
   flex: 0 0 calc(33.33% - 10px); /* Fixed width for each item */
@@ -135,11 +134,18 @@ nav {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
-  text-align: center;
+  text-align: left;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  gap: 10px; /* Add spacing between children */
 }
 
+/* Content Container for Text and Button */
+.content-container {
+  display: flex; /* Enable flexbox */
+  flex-direction: column; /* Stack children vertically */
+  align-items: flex-start; /* Align text to the left */
+  position: relative; /* Allow positioning for child elements */
+}
 
 /* Consistent Image container styling */
 .image-container {
@@ -157,32 +163,33 @@ nav {
   border-radius: 5px;
 }
 
-/* More Details Button styling */
+/* More Details Button Styling */
 .more-details {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  font-size: 0.8rem;
-  padding: 5px 10px;
-  background-color: #DDC7BB;
-  color: black;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  margin-top: 10px; /* Add spacing from the previous element */
+  padding: 8px 12px; /* Adjust padding for better appearance */
+  font-size: 1rem; /* Slightly larger font for better readability */
+  background-color: #DDC7BB; /* Consistent background color */
+  color: black; /* Button text color */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor for interactivity */
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  align-self: flex-end; /* Align button to the right of the container */
 }
 
-.image-container:hover .more-details {
-  opacity: 1; /* Show button on hover */
+.more-details:hover {
+  background-color: #c9b5a8; /* Darker shade on hover */
+  color: #333; /* Slightly darker text color for hover effect */
 }
 
 /* Styling for Post Titles */
 .post-item h3 {
   margin: 10px 0 5px;
+  margin-left: 0px;
   font-size: 1.3rem;
   font-weight: bold;
   color: #333;
+  text-align: left;
 }
 
 /* Styling for Account Name */
@@ -207,7 +214,8 @@ nav {
   }
 }
 
-#search-bar {
+/* Search Input Styling */
+#search-input {
   background-color: #DDC7BB;
   margin-left: 2px;
 }
