@@ -38,15 +38,42 @@ async function addToCart(postData) {
         if (user) {
             try {
                 const cartRef = collection(db, `users/${user.uid}/cart`);
-                await addDoc(cartRef, {
-                    itemId: postId,
-                    itemName: postData.itemName,
-                    itemPrice: postData.price,
-                    itemImage: postData.imageUrl,
-                    account: postData.account,
-                    timestamp: new Date()
+                const cartSnapshot = await getDocs(cartRef);
+                let existingItemDoc = null;
+
+                // Check if the item already exists in the cart
+                cartSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.itemId === postId) {
+                        existingItemDoc = doc; // Store the document reference if the item is found
+                    }
                 });
-                alert("Item added to cart!");
+
+                if (existingItemDoc) {
+                    // Item exists in the cart, update the quantity and total price
+                    const newQuantity = existingItemDoc.data().quantity + 1; // Increase quantity
+                    const newTotalPrice = postData.price * newQuantity; // Update total price
+
+                    await updateDoc(doc(db, `users/${user.uid}/cart`, existingItemDoc.id), {
+                        quantity: newQuantity,
+                        totalPrice: newTotalPrice // Store the updated total price
+                    });
+                    alert("Item quantity updated in cart!");
+                } else {
+                    // Item does not exist, add it to the cart
+                    await addDoc(cartRef, {
+                        itemId: postId,
+                        itemName: postData.itemName,
+                        itemPrice: postData.price,
+                        itemImage: postData.imageUrl,
+                        account: postData.account,
+                        sellerUid: postData.uid,
+                        quantity: 1, // Start with quantity of 1
+                        totalPrice: postData.price, // Store initial total price
+                        timestamp: new Date()
+                    });
+                    alert("Item added to cart!");
+                }
             } catch (error) {
                 console.error("Error adding to cart:", error);
             }
@@ -55,6 +82,7 @@ async function addToCart(postData) {
         }
     });
 }
+
 
 // Function to retrieve and display post details
 async function displayPostDetails() {
@@ -99,23 +127,13 @@ function renderPostDetails(container, postData) {
     categoryContent.textContent = postData.category;
     category.appendChild(categoryContent);
 
-    const categoryDropdown = document.createElement("select");
-    categoryDropdown.classList.add("category-dropdown");
-    categoryDropdown.style.display = "none"; // Initially hidden
-    ["Crafts", "Fashion", "Food", "Services"].forEach(optionText => {
-        const option = document.createElement("option");
-        option.value = optionText;
-        option.textContent = optionText;
-        if (postData.category === optionText) {
-            option.selected = true;
-        }
-        categoryDropdown.appendChild(option);
-    });
-    category.appendChild(categoryDropdown);
-
     // Price setup - keep it as a static text
     const price = container.querySelector(".post-price");
-    price.textContent = `Price: SGD ${postData.price}`; // No editable part
+    price.textContent = `Price: SGD ${postData.price}`; // Display as static text
+
+    // Ensure the price is not editable
+    price.contentEditable = "false"; // Explicitly set contentEditable to false
+    price.classList.remove("editable-field"); // Remove any editable styles if previously added
 
     const account = container.querySelector(".post-account");
     account.textContent = `Posted by: ${postData.account}`;
@@ -139,6 +157,8 @@ function renderPostDetails(container, postData) {
         }
     });
 }
+
+
 
 // Load Google Maps script with API key and initialize map with location name
 function loadGoogleMapsScript(locationName) {
