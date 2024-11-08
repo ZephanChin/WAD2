@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700&family=Poppins:wght@100;300;400;600;700&display=swap');
+
 nav {
     background-color: #DDC7BB;
 }
@@ -6,7 +8,8 @@ nav {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
+  font-family: 'Poppins', sans-serif;
+
 }
 
 body {

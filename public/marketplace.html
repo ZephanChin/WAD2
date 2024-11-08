@@ -23,23 +23,18 @@
  <!-- Navbar -->
  <div id="navbar"></div>
 
-  <!-- Featured Shop of the Week Section -->
-  <h1 class="featured-title">Hustler of the week: iSellBracelets</h1>
-  <div class="container mt-4">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card featured-card text-center">
-          <div class="card-body overlay d-flex flex-column justify-content-end">
-            <!-- <h5 class="card-title mt-3" style="color:black">Bracelets</h5> -->
-            <button class="btn btn-primary more-details">More Details</button>
-          </div>
-        </div>
-      </div>
-    </div>
+  <!-- Featured Shop of the Week Section with Video Background -->
+  <div class="video-header-container">
+    <video autoplay muted loop>
+      <source src="../assets/isellbracelets.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <div class="overlay-background"></div>
+    <h1 class="featured-title">Hustler of the week: iSellBracelets</h1>
   </div>
 
   <!-- Market Section -->
-  <h1 class="hmarket">Hustler's Market</h1>
+  <h1 id="anchor" class="hmarket">Hustler's Market</h1>
 
   <div class="container hmbox mt-4" >
       <div class="filter-container">
@@ -50,7 +45,7 @@
         <button type="button" class="btn btn-warning filter-btn">Food</button>
 
         <div class="search-bar">
-          <input type="text" class="form-control" id="search-bar" placeholder="Search" />
+          <input type="text" class="form-control" id="search-input" placeholder="Search" />
         </div>
 
         <button type="button" class="btn btn-primary add-post-btn" id="add-post-btn">Add a post</button>
@@ -80,4 +75,4 @@
 
 </body>
 
-</html> -->
+</html>

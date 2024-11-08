@@ -2,7 +2,7 @@ import { initializeApp, getApps } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 
-// Firebase configuration (replace with your configuration values)
+// Firebase configuration
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_API_KEY,
     authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -27,9 +27,11 @@ const db = getFirestore(app);
 
 // Function to delete an item from the cart
 async function deleteCartItem(userId, cartItemId) {
+    console.log(`Deleting cart item with ID: ${cartItemId}`);
     const cartItemRef = doc(db, `users/${userId}/cart/${cartItemId}`);
     try {
         await deleteDoc(cartItemRef);
+        console.log("Item deleted successfully.");
         alert("Item deleted from cart.");
         displayCartItems({ uid: userId }); // Refresh the cart display after deletion
     } catch (error) {
@@ -46,6 +48,7 @@ function clearContainer(container) {
 
 // Function to display cart items, grouped by seller account and item quantity, and show total price
 async function displayCartItems(user) {
+    console.log("Fetching cart items for user:", user.uid);
     const cartItemsContainer = document.getElementById("cart-items-container");
     clearContainer(cartItemsContainer); // Clear previous content
 
@@ -53,6 +56,7 @@ async function displayCartItems(user) {
     const cartSnapshot = await getDocs(cartRef);
 
     if (cartSnapshot.empty) {
+        console.log("Cart is empty.");
         const emptyMessage = document.createElement("p");
         emptyMessage.textContent = "Your cart is empty.";
         cartItemsContainer.appendChild(emptyMessage);
@@ -61,28 +65,35 @@ async function displayCartItems(user) {
 
     // Group items by seller account and calculate total price
     const itemsBySeller = {};
-    let totalPrice = 0; // Initialize total price
+    let totalCartPrice = 0; // Initialize total price for the cart
 
     cartSnapshot.forEach((doc) => {
         const itemData = doc.data();
         const cartItemId = doc.id; // Get document ID for deletion
         const sellerAccount = itemData.account;
-        const itemKey = `${itemData.itemName}-${itemData.itemPrice}`; // Unique key for each item by name and price
 
         if (!itemsBySeller[sellerAccount]) {
             itemsBySeller[sellerAccount] = {};
         }
 
-        // If item already exists, increment quantity, otherwise add item with quantity of 1
+        // Group items by name and price
+        const itemKey = `${itemData.itemName}-${itemData.itemPrice}`;
+
+        // Get the quantity directly from the itemData
+        const quantity = itemData.quantity || 1; // Use the quantity from Firestore
+
         if (itemsBySeller[sellerAccount][itemKey]) {
-            itemsBySeller[sellerAccount][itemKey].quantity += 1;
+            itemsBySeller[sellerAccount][itemKey].quantity += quantity; // Accumulate the quantity
         } else {
-            itemsBySeller[sellerAccount][itemKey] = { ...itemData, cartItemId, quantity: 1 };
+            itemsBySeller[sellerAccount][itemKey] = { ...itemData, cartItemId, quantity }; // Include quantity
         }
     });
 
+    console.log("Grouped items by seller:", itemsBySeller);
+
     // Display items grouped by seller account
     for (const seller in itemsBySeller) {
+        console.log(`Displaying items for seller: ${seller}`);
         const sellerSection = document.createElement("div");
         sellerSection.classList.add("seller-section");
 
@@ -91,75 +102,82 @@ async function displayCartItems(user) {
         sellerSection.appendChild(sellerTitle);
         for (const itemKey in itemsBySeller[seller]) {
             const item = itemsBySeller[seller][itemKey];
+            const { quantity, itemPrice, itemName, itemImage, cartItemId } = item;
 
-            // Update total price by adding item price * quantity
-            totalPrice += item.itemPrice * item.quantity;
+            const totalPriceForItem = itemPrice * quantity; // Calculate total price for this item
+
+            // Update the total cart price
+            totalCartPrice += totalPriceForItem;
+
+            console.log(`Displaying item:`, item);
 
             // Create item display elements
             const itemDiv = document.createElement("div");
             itemDiv.classList.add("cart-item");
 
-            const itemName = document.createElement("h3");
-            itemName.textContent = item.itemName;
+            const itemImageElement = document.createElement("img");
+            itemImageElement.src = itemImage;
+            itemImageElement.alt = itemName;
+            itemImageElement.classList.add("cart-item-image");
 
-            const itemQuantity = document.createElement("p");
-            itemQuantity.textContent = `Quantity: ${item.quantity}`;
+            const itemNameElement = document.createElement("h3");
+            itemNameElement.textContent = itemName;
 
-            const itemPrice = document.createElement("p");
-            itemPrice.textContent = `Price: SGD ${item.itemPrice}`;
+            const itemQuantityElement = document.createElement("p");
+            itemQuantityElement.textContent = `Quantity: ${quantity}`;
 
-            const itemImage = document.createElement("img");
-            itemImage.src = item.itemImage;
-            itemImage.alt = item.itemName;
-            itemImage.classList.add("cart-item-image");
+            const itemTotalPriceElement = document.createElement("p");
+            itemTotalPriceElement.textContent = `Total Price: SGD ${totalPriceForItem.toFixed(2)}`;
 
-            // Create Delete button
-            const deleteButton = document.createElement("button");
-            deleteButton.textContent = "Remove";
-            deleteButton.classList.add("btn", "delete-button");
-            deleteButton.addEventListener("click", () => deleteCartItem(user.uid, item.cartItemId));
+            // Remove Button
+            const removeButton = document.createElement("button");
+            removeButton.textContent = "Remove";
+            removeButton.classList.add("btn", "delete-button");
+            removeButton.addEventListener("click", () => deleteCartItem(user.uid, cartItemId));
 
-            // Append item details and delete button to the item div
-            itemDiv.appendChild(itemImage);
-            itemDiv.appendChild(itemName);
-            itemDiv.appendChild(itemQuantity);
-            itemDiv.appendChild(itemPrice);
-            itemDiv.appendChild(deleteButton);
+            // Append item details to the item div
+            itemDiv.appendChild(itemImageElement);
+            itemDiv.appendChild(itemNameElement);
+            itemDiv.appendChild(itemQuantityElement);
+            itemDiv.appendChild(itemTotalPriceElement);
+            itemDiv.appendChild(removeButton);
 
-            // Append item div to the seller section
             sellerSection.appendChild(itemDiv);
         }
 
-        // Append each seller section to the cart container
         cartItemsContainer.appendChild(sellerSection);
     }
 
-    // Display the total price and checkout button in a right-aligned container
+    console.log("Total price of items in cart:", totalCartPrice);
+
+    // Display total cart price and checkout button
     const totalContainer = document.createElement("div");
-    totalContainer.classList.add("total-container"); // New container for styling alignment
+    totalContainer.classList.add("total-container");
 
     const totalPriceElement = document.createElement("p");
     totalPriceElement.classList.add("total-price");
-    totalPriceElement.textContent = `Total Price: SGD ${totalPrice.toFixed(2)}`;
+    totalPriceElement.textContent = `Total Cart Price: SGD ${totalCartPrice.toFixed(2)}`;
     totalContainer.appendChild(totalPriceElement);
 
-    const massCheckoutButton = document.createElement("button");
-    massCheckoutButton.textContent = "Checkout All Items";
-    massCheckoutButton.classList.add("btn", "checkout-button");
-    massCheckoutButton.addEventListener("click", () => {
-        window.location.href = "/checkout.html"; // Adjust this URL as needed
+    const checkoutButton = document.createElement("button");
+    checkoutButton.textContent = "Checkout";
+    checkoutButton.classList.add("btn", "checkout-button");
+    checkoutButton.addEventListener("click", () => {
+        console.log("Proceeding to checkout.");
+        window.location.href = "/checkout.html"; // Adjust the URL as needed
     });
-    totalContainer.appendChild(massCheckoutButton);
+    totalContainer.appendChild(checkoutButton);
 
-    // Append the totalContainer to the cart container
     cartItemsContainer.appendChild(totalContainer);
 }
 
 // Check for user authentication and display cart items
 onAuthStateChanged(auth, (user) => {
     if (user) {
+        console.log("User authenticated:", user.uid);
         displayCartItems(user);
     } else {
+        console.log("User not authenticated. Redirecting to login page.");
         // Redirect to login page if not logged in
         window.location.href = "/login.html";
     }

@@ -9,9 +9,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700&family=Poppins:wght@100;300;400;600;700&display=swap');
+
         body {
             background-color: #d9b8a9;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         .profile-section {
@@ -61,11 +63,15 @@
             <div>
                 <div class="username .container-lg-6" id="username">Username</div>
             </div>
-            <img src="" alt="Uploaded Image" id="uploadedImage" style="height: 200px; display: none; margin-top: 10px;"
-                class="uploaded-image">
+
+            <div id="imageDisplaySection">
+                <img id="uploadedImage" style="display: none; width: 150px; height: 150px; margin-top: 20px;"
+                    alt="Uploaded Image">
+                <button id="editImageButton" style="display: none;">Edit Image</button>
+            </div>
 
             <!-- Upload section -->
-            <div id="uploadSection" style="margin-top: 15px;">
+            <div id="uploadSection">
                 <input type="file" id="imageUpload" accept="image/*">
                 <button id="uploadButton" class="btn btn-primary mt-2">Upload Image</button>
             </div>
