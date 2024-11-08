@@ -295,7 +295,22 @@ async function loadReviews(postId) {
         const reviewData = doc.data();
         const reviewElement = document.createElement("div");
         reviewElement.classList.add("review");
-        reviewElement.textContent = `${reviewData.account} - ${"★".repeat(reviewData.starRating)}: ${reviewData.reviewText}`;
+        //reviewElement.textContent = `${reviewData.account} - ${"★".repeat(reviewData.starRating)}: ${reviewData.reviewText}`;
+
+        // Username (Top Left)
+        const username = document.createElement("div");
+        username.classList.add("review-username");
+        username.textContent = reviewData.account;
+
+        // Rating (Below Username)
+        const rating = document.createElement("div");
+        rating.classList.add("review-rating");
+        rating.textContent = `Rating: ${"★".repeat(reviewData.starRating)}`;
+
+        // Main Review Text (Below Rating)
+        const reviewText = document.createElement("div");
+        reviewText.classList.add("review-text");
+        reviewText.textContent = reviewData.reviewText;
 
         // Append the username, rating, and review text to the review element
         reviewElement.appendChild(username);
@@ -316,7 +331,10 @@ async function loadReviews(postId) {
             deleteReviewButton.textContent = "Delete";
             deleteReviewButton.classList.add("btn", "btn-danger");
             deleteReviewButton.addEventListener("click", () => deleteReview(doc.id, postId)); // Pass review ID and post ID to delete function
-            reviewElement.appendChild(deleteReviewButton); // Add delete button to the review
+            //reviewElement.appendChild(deleteReviewButton); // Add delete button to the review
+            revbuttonsContainer.append(editReviewButton, deleteReviewButton);
+
+            reviewElement.appendChild(revbuttonsContainer);
         }
 
         reviewsList.appendChild(reviewElement); // Append the review element to the list
@@ -331,7 +349,6 @@ async function submitReview(postId, reviewText, starRating, account) {
     try {
         await addDoc(collection(db, `posts/${postId}/reviews`), {
             reviewText: reviewText,
-            rating: rating,
             account: userDisplayName,
             userId: user.uid, // Store the user's UID with the review
             starRating: starRating,
@@ -368,7 +385,7 @@ async function updateReview(reviewId, postId, reviewText, rating) {
     try {
         await updateDoc(doc(db, `posts/${postId}/reviews`, reviewId), {
             reviewText: reviewText,
-            rating: rating,
+            starRating: rating,
             timestamp: new Date()
         });
         alert("Review updated successfully!");
@@ -434,7 +451,6 @@ function setupReviewForm(postData) {
             reviewFormContainer.appendChild(submitButton);
 
             submitButton.addEventListener("click", async () => {
-                console.log("working review");
                 const reviewText = reviewTextArea.value;
                 const reviewStarValue = parseInt(reviewStar.value); // Convert star rating to an integer
 
