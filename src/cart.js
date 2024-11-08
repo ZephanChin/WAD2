@@ -2,7 +2,7 @@ import { initializeApp, getApps } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 
-// Firebase configuration (replace with your configuration values)
+// Firebase configuration
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_API_KEY,
     authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -70,20 +70,22 @@ async function displayCartItems(user) {
     cartSnapshot.forEach((doc) => {
         const itemData = doc.data();
         const cartItemId = doc.id; // Get document ID for deletion
-        console.log(itemData.itemName);
-
         const sellerAccount = itemData.account;
-        const itemKey = `${itemData.itemName}-${itemData.itemPrice}`; // Unique key for each item by name and price
 
         if (!itemsBySeller[sellerAccount]) {
             itemsBySeller[sellerAccount] = {};
         }
 
-        // Group items and calculate the total price for each item
+        // Group items by name and price
+        const itemKey = `${itemData.itemName}-${itemData.itemPrice}`;
+
+        // Get the quantity directly from the itemData
+        const quantity = itemData.quantity || 1; // Use the quantity from Firestore
+
         if (itemsBySeller[sellerAccount][itemKey]) {
-            itemsBySeller[sellerAccount][itemKey].quantity += itemData.quantity || 1;
+            itemsBySeller[sellerAccount][itemKey].quantity += quantity; // Accumulate the quantity
         } else {
-            itemsBySeller[sellerAccount][itemKey] = { ...itemData, cartItemId };
+            itemsBySeller[sellerAccount][itemKey] = { ...itemData, cartItemId, quantity }; // Include quantity
         }
     });
 
@@ -101,9 +103,9 @@ async function displayCartItems(user) {
 
         for (const itemKey in itemsBySeller[seller]) {
             const item = itemsBySeller[seller][itemKey];
-            const { quantity = 1, itemPrice, itemName, itemImage, cartItemId } = item;
+            const { quantity, itemPrice, itemName, itemImage, cartItemId } = item;
 
-            const totalPriceForItem = itemPrice * quantity;
+            const totalPriceForItem = itemPrice * quantity; // Calculate total price for this item
 
             // Update the total cart price
             totalCartPrice += totalPriceForItem;
