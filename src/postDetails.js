@@ -123,10 +123,8 @@ function renderPostDetails(container, postData) {
     image.src = postData.imageUrl;
     image.alt = postData.itemName;
 
-    // Find the existing "Add to Cart" button in the HTML
     const addToCartButton = document.getElementById("addToCartButton");
     if (addToCartButton) {
-        // Attach the click event listener to the existing button
         addToCartButton.addEventListener("click", () => addToCart(postData));
     }
 
@@ -219,18 +217,17 @@ function enableEditing() {
         field.classList.add("editable-field"); // Add the editable-field class
     });
     
-    categoryContent.style.display = "none"; // Hide the text content
-    categoryDropdown.style.display = "inline-block"; // Show the dropdown
+    categoryContent.style.display = "none";
+    categoryDropdown.style.display = "inline-block";
     categoryDropdown.disabled = false;
 
-    // Hide the Add to Cart button
     const addToCartButton = document.getElementById("addToCartButton");
     if (addToCartButton) {
-        addToCartButton.style.display = "none"; // Hide the button
+        addToCartButton.style.display = "none";
     }
 
     const buttonsContainer = document.querySelector(".buttons-container");
-    buttonsContainer.saveButton.style.display = "inline-block"; // Show Save button
+    buttonsContainer.saveButton.style.display = "inline-block";
 }
 
 // Save changes to post details
@@ -263,7 +260,6 @@ async function savePostChanges(postId) {
             field.contentEditable = "false";
         });
 
-        // Hide dropdown and show the text content after saving
         document.querySelector(".post-category .editable-content").style.display = "inline";
         categoryDropdown.style.display = "none";
         categoryDropdown.disabled = true;
@@ -287,43 +283,76 @@ async function deletePost(postId) {
     }
 }
 
-// Function to load reviews
+// review
 async function loadReviews(postId) {
     const reviewsList = document.getElementById("reviews-list");
-    reviewsList.textContent = ""; // Clear existing reviews
+    reviewsList.textContent = "";
 
     const reviewsSnapshot = await getDocs(collection(db, `posts/${postId}/reviews`));
-    const user = auth.currentUser; // Get the current user for comparison
+    const user = auth.currentUser;
 
     reviewsSnapshot.forEach((doc) => {
         const reviewData = doc.data();
         const reviewElement = document.createElement("div");
         reviewElement.classList.add("review");
-        reviewElement.textContent = `${reviewData.account}: ${reviewData.reviewText}`;
 
-        // Check if the current user is the owner of the review
+        // Username (Top Left)
+        const username = document.createElement("div");
+        username.classList.add("review-username");
+        username.textContent = reviewData.account;
+
+        // Rating (Below Username)
+        const rating = document.createElement("div");
+        rating.classList.add("review-rating");
+        rating.textContent = `Rating: ${reviewData.rating}/5`;
+
+        // Main Review Text (Below Rating)
+        const reviewText = document.createElement("div");
+        reviewText.classList.add("review-text");
+        reviewText.textContent = reviewData.reviewText;
+
+        // Append the username, rating, and review text to the review element
+        reviewElement.appendChild(username);
+        reviewElement.appendChild(rating);
+        reviewElement.appendChild(reviewText);
+
+        // Buttons for edit and delete
         if (user && user.uid === reviewData.userId) {
+            const revbuttonsContainer = document.createElement("div");
+            revbuttonsContainer.classList.add("rev-buttons-container");
+
+            const editReviewButton = document.createElement("button");
+            editReviewButton.textContent = "Edit";
+            editReviewButton.classList.add("btn", "btn-secondary");
+            editReviewButton.addEventListener("click", () => editReview(doc.id, postId, reviewData));
+
             const deleteReviewButton = document.createElement("button");
-            deleteReviewButton.id = "delete-review";
             deleteReviewButton.textContent = "Delete";
-            deleteReviewButton.classList.add("btn", "btn-danger"); 
-            deleteReviewButton.addEventListener("click", () => deleteReview(doc.id, postId)); // Pass review ID and post ID to delete function
-            reviewElement.appendChild(deleteReviewButton); // Add delete button to the review
+            deleteReviewButton.classList.add("btn", "btn-danger");
+            deleteReviewButton.addEventListener("click", () => deleteReview(doc.id, postId));
+
+            revbuttonsContainer.append(editReviewButton, deleteReviewButton);
+
+            // Append the button container to the review element
+            reviewElement.appendChild(revbuttonsContainer);
         }
 
-        reviewsList.appendChild(reviewElement); // Append the review element to the list
+        // Append the review element to the reviews list
+        reviewsList.appendChild(reviewElement);
     });
 }
 
-// Function to submit a review
-async function submitReview(postId, reviewText) {
-    const user = auth.currentUser; // Get the current user
+
+// Function to submit a review with rating
+async function submitReview(postId, reviewText, rating) {
+    const user = auth.currentUser;
     const userDisplayName = user.displayName || "Anonymous";
     try {
         await addDoc(collection(db, `posts/${postId}/reviews`), {
             reviewText: reviewText,
+            rating: rating,
             account: userDisplayName,
-            userId: user.uid, // Store the user's UID with the review
+            userId: user.uid,
             timestamp: new Date()
         });
         loadReviews(postId);
@@ -333,12 +362,38 @@ async function submitReview(postId, reviewText) {
     }
 }
 
+// Edit review function to enable editing of review and rating
+function editReview(reviewId, postId, reviewData) {
+    const reviewText = prompt("Edit your review:", reviewData.reviewText);
+    const rating = prompt("Edit your rating (1-5):", reviewData.rating);
+
+    if (reviewText && rating) {
+        updateReview(reviewId, postId, reviewText, parseInt(rating, 10));
+    }
+}
+
+// Function to update a review in Firestore
+async function updateReview(reviewId, postId, reviewText, rating) {
+    try {
+        await updateDoc(doc(db, `posts/${postId}/reviews`, reviewId), {
+            reviewText: reviewText,
+            rating: rating,
+            timestamp: new Date()
+        });
+        alert("Review updated successfully!");
+        loadReviews(postId);
+    } catch (error) {
+        console.error("Error updating review:", error);
+        alert("Failed to update review.");
+    }
+}
+
 // Delete the review with confirmation
 async function deleteReview(reviewId, postId) {
     if (confirm("Are you sure you want to delete this review?")) {
         try {
-            await deleteDoc(doc(db, `posts/${postId}/reviews`, reviewId)); // Delete the review document
-            loadReviews(postId); // Refresh the reviews list
+            await deleteDoc(doc(db, `posts/${postId}/reviews`, reviewId));
+            loadReviews(postId);
         } catch (error) {
             console.error("Error deleting review:", error);
             alert("Failed to delete review.");
@@ -346,7 +401,7 @@ async function deleteReview(reviewId, postId) {
     }
 }
 
-// Set up review submission only for authenticated users
+// Set up review submission form to include rating input
 function setupReviewForm() {
     const reviewFormContainer = document.getElementById("review-input-section");
 
@@ -358,18 +413,28 @@ function setupReviewForm() {
             reviewTextArea.rows = 3;
             reviewTextArea.placeholder = "Write your review here...";
 
+            const ratingSelect = document.createElement("select");
+            ratingSelect.id = "review-rating";
+            ratingSelect.classList.add("form-control", "mt-2");
+            [1, 2, 3, 4, 5].forEach((rating) => {
+                const option = document.createElement("option");
+                option.value = rating;
+                option.textContent = `${rating} star${rating > 1 ? "s" : ""}`;
+                ratingSelect.appendChild(option);
+            });
+
             const submitButton = document.createElement("button");
             submitButton.id = "submit-review";
             submitButton.classList.add("btn", "btn-primary", "mt-2");
             submitButton.textContent = "Submit Review";
 
-            reviewFormContainer.appendChild(reviewTextArea);
-            reviewFormContainer.appendChild(submitButton);
+            reviewFormContainer.append(reviewTextArea, ratingSelect, submitButton);
 
             submitButton.addEventListener("click", async () => {
                 const reviewText = reviewTextArea.value;
+                const rating = parseInt(ratingSelect.value, 10);
                 if (reviewText.trim()) {
-                    await submitReview(postId, reviewText);
+                    await submitReview(postId, reviewText, rating);
                     reviewTextArea.value = "";
                 }
             });

@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
 
         body {
             font-family: 'Poppins', 'Montserrat', Serif;
@@ -123,6 +123,9 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 
+    <!-- Import your external footer.js file as a module -->
+    <script type="module" src="../src/footer.js"></script>
+
     <script>
         let mybutton = document.getElementById("myBtn");
 
@@ -139,31 +142,6 @@
         function topFunction() {
             document.documentElement.scrollTop = 0;
         }
-
-        const app = Vue.createApp({
-            data() {
-                return {
-                    email: '',
-                    subscribedEmails: [],
-                    message: ''
-                };
-            },
-            methods: {
-                subscribe() {
-                    if (this.subscribedEmails.includes(this.email)) {
-                        this.message = 'Email is already subscribed!';
-                    } else {
-                        this.subscribedEmails.push(this.email);
-                        this.message = 'Subscribed to Newsletter! Your newsletter will appear on the 1st of every month!';
-                        this.email = '';
-                    }
-                }
-            }
-        });
-
-        app.mount('#app');
-
-
     </script>
 </body>
 

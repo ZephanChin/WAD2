@@ -17,7 +17,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-console.log(db);
+// console.log(db);
 
 try {
     const querySnapshot = await getDocs(collection(db, "report"));

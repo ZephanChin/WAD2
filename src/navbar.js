@@ -1,8 +1,7 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, collection, getDocs, query, where, doc } from "firebase/firestore";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
-// Firebase configuration (replace with your configuration values)
+// Firebase configuration
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_API_KEY,
     authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -23,62 +22,49 @@ if (!getApps().length) {
 }
 
 const auth = getAuth(app);
-const db = getFirestore(app);
 
-// function to show username 
-async function showUsername(user) {
-    console.log(user)
-
-    const usernameElement = document.getElementById("username");
-        if (user) {
-                // Get the email from the logged-in user object
-    const displayName = user.displayName || "Account";
-
-    // Display the user's email
-    usernameElement.textContent = `${displayName}`;
-        } else {
-            usernameElement.textContent = "Please log in.";
-            setTimeout(() => {
+// Vue App for Navbar
+const navbarApp = Vue.createApp({
+    data() {
+        return {
+            user: null,
+            username: "Guest",
+            authButtonText: "Login",
+        };
+    },
+    methods: {
+        handleAuth() {
+            if (this.user) {
+                // Logout
+                signOut(auth)
+                    .then(() => {
+                        this.user = null;
+                        this.username = "Guest";
+                        this.authButtonText = "Login";
+                        window.location.href = "/login.html";
+                    })
+                    .catch((error) => {
+                        console.error("Error logging out:", error);
+                    });
+            } else {
+                // Redirect to Login
                 window.location.href = "/login.html";
-            }, 2000);
-        }
-    }
-
-
-// function to show login or logout
-function showLoginOrLogout(user) {
-    const authButton = document.getElementById("auth-button");
-
-    if (user) {
-        // If the user is logged in, show the logout button
-        authButton.textContent = "Logout";
-        authButton.addEventListener("click", () => {
-            getAuth().signOut()
-                .then(() => {
-                    window.location.href = "/login.html"; // Redirect to login page after logout
-                })
-                .catch((error) => {
-                    console.error("Error logging out:", error);
-                });
+            }
+        },
+    },
+    mounted() {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.user = user;
+                this.username = user.displayName || "Account";
+                this.authButtonText = "Logout";
+            } else {
+                this.user = null;
+                this.username = "Guest";
+                this.authButtonText = "Login";
+            }
         });
-    } else {
-        // If the user is not logged in, show the login button
-        authButton.textContent = "Login";
-        authButton.addEventListener("click", () => {
-            window.location.href = "/login.html"; // Redirect to login page
-        });
-    }
-}
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-
-        showUsername(user);
-        
-        showLoginOrLogout(user);
-    } else {
-        // Redirect to login page if not logged in
-        window.location.href = "/login.html";
-    }
+    },
 });
 
+navbarApp.mount("#navbar-app");

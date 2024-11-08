@@ -70,12 +70,20 @@ p strong {
     z-index: 10; /* Ensure it appears above other content */
 }
 
-/* Container for Edit and Delete buttons, aligned in a row */
+/* Container for Edit and Delete buttons, for the post details section */
 .buttons-container {
     display: flex;
     justify-content: flex-end; /* Align buttons to the right */
     gap: 10px; /* Space between Edit and Delete buttons */
     margin-top: 20px;
+}
+
+/* Container for Edit and Delete buttons for review section */
+.rev-buttons-container {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 10px; /* Space between Edit and Delete buttons */
+    
 }
 
 /* Container for location and map */
@@ -174,20 +182,40 @@ small {
 
 /* Styling for editable fields */
 .editable-field {
-    background-color: #e3f2fd; /* Light blue background to distinguish editable fields */
+    background-color: white; /* Light blue background to distinguish editable fields */
     border: 1px solid #007bff; /* Blue border to make it more distinct */
     border-radius: 4px; /* Slight rounding of corners */
     padding: 5px; /* Add some padding for aesthetics */
 }
 
-/* Styling for reviews */
 .review {
-    display: flex;              /* Use flexbox for layout */
-    justify-content: space-between; /* Space out the review text and delete button */
-    align-items: center;       /* Center items vertically */
-    margin-bottom: 10px;       /* Space between reviews */
-    padding: 5px;              /* Padding for aesthetics */
-    border: 1px solid black;    /* Optional: Add a border for distinction */
-    border-radius: 5px; 
-    background-color: white;       /* Optional: Rounded corners */
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
+
+.review-username {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.review-rating {
+    margin-top: 5px;
+    color: #555;
+}
+
+.review-text {
+    margin-top: 10px;
+    font-size: 1em;
+}
+
+.rev-buttons-container {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+
+

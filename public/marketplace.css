@@ -206,3 +206,8 @@ nav {
     max-width: 100%;
   }
 }
+
+#search-bar {
+  background-color: #DDC7BB;
+  margin-left: 2px;
+}
