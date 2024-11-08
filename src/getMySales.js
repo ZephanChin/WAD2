@@ -49,9 +49,8 @@ async function retrieveUserOrders() {
                     const salesData = doc.data();
                     // console.log("salesdata=", salesData)
                     allOrders.push(salesData);
-                    const items = salesData.Items; 
-                    const filteredItems = Object.entries(items).filter(([key, item]) => item[7] === user.uid);                        
-                    if (filteredItems.length > 0) { 
+                    // const items = salesData.Items; 
+                    if (salesData.selluid == user.uid) { 
                         // filteredItems.forEach(([key, item]) => { 
                         //     filteredResults.push({ [key]: item }); 
                         // }); 

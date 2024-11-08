@@ -89,7 +89,6 @@ async function displayCartItems(user) {
         const sellerTitle = document.createElement("h2");
         sellerTitle.textContent = `Make Purchase from: ${seller}`;
         sellerSection.appendChild(sellerTitle);
-
         for (const itemKey in itemsBySeller[seller]) {
             const item = itemsBySeller[seller][itemKey];
 
@@ -165,3 +164,5 @@ onAuthStateChanged(auth, (user) => {
         window.location.href = "/login.html";
     }
 });
+
+

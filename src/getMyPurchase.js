@@ -29,7 +29,7 @@ var allOrders = [];
 // Function to retrieve and display purchase orders made by the current user
 async function retrieveUserOrders() {
     // console.log('called purchase order');
-    const pillPurchase = document.getElementById('pills-purchase');
+    const purchaseCont = document.getElementById('purchase-container');
     const user = auth.currentUser;
     console.log("User is authenticated:", user);
     onAuthStateChanged(auth, async (user) => {
@@ -39,28 +39,28 @@ async function retrieveUserOrders() {
                 where("uid", "==", user.uid),
                 orderBy("PlaceDate")
             );
-
+            // console.log(user.uid);  
             const querySnapshot = await getDocs(q);
             // fails here
-            pillPurchase.innertext = "";
+            purchaseCont.innertext = "";
 
             if (querySnapshot.empty) {
-                pillPurchase.innertext = "<p>You do not have any orders.</p>";
+                purchaseCont.innertext = "<p>You do not have any orders.</p>";
             } else {
                 querySnapshot.forEach((doc) => {
                     const purchaseData = doc.data();
                     allOrders.push(purchaseData);
                     console.log('All orders:', allOrders);
-                    displayPOrder(doc.id, purchaseData, pillPurchase);
-                    populateStoreDropdown(allOrders);
+                    displayPOrder(doc.id, purchaseData, purchaseCont);
                 });
             }
         } else {
-            pillPurchase.innerHTML = "<p>Please log in to see your orders.</p>";
+            purchaseCont.innerHTML = "<p>Please log in to see your orders.</p>";
             setTimeout(() => {
                 window.location.href = "/login.html";
             }, 2000);
         }
+        populateStoreDropdown(allOrders);
     });
 
 // Function to retrieve and display sales orders made by the current user
@@ -102,11 +102,11 @@ function displayPOrder(purchaseId, purchaseData, container) {
     purchaseElement.classList.add("mt-5", "me-5", "row", "bg-light", "border", "rounded", "d-flex");
     
     const purchaseElementHead = document.createElement('div');
-    purchaseElementHead.classList.add("row", "col-4", "ms-2", "mt-2");
+    purchaseElementHead.classList.add("row", "col-6", "ms-2", "mt-2");
 
     // Ono Element
     const purchaseElementOnoDiv = document.createElement('div');
-    purchaseElementOnoDiv.classList.add("col-4");
+    purchaseElementOnoDiv.classList.add("col-3");
 
     const purchaseElementOnoLbl = document.createElement('span');
     purchaseElementOnoLbl.classList.add("fw-bold");
@@ -120,15 +120,15 @@ function displayPOrder(purchaseId, purchaseData, container) {
 
     // DP Element
     const purchaseElementDPDiv = document.createElement('div');
-    purchaseElementDPDiv.classList.add("col-4");
+    purchaseElementDPDiv.classList.add("col-3");
 
     const purchaseElementDPLbl = document.createElement('span');
     purchaseElementDPLbl.classList.add("fw-bold");
     purchaseElementDPLbl.innerText = "Date Placed";
 
     const purchaseElementDPCtn = document.createElement('div');
-    // console.log('line 192', purchaseData);
-    // console.log('line 193', purchaseData.PlaceDate.toDate());
+    console.log('line 131', purchaseData);
+    console.log('line 132', purchaseData.PlaceDate.toDate());
     purchaseElementDPCtn.textContent = purchaseData.PlaceDate.toDate().toLocaleDateString();
 
     purchaseElementDPDiv.appendChild(purchaseElementDPLbl);
@@ -136,7 +136,7 @@ function displayPOrder(purchaseId, purchaseData, container) {
 
     // TA Element
     const purchaseElementTADiv = document.createElement('div');
-    purchaseElementTADiv.classList.add("col-4");
+    purchaseElementTADiv.classList.add("col-3");
 
     const purchaseElementTALbl = document.createElement('span');
     purchaseElementTALbl.classList.add("fw-bold");
@@ -148,14 +148,29 @@ function displayPOrder(purchaseId, purchaseData, container) {
     purchaseElementTADiv.appendChild(purchaseElementTALbl);
     purchaseElementTADiv.appendChild(purchaseElementTACtn);
 
+    // Shop Name Element
+    const purchaseElementShopDiv = document.createElement('div');
+    purchaseElementShopDiv.classList.add("col-3");
+
+    const purchaseElementShopLbl = document.createElement('span');
+    purchaseElementShopLbl.classList.add("fw-bold");
+    purchaseElementShopLbl.innerText = "Hustler";
+
+    const purchaseElementShopCtn = document.createElement('div');
+    purchaseElementShopCtn.textContent = purchaseData.sellaccount;
+
+    purchaseElementShopDiv.appendChild(purchaseElementShopLbl);
+    purchaseElementShopDiv.appendChild(purchaseElementShopCtn);
+
     // Filler Element
-    const purchaseElementFiller = document.createElement('div');
-    purchaseElementFiller.classList.add('col-8');
+    // const purchaseElementFiller = document.createElement('div');
+    // purchaseElementFiller.classList.add('col-6');
 
     // Append Elements to Order Head
     purchaseElementHead.appendChild(purchaseElementOnoDiv);
     purchaseElementHead.appendChild(purchaseElementDPDiv);
     purchaseElementHead.appendChild(purchaseElementTADiv);
+    purchaseElementHead.appendChild(purchaseElementShopDiv);
 
     // Append Elements to Order Element
     purchaseElement.appendChild(purchaseElementHead);
@@ -163,28 +178,26 @@ function displayPOrder(purchaseId, purchaseData, container) {
 
     // filler div
     const purchaseitemfiller = document.createElement('div');
-    purchaseitemfiller.classList.add('col-8');
+    purchaseitemfiller.classList.add('col-6');
     purchaseElement.appendChild(purchaseitemfiller);  
 
     // Iterate item from Items Map
     const orderItems = purchaseData.Items; 
+    // console.log("iterate", purchaseData.Items)
     
     // Iterate over the map 
     for (const key in orderItems) {
         if (orderItems.hasOwnProperty(key)) { 
             // console.log(`Key: ${key}`); 
             const item = orderItems[key]; 
-            // Iterate over each array 
-            // item.forEach(value => { 
-            //     console.log(` - Value: ${value}`); 
-            // }); 
+           
             // Item Details
 
             // Image Div
             const purchaseitemdiv = document.createElement('div');
             purchaseitemdiv.classList.add('col-2');
             const purchaseitemimg = document.createElement('img');
-            purchaseitemimg.src = item[6];
+            purchaseitemimg.src = item[4];
             purchaseitemimg.classList.add("ms-3", "my-2", "item-img");
             
             purchaseitemdiv.appendChild(purchaseitemimg);
@@ -193,39 +206,25 @@ function displayPOrder(purchaseId, purchaseData, container) {
             // Purchase Element Body
             const purchaseElementBody = document.createElement('div');
             purchaseElementBody.classList.add('row', 'col-10', 'mt-5');
-
-            // Shop Name Div
-            const purchaseElementStoreName = document.createElement('div');
-            purchaseElementStoreName.classList.add('col-4');
-            purchaseElementStoreName.textContent = item[0];
-
-            purchaseElementBody.appendChild(purchaseElementStoreName);
-
-            // Item Desc Div
-            const purchaseElementItemName = document.createElement('div');
-            purchaseElementItemName.classList.add('col-8');
-            purchaseElementItemName.textContent = item[2]; 
-
-            purchaseElementBody.appendChild(purchaseElementItemName);
             
             // Item Price Div
             const purchaseElementItemPrice = document.createElement('div');
             purchaseElementItemPrice.classList.add('col-4');
-            purchaseElementItemPrice.textContent = `Price: $ ${item[3].toFixed(2)}`;
+            purchaseElementItemPrice.textContent = `Price: $ ${item[1].toFixed(2)}`;
 
             purchaseElementBody.appendChild(purchaseElementItemPrice);
 
             // Item Qty Div
             const purchaseElementItemQty = document.createElement('div');
             purchaseElementItemQty.classList.add('col-4');
-            purchaseElementItemQty.textContent = `Qty: ${item[4]}`;
+            purchaseElementItemQty.textContent = `Qty: ${item[2]}`;
 
             purchaseElementBody.appendChild(purchaseElementItemQty);
 
             // Item Item Total Price Div
             const purchaseElementTItemPrice = document.createElement('div');
             purchaseElementTItemPrice.classList.add('col-4');
-            purchaseElementTItemPrice.textContent = `Total Price: $ ${item[5].toFixed(2)}`;
+            purchaseElementTItemPrice.textContent = `Total Price: $ ${item[3].toFixed(2)}`;
 
             purchaseElementBody.appendChild(purchaseElementTItemPrice);
 
@@ -270,7 +269,7 @@ function displaySOrder(postId, postData, container) {
 
 
 function filterOrdersByMonth() {
-    const postsContainer = document.getElementById('pills-purchase');
+    const postsContainer = document.getElementById('purchase-container');
     const startMonth = document.getElementById('startMonth').value; 
     const endMonth = document.getElementById('endMonth').value; 
     // console.log('enter filter function');
@@ -305,22 +304,13 @@ filterButtons.forEach(button => {
 });
 
 const populateStoreDropdown = (purchaseData) => { 
-    console.log('populate', purchaseData);
+    // console.log('populate', purchaseData);
     const storeNames = new Set(); 
-    purchaseData.forEach(order => { 
-        console.log('populate order', order.Items)
-        for (const key in order.Items) { 
-            if (order.Items.hasOwnProperty(key)) { 
-                console.log(`Key: ${key}`); 
-                const array = order.Items[key]; 
-                // array.forEach(value => { 
-                //     console.log(` - Value: ${value}`); 
-                // }); 
-                storeNames.add(array[0]); 
-            } 
-        }
+    purchaseData.forEach((order) => { 
+        console.log('populate ddl', order.sellaccount);
+        storeNames.add(order.sellaccount);
     }); 
-    console.log('storenames:', allOrders);
+    // console.log('storenames:', storeNames);
     const storeNameSelect = document.getElementById('storeName'); 
     storeNames.forEach(store => { 
         const option = document.createElement('option'); 
@@ -331,35 +321,39 @@ const populateStoreDropdown = (purchaseData) => {
 };
 
 const filterOrdersByStore = () => { 
-    const postsContainer = document.getElementById('pills-purchase');
+    const postsContainer = document.getElementById('purchase-container');
     const storeName = document.getElementById('storeName').value; 
-    const filteredOrders = allOrders.map(order => { 
-        const filteredItems = {}; 
-        if (storeName == '') {
-            for (const key in order.Items) { 
-                { 
-                    filteredItems[key] = order.Items[key]; 
-                } 
-            }
-            return { ...order, Items: filteredItems }; 
-        }
-        else {
-            for (const key in order.Items) { 
-                if (order.Items.hasOwnProperty(key) && order.Items[key][0] === storeName) { 
-                    filteredItems[key] = order.Items[key]; 
-                } 
-            }
-            return { ...order, Items: filteredItems }; 
-        }  
-    }).filter(order => Object.keys(order.Items).length > 0); 
-    // displayOrders(filteredOrders);
-    if (filteredOrders.length == 0) {
-        postsContainer.innerText = 'No matching orders';
-    } else {
-        console.log('filtered orders', filteredOrders);
-        postsContainer.innerText = '';
-        filteredOrders.forEach(order => displayPOrder(order.OrderID, order, postsContainer));
-    }
+    // const filteredOrders = allOrders.map(order => { 
+    //     const filteredItems = {}; 
+    //     if (storeName == '') {
+    //         return { allOrders }; 
+    //     }
+    //     else {
+    //         for (o in order) { 
+    //             if (order.sellaccount === storeName) { 
+    //                 filteredItems[o] = order[o]; 
+    //             } 
+    //         }
+    //         return { ...order, o: filteredItems }; 
+    //     }  
+    // }).filter(order => Object.keys(order.Items) > 0); 
+    // // displayOrders(filteredOrders);
+    // if (filteredOrders.length == 0) {
+    //     postsContainer.innerText = 'No matching orders';
+    // } else {
+    //     console.log('filtered orders', filteredOrders);
+    //     postsContainer.innerText = '';
+    //     filteredOrders.forEach(order => displayPOrder(order.OrderID, order, postsContainer));
+    // }
+    const filteredPosts = allOrders.filter(order => {
+        return storeName === '' || order.sellaccount === storeName;
+    });
+
+    // Display filtered posts
+    // console.log(filteredPosts);
+    console.log("HERE", filteredPosts)
+    postsContainer.innerText = '';
+    filteredPosts.forEach(order => displayPOrder(order.OrderID, order, postsContainer));
 };
 // Set event listener for filter store
 document.getElementById('storeName').addEventListener('input', filterOrdersByStore);
