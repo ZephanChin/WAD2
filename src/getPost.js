@@ -94,6 +94,7 @@ function filterPosts(category) {
     });
 
     // Display filtered posts
+    // console.log(filteredPosts);
     filteredPosts.forEach(post => displayPost(post, postsContainer));
 }
 

@@ -43,7 +43,8 @@
           <li><a href="#" class="dropdown-item">My Account</a></li>
           <li><a href="mymarketplace.html" class="dropdown-item">My Marketplace</a></li>
           <li><a href="mycart.html" class="dropdown-item">My Cart</a></li>
-          <li><a href="myorder.html" class="dropdown-item">My Order</a></li>
+          <li><a href="myorder.html" class="dropdown-item">Purchase</a></li>
+          <li><a href="mysales.html" class="dropdown-item">Sales</a></li>
           <div class="dropdown-divider"></div>
           <li><a href="#" class="dropdown-item" id="login-logout-btn">Login</a></li>
         </ul>
@@ -67,11 +68,30 @@
       <button class="nav-link" id="pills-sales-tab" data-bs-toggle="pill" data-bs-target="#pills-sales" type="button" role="tab" aria-controls="pills-sales" aria-selected="false">Sales</button>
     </li>
   </ul>
+  <div class="filter"> 
+    <label for="startMonth">
+      Start Month:
+    </label> 
+    <input type="month" id="startMonth"> 
+    <label for="endMonth">
+      End Month:
+    </label> 
+    <input type="month" id="endMonth"> 
+    <button class="btn btn-light filter-btn">Filter</button> 
+    <label for="storeName">
+      Store Name:
+    </label> 
+    <select id="storeName"> 
+      <option value="">
+        All Stores
+      </option> 
+    </select>
+  </div>
   <div class="tab-content" id="pills-tabContent">
     <!-- PURCHASE TAB -->
     <div class="tab-pane fade show active" id="pills-purchase" role="tabpanel" aria-labelledby="pills-purchase-tab">
       <!-- Filter Bar -->
-      <div>
+      <!-- <div>
         <h4 class="text-light">Filter By</h4>
       </div>
       <div class="col-4 border rounded d-flex p-2">
@@ -94,7 +114,7 @@
           <label for="startDate" class="text-light">End: </label>
           <input id="startDate" class="input" type="date" />
         </div>
-      </div>
+      </div> -->
       <!-- Order Content -->
       <!-- <div class="mt-5 me-5 row bg-light border rounded d-flex">
         <div class="row col-4 ms-2 mt-2">
@@ -235,7 +255,7 @@
 <!-- Script for retrieving Orders -->
 <script type="module" src="../src/app.js"></script>
 <script type="module" src="../src/apcheck.js"></script>
-<script type="module" src="../src/getMyOrder.js"></script>
+<script type="module" src="../src/getMyPurchase.js"></script>
  
 </body> 
 </html>
