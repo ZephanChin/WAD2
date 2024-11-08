@@ -120,6 +120,7 @@
     clear: both;
 }
 
-h1 {
+.cart-title {
         text-align: center;
+        margin-top: 10px;
 }

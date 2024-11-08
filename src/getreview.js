@@ -19,8 +19,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const storage = getStorage(app);
+console.log(db);
 
+try {
+    const querySnapshot = await getDocs(collection(db, "report"));
+    querySnapshot.forEach((doc) => {
+        console.log(doc.id, " => ", doc.data());
+    });
+} catch (error) {
+    console.error("Error fetching documents:", error);
+}
+// Function to fetch data from Firestore and update the page
 async function fetchData() {
     onAuthStateChanged(auth, async (user) => {
         if (user) {
