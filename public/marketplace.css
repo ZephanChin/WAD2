@@ -1,9 +1,10 @@
-/* Navbar styling */
-nav {
-  background-color: #DDC7BB;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700&family=Poppins:wght@100;300;400;600;700&display=swap');
+
+
+body {
+  font-family: 'Poppins', sans-serif;
 }
 
-/* Featured Title Styling */
 .featured-title {
   text-align: center;
   margin-top: 15px;
@@ -15,7 +16,8 @@ nav {
 .featured-card {
   border-radius: 20px;
   overflow: hidden;
-  background-image: url('img/placeholder.jpg'); /* Update with the actual path */
+  background-image: url('img/placeholder.jpg');
+  /* Update with the actual path */
   background-size: cover;
   background-position: center;
   height: 400px;
@@ -103,7 +105,7 @@ nav {
 }
 
 /* Add spacing between boxes */
-.box + .box {
+.box+.box {
   margin-top: 10px;
 }
 
@@ -111,8 +113,10 @@ nav {
 #posts-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start; /* Align items to the left */
-  gap: 10px; /* Adjust gap for spacing */
+  justify-content: flex-start;
+  /* Align items to the left */
+  gap: 10px;
+  /* Adjust gap for spacing */
   padding: 10px;
   max-width: 1300px;
   margin: 0 auto;
@@ -123,7 +127,8 @@ nav {
 
 /* Post container with consistent colors and shadow */
 .post-item {
-  flex: 0 0 calc(33.33% - 10px); /* Fixed width for each item */
+  flex: 0 0 calc(33.33% - 10px);
+  /* Fixed width for each item */
   max-width: calc(33.33% - 10px);
   padding: 15px;
   border: 5px solid #ddd;
@@ -151,7 +156,8 @@ nav {
 .image-container {
   position: relative;
   overflow: hidden;
-  height: 250px; /* Consistent height */
+  height: 250px;
+  /* Consistent height */
   width: 100%;
 }
 
@@ -165,21 +171,23 @@ nav {
 
 /* More Details Button Styling */
 .more-details {
-  margin-top: 10px; /* Add spacing from the previous element */
-  padding: 8px 12px; /* Adjust padding for better appearance */
-  font-size: 1rem; /* Slightly larger font for better readability */
-  background-color: #DDC7BB; /* Consistent background color */
-  color: black; /* Button text color */
-  border: none; /* Remove default border */
-  border-radius: 5px; /* Rounded corners */
-  cursor: pointer; /* Pointer cursor for interactivity */
-  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
-  align-self: flex-end; /* Align button to the right of the container */
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  font-size: 0.8rem;
+  padding: 5px 10px;
+  background-color: #DDC7BB;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.more-details:hover {
-  background-color: #c9b5a8; /* Darker shade on hover */
-  color: #333; /* Slightly darker text color for hover effect */
+.image-container:hover .more-details {
+  opacity: 1;
+  /* Show button on hover */
 }
 
 /* Styling for Post Titles */
@@ -202,14 +210,16 @@ nav {
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .post-item {
-    flex: 1 1 calc(48% - 10px); /* 2 items per row on smaller screens */
+    flex: 1 1 calc(48% - 10px);
+    /* 2 items per row on smaller screens */
     max-width: calc(48% - 10px);
   }
 }
 
 @media (max-width: 480px) {
   .post-item {
-    flex: 1 1 100%; /* 1 item per row on very small screens */
+    flex: 1 1 100%;
+    /* 1 item per row on very small screens */
     max-width: 100%;
   }
 }
@@ -218,4 +228,44 @@ nav {
 #search-input {
   background-color: #DDC7BB;
   margin-left: 2px;
+}
+
+.video-header-container {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.video-header-container video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+/* Overlay text styling */
+.featured-title {
+  position: relative;
+  color: white;
+  font-size: 2.5rem;
+  text-align: center;
+  z-index: 2;
+}
+
+.overlay-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  /* Semi-transparent overlay */
+  z-index: 1;
 }

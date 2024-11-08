@@ -1,4 +1,9 @@
-/* General styling for the cart container */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700&family=Poppins:wght@100;300;400;600;700&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
 #cart-items-container {
     max-width: 800px;
     margin: 20px auto;

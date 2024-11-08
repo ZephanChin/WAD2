@@ -1,4 +1,8 @@
-/* Main container styling for posts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700&family=Poppins:wght@100;300;400;600;700&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
 #posts-container {
     display: flex;
     flex-direction: column; /* Display posts in a single column */
@@ -62,10 +66,6 @@
 
 .btn-danger:hover {
     background-color: #c9302c; /* Darken on hover */
-}
-
-nav {
-    background-color: #DDC7BB;
 }
 
 /* Main container styling for posts */
