@@ -33,12 +33,15 @@ async function fetchData() {
                 // Check if an additional uploaded image exists
                 const uploadedImageRef = ref(storage, `additionalImages/${documentId}.jpg`);
                 const uploadedImageUrl = await getDownloadURL(uploadedImageRef);
+
                 document.getElementById('uploadedImage').src = uploadedImageUrl;
                 document.getElementById('uploadedImage').style.display = 'block';
-                document.getElementById('uploadSection').style.display = 'none'; // Hide upload section
+                document.getElementById('editImageButton').style.display = 'inline';
+                document.getElementById('uploadSection').style.display = 'none';
 
             } catch (error) {
                 console.log("No additional uploaded image found.");
+                document.getElementById('uploadSection').style.display = 'block';
             }
             try {
                 // Reference to the specific document based on the user's display name
@@ -73,7 +76,7 @@ async function uploadImage(file) {
 
         try {
             await uploadBytes(imageRef, file);
-            console.log("Image uploaded successfully.");
+            // console.log("Image uploaded successfully.");
 
             // Get the download URL and display the uploaded image
             const imageUrl = await getDownloadURL(imageRef);
@@ -82,11 +85,17 @@ async function uploadImage(file) {
 
             // Hide the upload section after a successful upload
             document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('editImageButton').style.display = 'inline';
         } catch (error) {
             console.error("Error uploading image:", error);
         }
     }
 }
+
+// Toggle the upload section when "Edit Image" button is clicked
+document.getElementById('editImageButton').addEventListener('click', () => {
+    document.getElementById('uploadSection').style.display = 'block';
+});
 
 // Event listener for the upload button
 document.getElementById('uploadButton').addEventListener('click', () => {

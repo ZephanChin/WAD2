@@ -61,11 +61,15 @@
             <div>
                 <div class="username .container-lg-6" id="username">Username</div>
             </div>
-            <img src="" alt="Uploaded Image" id="uploadedImage" style="height: 200px; display: none; margin-top: 10px;"
-                class="uploaded-image">
+
+            <div id="imageDisplaySection">
+                <img id="uploadedImage" style="display: none; width: 150px; height: 150px; margin-top: 20px;"
+                    alt="Uploaded Image">
+                <button id="editImageButton" style="display: none;">Edit Image</button>
+            </div>
 
             <!-- Upload section -->
-            <div id="uploadSection" style="margin-top: 15px;">
+            <div id="uploadSection">
                 <input type="file" id="imageUpload" accept="image/*">
                 <button id="uploadButton" class="btn btn-primary mt-2">Upload Image</button>
             </div>
