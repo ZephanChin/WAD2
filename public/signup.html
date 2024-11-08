@@ -1,36 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
 </head>
+
 <body>
-    <div class="login-container">
+    <div id="app" class="login-container">
         <h2>Welcome!</h2>
-        <form id="signup-form">
+        <form @submit.prevent="handleSubmit" id="signup-form">
             <div class="input-container">
-                <input type="text" id="displayName" name="displayName" placeholder="Display Name" required>
+                <input type="text" v-model="displayName" id="displayName" name="displayName" placeholder="Display Name"
+                    required>
             </div>
             <div class="input-container">
-                <input type="email" id="email" name="email" placeholder="Email address" required>
+                <input type="email" v-model="email" id="email" name="email" placeholder="Email address" required>
             </div>
             <div class="input-container">
-                <input type="password" id="password" name="password" placeholder="Password" required>
+                <input type="password" v-model="password" id="password" name="password" placeholder="Password" required>
+                <p :style="{ color: passwordLengthMessageColor, fontSize: '0.85em' }">
+                    {{ passwordLengthMessage }}
+                </p>
             </div>
             <div class="input-container">
-                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+                <input type="password" v-model="confirmPassword" id="confirmPassword" name="confirmPassword"
+                    placeholder="Confirm Password" required>
+                <p :style="{ color: passwordMatchMessageColor, fontSize: '0.85em' }">
+                    {{ passwordMatchMessage }}
+                </p>
             </div>
             <button type="submit" class="login-btn">Sign Up</button>
         </form>
         <p>Or <a href="./login.html">log in</a> over here</p>
     </div>
 
-    <script type="module" src="/src/app.js"></script>
+    <script type="module" src="../src/app.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    displayName: '',
+                    email: '',
+                    password: '',
+                    confirmPassword: ''
+                };
+            },
+            computed: {
+                passwordLengthMessage() {
+                    const remainingChars = 6 - this.password.length;
+                    if (remainingChars > 0) {
+                        return `Your password needs ${remainingChars} more character${remainingChars > 1 ? 's' : ''}`;
+                    } else {
+                        return "Password length is sufficient";
+                    }
+                },
+                passwordLengthMessageColor() {
+                    return this.password.length >= 6 ? "green" : "red";
+                },
+                passwordMatchMessage() {
+                    if (this.confirmPassword === "") return "";
+                    return this.password === this.confirmPassword
+                        ? "Passwords match"
+                        : "Passwords do not match";
+                },
+                passwordMatchMessageColor() {
+                    return this.password === this.confirmPassword ? "green" : "red";
+                }
+            },
+            methods: {
+                handleSubmit() {
+                    if (this.password.length >= 6 && this.password === this.confirmPassword) {
+                        alert("Form submitted successfully!");
+                    } else {
+                        alert("Please correct the errors before submitting.");
+                    }
+                }
+            }
+        });
+
+        app.mount('#app');
+    </script>
 </body>
+
 </html>
-
-
-
-

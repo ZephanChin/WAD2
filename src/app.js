@@ -1,6 +1,7 @@
 // Import Firebase modules using ES modules (v9+ syntax)
 import { initializeApp } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from 'firebase/auth';
+import { getFirestore, collection, doc, setDoc } from "firebase/firestore";
 
 // Your Firebase configuration
 const firebaseConfig = {
@@ -17,7 +18,7 @@ const firebaseConfig = {
 // Initialize Firebase App
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-
+const db = getFirestore(app);
 // Handle logout
 function handleLogout(event) {
     event.preventDefault();
@@ -60,6 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     displayName: displayName
                 });
 
+                await saveUserToFirestore(user);
+
                 alert('Sign-up successful! Welcome, ' + displayName);
                 window.location.href = '/index.html'; // Redirect after signup
 
@@ -90,6 +93,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert(`Error: ${error.message}`);
                 });
         });
+    }
+
+    async function saveUserToFirestore(user) {
+        try {
+            // Reference to the 'users' collection and the document with user.uid
+            const userRef = doc(collection(db, 'users_chat'), user.uid);
+    
+            // Set user data in Firestore
+            await setDoc(userRef, {
+                uid: user.uid,
+                displayName: user.displayName,
+                email: user.email,
+            });
+    
+            console.log('User saved successfully!');
+        } catch (error) {
+            console.error('Error saving user:', error);
+        }
     }
 
     // Check Authentication Status

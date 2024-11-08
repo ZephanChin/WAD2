@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Sales Overview</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <style>
+        body {
+            background-color: #d9b8a9;
+            font-family: Arial, sans-serif;
+        }
+
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #fff;
+            margin-bottom: 10px;
+        }
+
+        .username {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+        }
+
+        h2,
+        h3 {
+            margin-bottom: 20px;
+            color: #000;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container my-4">
+        <!-- Profile Section -->
+        <div class="profile-section">
+            <img src="profile/profilepic.jpg" alt="Profile Image" class="profile-image .container-lg-6"
+                id="profileImage">
+            <div>
+                <div class="username .container-lg-6" id="username">Username</div>
+            </div>
+            <img src="" alt="Uploaded Image" id="uploadedImage" style="height: 200px; display: none; margin-top: 10px;"
+                class="uploaded-image">
+
+            <!-- Upload section -->
+            <div id="uploadSection" style="margin-top: 15px;">
+                <input type="file" id="imageUpload" accept="image/*">
+                <button id="uploadButton" class="btn btn-primary mt-2">Upload Image</button>
+            </div>
+        </div>
+        <!-- Bootstrap Container -->
+        <!-- Reviews onwards -->
+        <div class="content-container text-center">
+            <h2 style="text-align: left;">For this month:</h2>
+            <div class="row mb-4">
+                <div class="col stat-box">
+                    <span class="stat-number" id="sales">0</span>
+                    <div>Sales</div>
+                </div>
+                <div class="col stat-box">
+                    <span class="stat-number" id="itemsSold">0</span>
+                    <div>Items sold</div>
+                </div>
+                <div class="col stat-box">
+                    <span class="stat-number" id="reviewsReceived">0</span>
+                    <div>Reviews received</div>
+                </div>
+            </div>
+        </div>
+        <div class="content-container text-center">
+            <h3 style="text-align: left;">Reviews statistics:</h3>
+            <div class="row">
+                <div class="col stat-box">
+                    <span class="stat-number" id="goodReviews">0</span>
+                    <div>Good reviews</div>
+                </div>
+                <div class="col stat-box">
+                    <span class="stat-number" id="badReviews">0</span>
+                    <div>Bad reviews</div>
+                </div>
+                <div class="col stat-box">
+                    <span class="stat-number" id="stars">0</span>
+                    <div>Stars</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../src/getreview.js"></script>
+</body>
+
+</html>
