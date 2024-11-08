@@ -14,17 +14,13 @@
   "dependencies": {
     "@nuxt/telemetry": "^2.6.0",
     "firebase": "^11.0.1",
-<<<<<<< HEAD
     "vite": "^5.4.10",
-    "vue": "^3.5.12"
-  }
-=======
+    "vue": "^3.5.12",
     "flat": "^6.0.1",
     "nuxt": "^3.14.159",
     "rimraf": "^6.0.1",
     "svgo": "^3.3.2",
-    "uuid": "^11.0.2",
-    "vite": "^5.4.10"
+    "uuid": "^11.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -57,5 +53,4 @@
     "not dead",
     "not ie 11"
   ]
->>>>>>> e2
 }
