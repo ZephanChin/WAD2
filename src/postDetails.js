@@ -113,8 +113,9 @@ function renderPostDetails(container, postData) {
     });
     category.appendChild(categoryDropdown);
 
+    // Price setup - keep it as a static text
     const price = container.querySelector(".post-price");
-    price.textContent = `Price: SGD ${postData.price}`;
+    price.textContent = `Price: SGD ${postData.price}`; // No editable part
 
     const account = container.querySelector(".post-account");
     account.textContent = `Posted by: ${postData.account}`;
@@ -204,62 +205,58 @@ function addEditAndDeleteOptions() {
     buttonsContainer.saveButton = saveButton;
 }
 
-// Enable editing for post details and show Save button
+// Enable editing for post details (title and description only) and show Save button
 function enableEditing() {
     const title = document.querySelector(".post-title");
     const descriptionContent = document.querySelector(".post-description .editable-content");
-    const categoryContent = document.querySelector(".post-category .editable-content");
     const categoryDropdown = document.querySelector(".post-category .category-dropdown");
-    const price = document.querySelector(".post-price");
 
-    [title, descriptionContent, price].forEach(field => {
-        field.contentEditable = "true";
-        field.classList.add("editable-field"); // Add the editable-field class
-    });
-    
-    categoryContent.style.display = "none";
-    categoryDropdown.style.display = "inline-block";
-    categoryDropdown.disabled = false;
+    // Make only title and description editable
+    title.contentEditable = "true";
+    title.classList.add("editable-field"); // Add the editable-field class
+
+    descriptionContent.contentEditable = "true"; // Make description editable
+    descriptionContent.classList.add("editable-field"); // Add the editable-field class
+
+    // Hide the current category content and show dropdown
+    const categoryContent = document.querySelector(".post-category .editable-content");
+    categoryContent.style.display = "none"; // Hide current category
+    categoryDropdown.style.display = "inline-block"; // Show dropdown
+    categoryDropdown.disabled = false; // Enable dropdown
 
     const addToCartButton = document.getElementById("addToCartButton");
     if (addToCartButton) {
-        addToCartButton.style.display = "none";
+        addToCartButton.style.display = "none"; // Hide Add to Cart button while editing
     }
 
     const buttonsContainer = document.querySelector(".buttons-container");
-    buttonsContainer.saveButton.style.display = "inline-block";
+    buttonsContainer.saveButton.style.display = "inline-block"; // Show Save button
 }
+
 
 // Save changes to post details
 async function savePostChanges(postId) {
     const title = document.querySelector(".post-title");
     const descriptionContent = document.querySelector(".post-description .editable-content");
     const categoryDropdown = document.querySelector(".post-category .category-dropdown");
-    const price = document.querySelector(".post-price");
-
-    const priceText = price.textContent.replace(/[^\d.-]/g, "");
-    const priceValue = parseFloat(priceText);
-
-    if (isNaN(priceValue)) {
-        alert("Invalid price. Please enter a numeric value.");
-        return;
-    }
 
     try {
         await updateDoc(doc(db, "posts", postId), {
             itemName: title.textContent,
             postDescription: descriptionContent.textContent,
             category: categoryDropdown.value,
-            price: priceValue
+            // Price is no longer included
         });
         alert("Post updated successfully!");
-        location.reload();
+        location.reload(); // Reload the page to reflect changes
 
-        [title, descriptionContent, price].forEach(field => {
+        // Remove editable styles from title, description, and category
+        [title, descriptionContent].forEach(field => {
             field.classList.remove("editable-field");
-            field.contentEditable = "false";
+            field.contentEditable = "false"; // Set contentEditable to false
         });
 
+        // Show the category content and hide the dropdown
         document.querySelector(".post-category .editable-content").style.display = "inline";
         categoryDropdown.style.display = "none";
         categoryDropdown.disabled = true;
@@ -283,7 +280,7 @@ async function deletePost(postId) {
     }
 }
 
-// review
+// Load and display reviews
 async function loadReviews(postId) {
     const reviewsList = document.getElementById("reviews-list");
     reviewsList.textContent = "";
@@ -341,7 +338,6 @@ async function loadReviews(postId) {
         reviewsList.appendChild(reviewElement);
     });
 }
-
 
 // Function to submit a review with rating
 async function submitReview(postId, reviewText, rating) {
