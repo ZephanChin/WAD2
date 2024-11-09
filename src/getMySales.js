@@ -33,7 +33,7 @@ async function retrieveUserOrders() {
     const salesAll = document.getElementById('pills-all');
     const salesPending = document.getElementById('pills-pending');
     const salesCompleted = document.getElementById('pills-completed');
-    const salesRejected = document.getElementById('pills-rejected');
+    const salesCancelled = document.getElementById('pills-cancelled');
     const user = auth.currentUser;
     // console.log("User is authenticated:", user);
     onAuthStateChanged(auth, async (user) => {
@@ -41,7 +41,7 @@ async function retrieveUserOrders() {
             const q = query(
                 collection(db, "porders"),
                 where("selluid", "==", user.uid),
-                orderBy("PlaceDate")
+                orderBy("PlaceDate", "desc")
             );
             // const filteredResults = [];
             const querySnapshot = await getDocs(q);
@@ -49,7 +49,7 @@ async function retrieveUserOrders() {
             salesAll.innertext = "";
             salesPending.innertext = "";
             salesCompleted.innertext = "";
-            salesRejected.innertext = "";
+            salesCancelled.innertext = "";
 
             if (querySnapshot.empty) {
                 salesOrder.innertext = "<p>You do not have any orders.</p>";
@@ -67,15 +67,15 @@ async function retrieveUserOrders() {
                         if (salesData.status == "Completed"){
                             displaySOrder(doc.id, salesData, salesCompleted); 
                         }
-                        if (salesData.status == "Rejected"){
-                            displaySOrder(doc.id, salesData, salesRejected);
+                        if (salesData.status == "Cancelled"){
+                            displaySOrder(doc.id, salesData, salesCancelled);
                         }
                     }
                 });
                 const all = document.getElementById('pills-all');
                 const pend = document.getElementById('pills-pending');
                 const comp = document.getElementById('pills-completed');
-                const rej = document.getElementById('pills-rejected');
+                const can = document.getElementById('pills-cancelled');
                 if (all.textContent.trim() === ''){
                     all.innerText = "No Orders";
                 }
@@ -85,12 +85,12 @@ async function retrieveUserOrders() {
                 if (comp.textContent.trim() === ''){
                     comp.innerText = "No Completed Orders";
                 }
-                if (rej.textContent.trim() === ''){
-                    pend.innerText = "No Rejected Orders";
+                if (can.textContent.trim() === ''){
+                    pend.innerText = "No Cancelled Orders";
                 }
             }
         } else {
-            salesOrder.innerHTML = "<p>Please log in to see your orders.</p>";
+            salesOrder.innerText = "Please log in to see your orders.";
             setTimeout(() => {
                 window.location.href = "/login.html";
             }, 2000);
@@ -101,7 +101,7 @@ async function retrieveUserOrders() {
 // Function to dynamically create and display purchase elements, including a detail button [not done]
 function displaySOrder(salesId, salesData, container) {
     const salesElement = document.createElement('div');
-    salesElement.classList.add("mt-5", "me-5", "row", "bg-light", "border", "rounded", "d-flex");
+    salesElement.classList.add("row", "rounded", "d-flex", "body-ele", "mb-2");
     
     const salesElementHead = document.createElement('div');
     salesElementHead.classList.add("row", "col-6", "ms-2", "mt-2");
@@ -194,7 +194,7 @@ function displaySOrder(salesId, salesData, container) {
             const item = orderItems[key]; 
            
             // Item Details
-
+            
             // Image Div
             const purchaseitemdiv = document.createElement('div');
             purchaseitemdiv.classList.add('col-2');
@@ -205,7 +205,7 @@ function displaySOrder(salesId, salesData, container) {
             purchaseitemdiv.appendChild(purchaseitemimg);
             salesElement.appendChild(purchaseitemdiv);
 
-            // Purchase Element Body
+            // Sales Element Body
             const salesElementBody = document.createElement('div');
             salesElementBody.classList.add('row', 'col-10', 'mt-5');
             
@@ -232,7 +232,7 @@ function displaySOrder(salesId, salesData, container) {
 
             // Body to Element
             salesElement.appendChild(salesElementBody);
-
+            
         }
     }
     // Status
@@ -248,7 +248,7 @@ function displaySOrder(salesId, salesData, container) {
     if (salesData.status == "Completed"){
         salesElementStatCtn.classList.add('bg-success', 'text-light')
     }
-    if (salesData.status == "Rejected"){
+    if (salesData.status == "Cancelled"){
         salesElementStatCtn.classList.add('bg-danger', 'text-light')
     }
 
@@ -267,36 +267,49 @@ function displaySOrder(salesId, salesData, container) {
     completeButton.onclick = () => updateStatus(salesId, "status", "Completed");
 
     // Reject Button
-    const rejectButton = document.createElement('button');
-    rejectButton.textContent = "𐤕";
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = "𐤕";
     if (salesData.status != "Pending") {
-        rejectButton.disabled = true;
+        cancelButton.disabled = true;
     }
-    rejectButton.classList.add('btn', 'btn-outline-danger');
-    salesElementHead.appendChild(rejectButton);
+    cancelButton.classList.add('btn', 'btn-outline-danger');
+    salesElementHead.appendChild(cancelButton);
 
-    rejectButton.onclick = () => updateStatus(salesId, "status", "Rejected");
+    cancelButton.onclick = () => updateStatus(salesId, "status", "Cancelled");
 }
 
 const updateStatus = async (salesId, field, newValue) => { 
     if (newValue == "Completed"){
         const confirmation = confirm("Are you sure you want to complete this order?");
+        if (confirmation) {
+            console.log(salesId, field, newValue);
+            const docRef = doc(db, "porders", salesId); 
+            try { 
+                await updateDoc(docRef, { 
+                    [field]: newValue 
+                }); 
+                console.log("Order successfully updated!"); 
+            } 
+            catch (error) { 
+                console.error("Error updating document: ", error); 
+            } 
+        }
     }
     else {
         const confirmation = confirm("Are you sure you want to reject this order?");
-    }
-    if (confirmation) {
-        console.log(salesId, field, newValue);
-        const docRef = doc(db, "porders", salesId); 
-        try { 
-            await updateDoc(docRef, { 
-                [field]: newValue 
-            }); 
-            console.log("Order successfully updated!"); 
-        } 
-        catch (error) { 
-            console.error("Error updating document: ", error); 
-        } 
+        if (confirmation) {
+            console.log(salesId, field, newValue);
+            const docRef = doc(db, "porders", salesId); 
+            try { 
+                await updateDoc(docRef, { 
+                    [field]: newValue 
+                }); 
+                console.log("Order successfully updated!"); 
+            } 
+            catch (error) { 
+                console.error("Error updating document: ", error); 
+            } 
+        }
     }
 };
 
@@ -335,7 +348,7 @@ function template(postId, postData, container) {
 
 // Month Filter Function
 function filterOrdersByMonth() {
-    const postsContainer = document.getElementById('sales-order');
+    const postsContainer = document.getElementById('pills-all');
     const startMonth = document.getElementById('startMonth').value; 
     const endMonth = document.getElementById('endMonth').value; 
     // console.log('enter filter function');
@@ -347,7 +360,7 @@ function filterOrdersByMonth() {
         const orderMonth = orderDate.getFullYear() + '-' + String(orderDate.getMonth() + 1).padStart(2, '0'); 
         // console.log('fucntion 1', (!startMonth || orderMonth >= startMonth));
         // console.log('fucntion 2', (!endMonth || orderMonth <= endMonth));
-        // console.log('start', startMonth, 'order', orderDate, 'end', endMonth);
+        console.log('start', startMonth, 'order', orderDate, 'end', endMonth);
         return (!startMonth || orderMonth >= startMonth) && (!endMonth || orderMonth <= endMonth); 
     });
     // Display filtered order

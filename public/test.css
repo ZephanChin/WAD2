@@ -10,19 +10,19 @@ h1 {
 
 
 /* Jh's */
-button[aria-selected="true"]{
+button[aria-selected="false"]{
     background-color: white;
     color: rgba(221, 199, 187, 1);
 }
 
-button[aria-selected="false"]{
+button[aria-selected="true"]{
     background-color: rgba(221, 199, 187, 1);
     color: white;
 }
 
 .nav .nav-item .active {
-    background-color: white;
-    color: rgba(221, 199, 187, 1);
+    background-color: rgba(221, 199, 187, 1);
+    color: white;
 }
 
 .item-img {
@@ -30,6 +30,6 @@ button[aria-selected="false"]{
     width: 200px;
 }
 
-.purchase-ele {
+.body-ele {
     background-color: rgba(221, 199, 187, 1);
 }
