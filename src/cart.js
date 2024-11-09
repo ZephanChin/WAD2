@@ -191,11 +191,10 @@ onAuthStateChanged(auth, (user) => {
 const addToOrder = async (itemData) => { 
     itemData.sort((a, b) => a.sellerUid - b.sellerUid);
     const user = auth.currentUser;
-    // console.log(itemData)
-    const c1 = user.uid.substring(0, 3);
-    const c2 = user.uid.substring(10, 13);
+    const userId = user.uid;
+    const c1 = userId.substring(0, 3);
+    const c2 = userId.substring(10, 13);
     const c3 = new Date().toISOString();
-    // console.log(c3)
     let docid = "";
 
     let grouped = {}; 
@@ -206,19 +205,16 @@ const addToOrder = async (itemData) => {
         } 
         grouped[selluid].push(obj); 
     });
-    // console.log("GROUPED", grouped);
 
+    // Process each group (grouped by sellerUid)
     for (const [key, value] of Object.entries(grouped)) {
-        // create order level
         const c4 = value[0].sellerUid.substring(0, 3);
         docid = c1 + c2 + c3.substring(8, 13) + c3.substring(20, 24) + c4;
-        console.log("docid", docid);
         
         let ttprice = 0;
         let count = 0;
         let datamap = {};
         value.forEach(item => {
-            // item level
             const itemarr = [];
             itemarr.push(item.itemName);
             itemarr.push(item.itemPrice);
@@ -230,17 +226,16 @@ const addToOrder = async (itemData) => {
             ttprice += item.totalPrice;
             count += 1;
         });
-        
 
         let fields = { 
-            OrderID: "extraValue1", 
+            OrderID: docid, 
             PlaceDate: new Date(), 
             TotalPrice: ttprice, 
             account: "", 
             sellaccount: value[0].account,
             selluid: key, 
             status: "Pending", 
-            uid: user.uid
+            uid: userId
         };
 
         let documentData = { 
@@ -257,8 +252,25 @@ const addToOrder = async (itemData) => {
         }
     }
 
+    // Clear all items from the user's cart
+    try {
+        const cartRef = collection(db, `users/${userId}/cart`);
+        const cartSnapshot = await getDocs(cartRef);
 
+        const deletePromises = cartSnapshot.docs.map(cartItem => deleteDoc(cartItem.ref));
+        await Promise.all(deletePromises);
+        console.log("All cart items deleted successfully.");
+
+        alert("Order placed successfully! Redirecting to checkout...");
+        
+        // Redirect to the checkout page
+        window.location.href = "/checkout.html";
+    } catch (error) {
+        console.error("Error clearing cart:", error);
+    }
 };
+
+
 
 
 
