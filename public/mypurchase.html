@@ -56,30 +56,29 @@
 
 
 <div class="text-center">
-  <h1 class="">HISTORY OF ORDERS</h1>
+  <p class="fs-1">HISTORY OF ORDERS</p>
 </div>
-<div class="ms-5 d-flex">
-  <div class="d-flex align-items-center col-3">
+<div class="d-inline-flex w-100 justify-content-center mb-3" style="width: 100%; text-align: center;">
+  <!-- <div class="d-inline-flex align-items-center"> -->
     <label class="d-inline fs-5 p-2" for="storeName">
       Store Name:
     </label> 
-    <select class="d-inline form-select w-50" id="storeName"> 
+    <select class="d-inline form-select w-25" id="storeName"> 
       <option value="">
         All Stores
       </option> 
     </select>
-  </div>
-  <div class="filter col-8 d-flex align-items-center"> 
-    <label for="startMonth" class="p-2">
+  
+    <label for="startMonth" class="p-2 fs-5">
       Start Month:
     </label> 
     <input type="month" id="startMonth"> 
-    <label for="endMonth" class="p-2">
+    <label for="endMonth" class="p-2 fs-5">
       End Month:
     </label> 
     <input type="month" id="endMonth"> 
-    <button class="btn btn-secondary filter-btn">Filter</button> 
-  </div>
+    <button class="btn btn-outline-dark filter-btn mx-1">Filter</button> 
+  <!-- </div> -->
 </div>
 
 <!-- PURCHASE TAB -->

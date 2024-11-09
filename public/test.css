@@ -33,3 +33,10 @@ button[aria-selected="true"]{
 .body-ele {
     background-color: rgba(221, 199, 187, 1);
 }
+
+.centered-table { 
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
