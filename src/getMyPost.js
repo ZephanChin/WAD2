@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, collection, getDocs, query, where, orderBy, deleteDoc, doc } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, where, orderBy } from "firebase/firestore";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -39,10 +39,13 @@ async function retrieveUserPosts() {
 
             const querySnapshot = await getDocs(q);
 
-            postsContainer.innerHTML = "";
+            // Clear previous posts
+            postsContainer.textContent = '';
 
             if (querySnapshot.empty) {
-                postsContainer.innerHTML = "<p>You have not made any posts.</p>";
+                const noPostsMessage = document.createElement('p');
+                noPostsMessage.textContent = "You have not made any posts.";
+                postsContainer.appendChild(noPostsMessage);
             } else {
                 querySnapshot.forEach((doc) => {
                     const postData = doc.data();
@@ -50,7 +53,9 @@ async function retrieveUserPosts() {
                 });
             }
         } else {
-            postsContainer.innerHTML = "<p>Please log in to see your posts.</p>";
+            const loginPrompt = document.createElement('p');
+            loginPrompt.textContent = "Please log in to see your posts.";
+            postsContainer.appendChild(loginPrompt);
             setTimeout(() => {
                 window.location.href = "/login.html";
             }, 2000);
@@ -58,7 +63,7 @@ async function retrieveUserPosts() {
     });
 }
 
-// Function to dynamically create and display post elements, including a delete button and a more details button
+// Function to dynamically create and display post elements, including a "More Details" button
 function displayPost(postId, postData, container) {
     const postElement = document.createElement('div');
     postElement.classList.add('post-item');
@@ -85,13 +90,6 @@ function displayPost(postId, postData, container) {
         window.location.href = `postDetails.html?id=${postId}`;
     };
 
-    // Create and configure the "Delete Post" button
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = "Delete Post";
-    deleteButton.classList.add('delete-button'); // Use CSS to style this button
-
-    deleteButton.onclick = () => deletePost(postId, container);
-
     // Append elements to the image container
     imageContainer.appendChild(image);
     imageContainer.appendChild(moreDetailsButton);
@@ -100,25 +98,8 @@ function displayPost(postId, postData, container) {
     postElement.appendChild(imageContainer);
     postElement.appendChild(itemName);
     postElement.appendChild(account);
-    postElement.appendChild(deleteButton);
 
     container.appendChild(postElement);
-}
-
-// Function to delete a post by document ID
-async function deletePost(postId, container) {
-    const confirmation = confirm("Are you sure you want to delete this post?");
-    if (confirmation) {
-        try {
-            await deleteDoc(doc(db, "posts", postId));
-            alert("Post deleted successfully!");
-            // Refresh the posts display after deletion
-            retrieveUserPosts();
-        } catch (error) {
-            console.error("Error deleting post:", error);
-            alert("Error deleting post.");
-        }
-    }
 }
 
 // Call the function to retrieve and display the user's posts when the page loads
