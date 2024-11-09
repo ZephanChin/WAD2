@@ -324,7 +324,7 @@ async function loadReviews(postId, postData) {
             const deleteReviewButton = document.createElement("button");
             deleteReviewButton.textContent = "Delete";
             deleteReviewButton.classList.add("btn", "btn-danger");
-            deleteReviewButton.addEventListener("click", () => deleteReview(doc.id, postId, postData.account)); // Pass review ID and post ID to delete function
+            deleteReviewButton.addEventListener("click", () => deleteReview(doc.id, postId, reviewData, postData.account)); // Pass review ID and post ID to delete function
             //reviewElement.appendChild(deleteReviewButton); // Add delete button to the review
             revbuttonsContainer.append(editReviewButton, deleteReviewButton);
 
@@ -408,10 +408,11 @@ async function updateReview(reviewId, postId, reviewText, starRating, account) {
 }
 
 // Delete the review with confirmation
-async function deleteReview(reviewId, postId, account) {
+async function deleteReview(reviewId, postId, reviewData, account) {
     if (confirm("Are you sure you want to delete this review?")) {
         try {
             await deleteDoc(doc(db, `posts/${postId}/reviews`, reviewId));
+            deleteRating(reviewData.starRating, account);
             loadReviews(postId, account);
         } catch (error) {
             console.error("Error deleting review:", error);
@@ -641,6 +642,33 @@ async function updateRating(oldStarRating, starRating, account) {
                     });
                 }
             }
+            console.log("Field updated successfully!");
+        } else {
+            console.log("No such document!");
+        }
+    } catch (error) {
+        console.error("Error updating document: ", error);
+    }
+}
+
+async function deleteRating(starRating, account) {
+    const reportDocRef = doc(db, "report", account); // Reference to your document
+
+    try {
+        // Fetch the current document
+        const docSnap = await getDoc(reportDocRef);
+
+        if (docSnap.exists()) {
+            // Get the current value of a specific field
+            const currentReviews = docSnap.data().reviews || 0;
+            const currentStars = docSnap.data().total_stars || 0;
+            console.log("checking");
+            // Update the field by incrementing it, for example
+            await updateDoc(reportDocRef, {
+                reviews: currentReviews - 1,
+                total_stars: currentStars - starRating
+            });
+
             console.log("Field updated successfully!");
         } else {
             console.log("No such document!");
