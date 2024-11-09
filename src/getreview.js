@@ -34,7 +34,9 @@ async function fetchData() {
                 document.getElementById('profileImage').src = profileImageUrl;
             } catch (error) {
                 console.error("Error retrieving profile image:", error);
-                document.getElementById('profileImage').src = "default-profile.jpg";
+                const profileImageRef = ref(storage, `profileImages/default-profile.jpg`);
+                const profileImageUrl = await getDownloadURL(profileImageRef);
+                document.getElementById('profileImage').src = profileImageUrl;
             }
 
             try {
