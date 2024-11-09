@@ -198,13 +198,13 @@ body {
 
 .search-container {
   display: flex;
-  flex-direction: column;  /* Stack input and button vertically */
-  align-items: center;  /* Center the items horizontally */
+  flex-direction: column;
+  align-items: center; 
   justify-content: center;
   padding: 10px;
   width: 100%;
   box-sizing: border-box;
-  text-align: center;  /* Center the text inside the button */
+  text-align: center;
 }
 
 #search-bar {
