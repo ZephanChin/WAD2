@@ -1,4 +1,5 @@
 import { initializeApp, getApps } from "firebase/app";
+import { getAuth, onAuthStateChanged } from "firebase/auth"; // Import getAuth and onAuthStateChanged
 import { getFirestore, collection, getDocs, query, orderBy } from "firebase/firestore";
 
 // Firebase configuration
@@ -22,6 +23,7 @@ if (!getApps().length) {
 }
 
 const db = getFirestore(app);
+const auth = getAuth(app); // Initialize Firebase Auth
 let allPosts = []; // Array to store all posts
 
 // Function to retrieve posts from Firestore
@@ -58,7 +60,6 @@ async function retrievePosts() {
     }
 }
 
-// Function to dynamically create and display post elements
 function displayPost(postData, container) {
     if (!postData.itemName || !postData.imageUrl || !postData.account) {
         console.warn("Incomplete post data:", postData);
@@ -73,7 +74,34 @@ function displayPost(postData, container) {
     itemName.textContent = postData.itemName;
 
     const account = document.createElement('p');
-    account.textContent = `Posted by: ${postData.account}`;
+    account.textContent = "Posted by: ";
+
+    const accountLink = document.createElement('a');
+    accountLink.textContent = postData.account; // Only the account name is clickable
+    accountLink.classList.add('account-link');
+
+    // Check if the post belongs to the logged-in user
+    const auth = getAuth(app);
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            const loggedInAccount = user.displayName; 
+            // console.log("Logged-in account name:", loggedInAccount);
+            // console.log("Post account name:", postData.account);
+
+            if (postData.account === loggedInAccount) {
+                // console.log("This post belongs to the logged-in user. Redirecting to mymarketplace.html.");
+                accountLink.href = `/mymarketplace.html`;
+            } else {
+                // console.log("This post belongs to another user. Redirecting to usermarketplace.html.");
+                accountLink.href = `usermarketplace.html?account=${encodeURIComponent(postData.account)}`;
+            }
+        } else {
+            // console.log("User is not logged in. Redirecting to usermarketplace.html.");
+            accountLink.href = `usermarketplace.html?account=${encodeURIComponent(postData.account)}`;
+        }
+    });
+
+    account.appendChild(accountLink); // Append the link to the paragraph
 
     const moreDetailsButton = document.createElement('button');
     moreDetailsButton.textContent = "More Details";
@@ -104,50 +132,6 @@ function displayPost(postData, container) {
     container.appendChild(postElement);
 }
 
-// Function to filter posts based on selected category
-function filterPosts(category) {
-    const postsContainer = document.getElementById('posts-container');
-
-    // Clear current posts safely
-    while (postsContainer.firstChild) {
-        postsContainer.removeChild(postsContainer.firstChild);
-    }
-
-    const filteredPosts = allPosts.filter(post => category === 'All' || post.category === category);
-
-    if (filteredPosts.length === 0) {
-        const noResultsMessage = document.createElement('p');
-        noResultsMessage.textContent = "No posts found for this category.";
-        postsContainer.appendChild(noResultsMessage);
-    } else {
-        filteredPosts.forEach(post => displayPost(post, postsContainer));
-    }
-}
-
-// Function to filter posts based on search input
-function searchPosts(query) {
-    const postsContainer = document.getElementById('posts-container');
-
-    // Clear current posts safely
-    while (postsContainer.firstChild) {
-        postsContainer.removeChild(postsContainer.firstChild);
-    }
-
-    const filteredPosts = allPosts.filter(post => {
-        return (
-            post.itemName.toLowerCase().includes(query.toLowerCase()) ||
-            (post.postDescription && post.postDescription.toLowerCase().includes(query.toLowerCase()))
-        );
-    });
-
-    if (filteredPosts.length === 0) {
-        const noResultsMessage = document.createElement('p');
-        noResultsMessage.textContent = "No matching posts found.";
-        postsContainer.appendChild(noResultsMessage);
-    } else {
-        filteredPosts.forEach(post => displayPost(post, postsContainer));
-    }
-}
 
 // Event listeners for filter buttons
 document.addEventListener('DOMContentLoaded', () => {
