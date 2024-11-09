@@ -37,7 +37,7 @@ async function retrieveUserOrders() {
             const q = query(
                 collection(db, "porders"),
                 where("uid", "==", user.uid),
-                orderBy("PlaceDate")
+                orderBy("PlaceDate", "desc")
             );
             // console.log(user.uid);  
             const querySnapshot = await getDocs(q);
@@ -55,7 +55,7 @@ async function retrieveUserOrders() {
                 });
             }
         } else {
-            purchaseCont.innerHTML = "<p>Please log in to see your orders.</p>";
+            purchaseCont.innerText = "Please log in to see your orders.";
             setTimeout(() => {
                 window.location.href = "/login.html";
             }, 2000);
@@ -67,8 +67,107 @@ async function retrieveUserOrders() {
 
 // Function to dynamically create and display purchase elements, including a detail button [not done]
 function displayPOrder(purchaseId, purchaseData, container) {
+    const purchaseTable = document.createElement('Table');
+    purchaseTable.classList.add('table', 'table-bordered')
+    // table row [order id], "Ordered On", "Status"
+    const purchaseTableRow1 = document.createElement('tr');
+    const  purchaseTableValue1_1 = document.createElement('td');
+    const  purchaseTableValue1_2 = document.createElement('td');
+    const  purchaseTableValue1_3 = document.createElement('td');
+    purchaseTableValue1_1.textContent = purchaseId;
+    purchaseTableValue1_2.textContent = "Orderd On";
+    purchaseTableValue1_3.textContent = "Status";
+
+    purchaseTableRow1.appendChild(purchaseTableValue1_1);
+    purchaseTableRow1.appendChild(purchaseTableValue1_2);
+    purchaseTableRow1.appendChild(purchaseTableValue1_3);
+    purchaseTable.appendChild(purchaseTableRow1);
+
+    // table row [sellaccount], [PlaceDate], [Status]
+    const purchaseTableRow2 = document.createElement('tr');
+    const  purchaseTableValue2_1 = document.createElement('td');
+    const  purchaseTableValue2_2 = document.createElement('td');
+    const  purchaseTableValue2_3 = document.createElement('td');
+    purchaseTableValue2_1.textContent = purchaseData.sellaccount;
+    purchaseTableValue2_2.textContent = purchaseData.PlaceDate.toDate().toLocaleDateString();
+    purchaseTableValue2_3.textContent = purchaseData.status;
+
+    purchaseTableRow2.appendChild(purchaseTableValue2_1);
+    purchaseTableRow2.appendChild(purchaseTableValue2_2);
+    purchaseTableRow2.appendChild(purchaseTableValue2_3);
+    purchaseTable.appendChild(purchaseTableRow2);
+
+
+    // table row [itemImg], [itemPrice], [itemQty], [itemTotalPrice]
+    // Iterate over the map 
+    for (const key in orderItems) {
+        if (orderItems.hasOwnProperty(key)) { 
+            // console.log(`Key: ${key}`); 
+            const item = orderItems[key]; 
+           
+            // Item Details
+
+            // Image Div
+            const purchaseitemdiv = document.createElement('div');
+            purchaseitemdiv.classList.add('col-2');
+            const purchaseitemimg = document.createElement('img');
+            purchaseitemimg.src = item[4];
+            purchaseitemimg.classList.add("ms-3", "my-2", "item-img");
+            
+            purchaseitemdiv.appendChild(purchaseitemimg);
+            purchaseElement.appendChild(purchaseitemdiv);
+
+            // Purchase Element Body
+            const purchaseElementBody = document.createElement('div');
+            purchaseElementBody.classList.add('row', 'col-10', 'mt-5');
+            
+            // Item Price Div
+            const purchaseElementItemPrice = document.createElement('div');
+            purchaseElementItemPrice.classList.add('col-4');
+            purchaseElementItemPrice.textContent = `Price: $ ${item[1].toFixed(2)}`;
+
+            purchaseElementBody.appendChild(purchaseElementItemPrice);
+
+            // Item Qty Div
+            const purchaseElementItemQty = document.createElement('div');
+            purchaseElementItemQty.classList.add('col-4');
+            purchaseElementItemQty.textContent = `Qty: ${item[2]}`;
+
+            purchaseElementBody.appendChild(purchaseElementItemQty);
+
+            // Item Item Total Price Div
+            const purchaseElementTItemPrice = document.createElement('div');
+            purchaseElementTItemPrice.classList.add('col-4');
+            purchaseElementTItemPrice.textContent = `Total Price: $ ${item[3].toFixed(2)}`;
+
+            purchaseElementBody.appendChild(purchaseElementTItemPrice);
+
+            // Body to Element
+            purchaseElement.appendChild(purchaseElementBody);
+
+            const purchaseTableRow3 = document.createElement('tr');
+            const  purchaseTableValue3_1 = document.createElement('td');
+            const  purchaseTableValue3_2 = document.createElement('td');
+            const  purchaseTableValue3_3 = document.createElement('td');
+            purchaseTableValue3_1.textContent = purchaseData.sellaccount;
+            purchaseTableValue3_2.textContent = purchaseData.PlaceDate.toDate().toLocaleDateString();
+            purchaseTableValue3_3.textContent = purchaseData.status;
+
+            purchaseTableRow3.appendChild(purchaseTableValue3_1);
+            purchaseTableRow3.appendChild(purchaseTableValue3_2);
+            purchaseTableRow3.appendChild(purchaseTableValue3_3);
+            purchaseTable.appendChild(purchaseTableRow3);
+
+        }
+    }
+
+    container.appendChild(purchaseTable)
+
+
+
+
     const purchaseElement = document.createElement('div');
-    purchaseElement.classList.add("mt-5", "me-5", "row", "border", "rounded-4", "d-flex", "purchase-ele");
+    purchaseElement.classList.add("mt-5",  "row", "border", "rounded-4", "d-flex", "body-ele");
     
     const purchaseElementHead = document.createElement('div');
     purchaseElementHead.classList.add("row", "col-6", "ms-2", "mt-2");
@@ -77,14 +176,14 @@ function displayPOrder(purchaseId, purchaseData, container) {
     const purchaseElementOnoDiv = document.createElement('div');
     purchaseElementOnoDiv.classList.add("col-3");
 
-    const purchaseElementOnoLbl = document.createElement('span');
-    purchaseElementOnoLbl.classList.add("fw-bold", "fs-2");
-    purchaseElementOnoLbl.innerText = "Order Number";
+    // const purchaseElementOnoLbl = document.createElement('span');
+    // purchaseElementOnoLbl.classList.add("fw-bold", "fs-2");
+    // purchaseElementOnoLbl.innerText = "Order Number";
 
     const purchaseElementOnoCtn = document.createElement('div');
     purchaseElementOnoCtn.textContent = purchaseId;
 
-    purchaseElementOnoDiv.appendChild(purchaseElementOnoLbl);
+    // purchaseElementOnoDiv.appendChild(purchaseElementOnoLbl);
     purchaseElementOnoDiv.appendChild(purchaseElementOnoCtn);
 
     // DP Element
@@ -152,7 +251,7 @@ function displayPOrder(purchaseId, purchaseData, container) {
 
     // Iterate item from Items Map
     const orderItems = purchaseData.Items; 
-    console.log("iterate", purchaseData.Items)
+    // console.log("iterate", purchaseData.Items)
     
     // Iterate over the map 
     for (const key in orderItems) {

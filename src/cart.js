@@ -261,19 +261,4 @@ const addToOrder = async (itemData) => {
 };
 
 
-// try { 
-// await setDoc(docRef, { 
-//     yourMap: { 
-//         key1: "value1", 
-//         key2: "value2", 
-//         key3: "value3" 
-//     }, 
-//     field1: "stringValue1", 
-//     field2: "stringValue2", 
-//     field3: "stringValue3" 
-// }); 
-// console.log("Document successfully written!"); 
-// } 
-// catch (error) { 
-// console.error("Error writing document: ", error); 
-// } 
+
