@@ -191,6 +191,7 @@ onAuthStateChanged(auth, (user) => {
 const addToOrder = async (itemData) => { 
     itemData.sort((a, b) => a.sellerUid - b.sellerUid);
     const user = auth.currentUser;
+    const userDisplayName = auth.currentUser.displayName;
     // console.log(itemData)
     const c1 = user.uid.substring(0, 3);
     const c2 = user.uid.substring(10, 13);
@@ -236,10 +237,10 @@ const addToOrder = async (itemData) => {
             OrderID: "extraValue1", 
             PlaceDate: new Date(), 
             TotalPrice: ttprice, 
-            account: "", 
+            account: userDisplayName, 
             sellaccount: value[0].account,
             selluid: key, 
-            status: "Pending", 
+            status: "Ongoing", 
             uid: user.uid
         };
 
