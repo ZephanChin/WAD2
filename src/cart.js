@@ -165,7 +165,7 @@ async function displayCartItems(user) {
     const checkoutButton = document.createElement("button");
     checkoutButton.textContent = "Checkout";
     checkoutButton.classList.add("btn", "checkout-button");
-    checkoutButton.addEventListener("click", () => { 
+    checkoutButton.addEventListener("click", () => {
         // console.log("HELP", localdata);
         addToOrder(localdata);
         console.log("Proceeding to checkout.");
@@ -188,7 +188,7 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-const addToOrder = async (itemData) => { 
+const addToOrder = async (itemData) => {
     itemData.sort((a, b) => a.sellerUid - b.sellerUid);
     const user = auth.currentUser;
     const userId = user.uid;
@@ -197,20 +197,20 @@ const addToOrder = async (itemData) => {
     const c3 = new Date().toISOString();
     let docid = "";
 
-    let grouped = {}; 
-    itemData.forEach(obj => { 
-        let selluid = obj.sellerUid; 
-        if (!grouped[selluid]) { 
-            grouped[selluid] = []; 
-        } 
-        grouped[selluid].push(obj); 
+    let grouped = {};
+    itemData.forEach(obj => {
+        let selluid = obj.sellerUid;
+        if (!grouped[selluid]) {
+            grouped[selluid] = [];
+        }
+        grouped[selluid].push(obj);
     });
 
     // Process each group (grouped by sellerUid)
     for (const [key, value] of Object.entries(grouped)) {
         const c4 = value[0].sellerUid.substring(0, 3);
         docid = c1 + c2 + c3.substring(8, 13) + c3.substring(20, 24) + c4;
-        
+
         let ttprice = 0;
         let count = 0;
         let datamap = {};
@@ -227,47 +227,37 @@ const addToOrder = async (itemData) => {
             count += 1;
         });
 
-        let fields = { 
-            OrderID: docid, 
-            PlaceDate: new Date(), 
-            TotalPrice: ttprice, 
-            account: "", 
+        let fields = {
+            OrderID: docid,
+            PlaceDate: new Date(),
+            TotalPrice: ttprice,
+            account: "",
             sellaccount: value[0].account,
-            selluid: key, 
-            status: "Pending", 
+            selluid: key,
+            status: "Pending",
             uid: userId
         };
 
-        let documentData = { 
-            Items: datamap, 
-            ...fields 
+        let documentData = {
+            Items: datamap,
+            ...fields
         };
 
-        try { 
-            await setDoc(doc(collection(db, "porders"), docid), documentData); 
-            console.log(`Document ${docid} successfully written!`); 
-        } 
-        catch (error) { 
-            console.error(`Error writing document ${docid}: `, error); 
+        try {
+            await setDoc(doc(collection(db, "porders"), docid), documentData);
+            console.log(`Document ${docid} successfully written!`);
+        }
+        catch (error) {
+            console.error(`Error writing document ${docid}: `, error);
         }
     }
 
     // Clear all items from the user's cart
-    try {
-        const cartRef = collection(db, `users/${userId}/cart`);
-        const cartSnapshot = await getDocs(cartRef);
 
-        const deletePromises = cartSnapshot.docs.map(cartItem => deleteDoc(cartItem.ref));
-        await Promise.all(deletePromises);
-        console.log("All cart items deleted successfully.");
 
-        alert("Order placed successfully! Redirecting to checkout...");
-        
-        // Redirect to the checkout page
-        window.location.href = "/checkout.html";
-    } catch (error) {
-        console.error("Error clearing cart:", error);
-    }
+
+    // Redirect to the checkout page
+    window.location.href = "/checkout.html";
 };
 
 
