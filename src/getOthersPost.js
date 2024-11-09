@@ -23,9 +23,12 @@ if (!getApps().length) {
 
 const db = getFirestore(app);
 
+let currentUsername = ""; // Global variable to store the username
+
 // Function to retrieve and display posts made by another user
 async function retrieveOtherUserPosts() {
     const postsContainer = document.getElementById('posts-container');
+    const marketplaceTitle = document.getElementById('marketplace-title'); // Assuming an element to display the username's marketplace
 
     // Get the account name from the query parameter
     const urlParams = new URLSearchParams(window.location.search);
@@ -36,6 +39,13 @@ async function retrieveOtherUserPosts() {
         errorMessage.textContent = "No user specified.";
         postsContainer.appendChild(errorMessage);
         return;
+    }
+
+    currentUsername = account; // Store the username in the global variable
+
+    // Update the marketplace title dynamically
+    if (marketplaceTitle) {
+        marketplaceTitle.textContent = `${currentUsername}'s Marketplace`;
     }
 
     try {
@@ -109,3 +119,4 @@ function displayPost(postId, postData, container) {
 
 // Call the function to retrieve and display the user's posts when the page loads
 window.onload = retrieveOtherUserPosts;
+
