@@ -38,42 +38,15 @@ async function addToCart(postData) {
         if (user) {
             try {
                 const cartRef = collection(db, `users/${user.uid}/cart`);
-                const cartSnapshot = await getDocs(cartRef);
-                let existingItemDoc = null;
-
-                // Check if the item already exists in the cart
-                cartSnapshot.forEach(doc => {
-                    const data = doc.data();
-                    if (data.itemId === postId) {
-                        existingItemDoc = doc; // Store the document reference if the item is found
-                    }
+                await addDoc(cartRef, {
+                    itemId: postId,
+                    itemName: postData.itemName,
+                    itemPrice: postData.price,
+                    itemImage: postData.imageUrl,
+                    account: postData.account,
+                    timestamp: new Date()
                 });
-
-                if (existingItemDoc) {
-                    // Item exists in the cart, update the quantity and total price
-                    const newQuantity = existingItemDoc.data().quantity + 1; // Increase quantity
-                    const newTotalPrice = postData.price * newQuantity; // Update total price
-
-                    await updateDoc(doc(db, `users/${user.uid}/cart`, existingItemDoc.id), {
-                        quantity: newQuantity,
-                        totalPrice: newTotalPrice // Store the updated total price
-                    });
-                    alert("Item quantity updated in cart!");
-                } else {
-                    // Item does not exist, add it to the cart
-                    await addDoc(cartRef, {
-                        itemId: postId,
-                        itemName: postData.itemName,
-                        itemPrice: postData.price,
-                        itemImage: postData.imageUrl,
-                        account: postData.account,
-                        sellerUid: postData.uid,
-                        quantity: 1, // Start with quantity of 1
-                        totalPrice: postData.price, // Store initial total price
-                        timestamp: new Date()
-                    });
-                    alert("Item added to cart!");
-                }
+                alert("Item added to cart!");
             } catch (error) {
                 console.error("Error adding to cart:", error);
             }
@@ -82,7 +55,6 @@ async function addToCart(postData) {
         }
     });
 }
-
 
 // Function to retrieve and display post details
 async function displayPostDetails() {
@@ -103,7 +75,7 @@ async function displayPostDetails() {
 
     const postData = postSnap.data();
     renderPostDetails(postDetailsContainer, postData);
-    loadReviews(postId, postData);
+    loadReviews(postId);
     setupReviewForm(postData);
 }
 
@@ -127,13 +99,23 @@ function renderPostDetails(container, postData) {
     categoryContent.textContent = postData.category;
     category.appendChild(categoryContent);
 
+    const categoryDropdown = document.createElement("select");
+    categoryDropdown.classList.add("category-dropdown");
+    categoryDropdown.style.display = "none"; // Initially hidden
+    ["Crafts", "Fashion", "Food", "Services"].forEach(optionText => {
+        const option = document.createElement("option");
+        option.value = optionText;
+        option.textContent = optionText;
+        if (postData.category === optionText) {
+            option.selected = true;
+        }
+        categoryDropdown.appendChild(option);
+    });
+    category.appendChild(categoryDropdown);
+
     // Price setup - keep it as a static text
     const price = container.querySelector(".post-price");
-    price.textContent = `Price: SGD ${postData.price}`; // Display as static text
-
-    // Ensure the price is not editable
-    price.contentEditable = "false"; // Explicitly set contentEditable to false
-    price.classList.remove("editable-field"); // Remove any editable styles if previously added
+    price.textContent = `Price: SGD ${postData.price}`; // No editable part
 
     const account = container.querySelector(".post-account");
     account.textContent = `Posted by: ${postData.account}`;
@@ -157,8 +139,6 @@ function renderPostDetails(container, postData) {
         }
     });
 }
-
-
 
 // Load Google Maps script with API key and initialize map with location name
 function loadGoogleMapsScript(locationName) {
@@ -298,7 +278,7 @@ async function deletePost(postId) {
 }
 
 // Load and display reviews
-async function loadReviews(postId, postData) {
+async function loadReviews(postId) {
     const reviewsList = document.getElementById("reviews-list");
     reviewsList.textContent = "";
 
@@ -339,12 +319,12 @@ async function loadReviews(postId, postData) {
             const editReviewButton = document.createElement("button");
             editReviewButton.textContent = "Edit";
             editReviewButton.classList.add("btn", "btn-secondary");
-            editReviewButton.addEventListener("click", () => editReview(doc.id, postId, reviewData, postData.account));
+            editReviewButton.addEventListener("click", () => editReview(doc.id, postId, reviewData));
 
             const deleteReviewButton = document.createElement("button");
             deleteReviewButton.textContent = "Delete";
             deleteReviewButton.classList.add("btn", "btn-danger");
-            deleteReviewButton.addEventListener("click", () => deleteReview(doc.id, postId, reviewData, postData.account)); // Pass review ID and post ID to delete function
+            deleteReviewButton.addEventListener("click", () => deleteReview(doc.id, postId)); // Pass review ID and post ID to delete function
             //reviewElement.appendChild(deleteReviewButton); // Add delete button to the review
             revbuttonsContainer.append(editReviewButton, deleteReviewButton);
 
@@ -376,7 +356,7 @@ async function submitReview(postId, reviewText, starRating, account) {
             await addBad(starRating, account);
         }
 
-        loadReviews(postId, account);
+        loadReviews(postId);
     } catch (error) {
         console.error("Error adding review:", error);
         alert("Failed to add review.");
@@ -384,43 +364,25 @@ async function submitReview(postId, reviewText, starRating, account) {
 }
 
 // Edit review function to enable editing of review and rating
-function editReview(reviewId, postId, reviewData, account) {
+function editReview(reviewId, postId, reviewData) {
     const reviewText = prompt("Edit your review:", reviewData.reviewText);
     const rating = prompt("Edit your rating (1-5):", reviewData.rating);
 
     if (reviewText && rating) {
-        updateReview(reviewId, postId, reviewText, parseInt(rating, 10), account);
+        updateReview(reviewId, postId, reviewText, parseInt(rating, 10));
     }
 }
 
 // Function to update a review in Firestore
-async function updateReview(reviewId, postId, reviewText, starRating, account) {
-    let oldStarRating;
-    try {
-        const reviewRef = doc(db, `posts/${postId}/reviews`, reviewId);
-
-        // Retrieve the current review document to get the existing starRating
-        const reviewSnap = await getDoc(reviewRef);
-
-        if (reviewSnap.exists()) {
-            const currentReviewData = reviewSnap.data();
-            oldStarRating = currentReviewData.starRating;
-        }
-    } catch (error) {
-        console.error("Error retrieving review:", error);
-    }
+async function updateReview(reviewId, postId, reviewText, rating) {
     try {
         await updateDoc(doc(db, `posts/${postId}/reviews`, reviewId), {
             reviewText: reviewText,
-            starRating: starRating,
+            starRating: rating,
             timestamp: new Date()
         });
         alert("Review updated successfully!");
-        if (oldStarRating != starRating) {
-            updateRating(oldStarRating, starRating, account);
-        }
-
-        loadReviews(postId, account);
+        loadReviews(postId);
     } catch (error) {
         console.error("Error updating review:", error);
         alert("Failed to update review.");
@@ -428,12 +390,11 @@ async function updateReview(reviewId, postId, reviewText, starRating, account) {
 }
 
 // Delete the review with confirmation
-async function deleteReview(reviewId, postId, reviewData, account) {
+async function deleteReview(reviewId, postId) {
     if (confirm("Are you sure you want to delete this review?")) {
         try {
             await deleteDoc(doc(db, `posts/${postId}/reviews`, reviewId));
-            deleteRating(reviewData.starRating, account);
-            loadReviews(postId, account);
+            loadReviews(postId);
         } catch (error) {
             console.error("Error deleting review:", error);
             alert("Failed to delete review.");
@@ -577,116 +538,6 @@ async function addNeutral(starRating, account) {
             await updateDoc(reportDocRef, {
                 reviews: currentReviews + 1,
                 total_stars: currentStars + starRating
-            });
-
-            console.log("Field updated successfully!");
-        } else {
-            console.log("No such document!");
-        }
-    } catch (error) {
-        console.error("Error updating document: ", error);
-    }
-}
-
-async function updateRating(oldStarRating, starRating, account) {
-    console.log(oldStarRating);
-    console.log(starRating);
-    const reportDocRef = doc(db, "report", account); // Reference to your document
-
-    try {
-        // Fetch the current document
-        const docSnap = await getDoc(reportDocRef);
-        console.log("found");
-
-        if (docSnap.exists()) {
-            // Get the current value of a specific field
-            const currentStars = docSnap.data().total_stars || 0;
-            const currentBad = docSnap.data().bad || 0;
-            const currentGood = docSnap.data().good || 0;
-            console.log("founded");
-
-            if (oldStarRating > starRating) {
-                console.log("foundfounded");
-                if (oldStarRating > 3 && starRating == 3) {
-                    await updateDoc(reportDocRef, {
-                        good: currentGood - 1,
-                        total_stars: currentStars - (oldStarRating - starRating)
-                    });
-                }
-                if (oldStarRating == 3 && starRating < 3) {
-                    await updateDoc(reportDocRef, {
-                        bad: currentBad + 1,
-                        total_stars: currentStars - (oldStarRating - starRating)
-                    });
-                }
-                if (oldStarRating == 3 && starRating > 3) {
-                    await updateDoc(reportDocRef, {
-                        good: currentGood + 1,
-                        total_stars: currentStars - (oldStarRating - starRating)
-                    });
-                }
-                if (oldStarRating > 3 && starRating < 3) {
-                    console.log("working right");
-                    await updateDoc(reportDocRef, {
-                        bad: currentBad + 1,
-                        good: currentGood - 1,
-                        total_stars: currentStars - (oldStarRating - starRating)
-                    });
-                }
-            } else {
-                console.log("foundfounded");
-                if (starRating > 3 && oldStarRating == 3) {
-                    await updateDoc(reportDocRef, {
-                        good: currentGood + 1,
-                        total_stars: currentStars + (starRating - oldStarRating)
-                    });
-                }
-                if (starRating == 3 && oldStarRating < 3) {
-                    await updateDoc(reportDocRef, {
-                        bad: currentBad - 1,
-                        total_stars: currentStars + (starRating - oldStarRating)
-                    });
-                }
-                if (starRating == 3 && oldStarRating > 3) {
-                    await updateDoc(reportDocRef, {
-                        good: currentGood - 1,
-                        total_stars: currentStars + (starRating - oldStarRating)
-                    });
-                }
-
-                if (starRating > 3 && oldStarRating < 3) {
-                    await updateDoc(reportDocRef, {
-                        bad: currentBad - 1,
-                        good: currentGood + 1,
-                        total_stars: currentStars + (starRating - oldStarRating)
-                    });
-                }
-            }
-            console.log("Field updated successfully!");
-        } else {
-            console.log("No such document!");
-        }
-    } catch (error) {
-        console.error("Error updating document: ", error);
-    }
-}
-
-async function deleteRating(starRating, account) {
-    const reportDocRef = doc(db, "report", account); // Reference to your document
-
-    try {
-        // Fetch the current document
-        const docSnap = await getDoc(reportDocRef);
-
-        if (docSnap.exists()) {
-            // Get the current value of a specific field
-            const currentReviews = docSnap.data().reviews || 0;
-            const currentStars = docSnap.data().total_stars || 0;
-            console.log("checking");
-            // Update the field by incrementing it, for example
-            await updateDoc(reportDocRef, {
-                reviews: currentReviews - 1,
-                total_stars: currentStars - starRating
             });
 
             console.log("Field updated successfully!");

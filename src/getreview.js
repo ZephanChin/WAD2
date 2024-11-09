@@ -25,12 +25,20 @@ async function fetchData() {
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             let documentId = user.displayName;
-
             document.getElementById('username').textContent = documentId || "Username";
-            document.getElementById('profileImage').src = `profile/${documentId}.jpg`;
 
             try {
-                // Check if an additional uploaded image exists
+                // Retrieve profile image from Firebase Storage
+                const profileImageRef = ref(storage, `profileImages/${documentId}.jpg`);
+                const profileImageUrl = await getDownloadURL(profileImageRef);
+                document.getElementById('profileImage').src = profileImageUrl;
+            } catch (error) {
+                console.error("Error retrieving profile image:", error);
+                document.getElementById('profileImage').src = "default-profile.jpg";
+            }
+
+            try {
+                // Retrieve and display uploaded image if it exists
                 const uploadedImageRef = ref(storage, `additionalImages/${documentId}.jpg`);
                 const uploadedImageUrl = await getDownloadURL(uploadedImageRef);
 
@@ -43,15 +51,14 @@ async function fetchData() {
                 console.log("No additional uploaded image found.");
                 document.getElementById('uploadSection').style.display = 'block';
             }
+
             try {
-                // Reference to the specific document based on the user's display name
+                // Retrieve sales data from Firestore
                 const docRef = doc(db, "report", documentId);
                 const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-
-                    // Update HTML elements with data
                     document.getElementById('sales').textContent = data.sales || 0;
                     document.getElementById('itemsSold').textContent = data.items_sold || 0;
                     document.getElementById('reviewsReceived').textContent = data.reviews || 0;
@@ -68,6 +75,53 @@ async function fetchData() {
     });
 }
 
+async function uploadImage1(file) {
+    const user = auth.currentUser;
+    if (user) {
+        const documentId = user.displayName;
+        const imageRef = ref(storage, `profileImages/${documentId}.jpg`);
+
+        try {
+            await uploadBytes(imageRef, file);
+
+            // Get and display the new image URL
+            const imageUrl = await getDownloadURL(imageRef);
+            document.getElementById('profileImage').src = imageUrl;
+            document.getElementById('profileImage').style.display = 'block';
+
+            // Hide upload section after a successful upload
+            document.getElementById('profileUploadSection').style.display = 'none';
+            document.getElementById('editProfileImageButton').style.display = 'inline';
+        } catch (error) {
+            console.error("Error uploading image:", error);
+        }
+    }
+}
+
+// // Show upload section when "Edit Image" is clicked
+document.getElementById('editProfileImageButton').addEventListener('click', () => {
+    alert("Please upload an image with your username. e.g. '<username>.jpg'");
+    document.getElementById('profileUploadSection').style.display = 'block';
+});
+
+// Handle image upload
+document.getElementById('uploadProfileButton').addEventListener('click', () => {
+    const file = document.getElementById('profileImageUpload').files[0];
+    if (file) {
+        uploadImage1(file);
+    } else {
+        alert("Please select an image to upload.");
+    }
+});
+
+//
+
+
+
+
+
+
+
 async function uploadImage(file) {
     const user = auth.currentUser;
     if (user) {
@@ -76,14 +130,13 @@ async function uploadImage(file) {
 
         try {
             await uploadBytes(imageRef, file);
-            // console.log("Image uploaded successfully.");
 
-            // Get the download URL and display the uploaded image
+            // Get and display the new image URL
             const imageUrl = await getDownloadURL(imageRef);
             document.getElementById('uploadedImage').src = imageUrl;
             document.getElementById('uploadedImage').style.display = 'block';
 
-            // Hide the upload section after a successful upload
+            // Hide upload section after a successful upload
             document.getElementById('uploadSection').style.display = 'none';
             document.getElementById('editImageButton').style.display = 'inline';
         } catch (error) {
@@ -92,12 +145,12 @@ async function uploadImage(file) {
     }
 }
 
-// Toggle the upload section when "Edit Image" button is clicked
+// Show upload section when "Edit Image" is clicked
 document.getElementById('editImageButton').addEventListener('click', () => {
     document.getElementById('uploadSection').style.display = 'block';
 });
 
-// Event listener for the upload button
+// Handle image upload
 document.getElementById('uploadButton').addEventListener('click', () => {
     const file = document.getElementById('imageUpload').files[0];
     if (file) {
@@ -107,5 +160,5 @@ document.getElementById('uploadButton').addEventListener('click', () => {
     }
 });
 
-// Call fetchData to load data when the page loads
+// Load data on page load
 fetchData();
