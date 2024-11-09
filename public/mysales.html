@@ -67,16 +67,40 @@
     </label> 
     <input type="month" id="endMonth"> 
     <button class="btn btn-light filter-btn">Filter</button> 
-    <label for="storeName">
-      Store Name:
-    </label> 
-    <select id="storeName"> 
-      <option value="">
-        All Stores
-      </option> 
-    </select>
   </div>    
+  <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="pills-all-tab" data-bs-toggle="pill" data-bs-target="#pills-all" type="button" role="tab" aria-controls="pills-all" aria-selected="true">All</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-pending-tab" data-bs-toggle="pill" data-bs-target="#pills-pending" type="button" role="tab" aria-controls="pills-purchase" aria-selected="false">Pending</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-completed-tab" data-bs-toggle="pill" data-bs-target="#pills-completed" type="button" role="tab" aria-controls="pills-completed" aria-selected="false">Completed</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-rejected-tab" data-bs-toggle="pill" data-bs-target="#pills-rejected" type="button" role="tab" aria-controls="pills-rejected" aria-selected="false">Rejected</button>
+    </li>
+  </ul>
   <!-- DYNAMIC CONTENT -->
+  <div class="tab-content" id="pills-tabContent">
+    <!-- All Tab -->
+    <div class="tab-pane fade show active" id="pills-all" role="tabpanel" aria-labelledby="pills-all-tab">
+      
+    </div>
+    <!-- Pending Tab -->
+    <div class="tab-pane fade" id="pills-pending" role="tabpanel" aria-labelledby="pills-pending-tab">
+      
+    </div>
+    <!-- Completed Tab -->
+    <div class="tab-pane fade" id="pills-completed" role="tabpanel" aria-labelledby="pills-completed-tab">
+      
+    </div>
+    <!-- Rejected Tab -->
+    <div class="tab-pane fade" id="pills-rejected" role="tabpanel" aria-labelledby="pills-rejected-tab">
+      
+    </div>
+  </div>
   <div id="sales-order"> 
 
   </div>

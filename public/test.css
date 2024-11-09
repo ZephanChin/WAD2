@@ -1,11 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700&family=Poppins:wght@100;300;400;600;700&display=swap');
 body {
-    background-color: rgba(221, 199, 187, 1);
-  font-family: 'Poppins', sans-serif;
+    /* background-color: rgba(221, 199, 187, 1); */
+    font-family: 'Poppins', sans-serif;
 }
 
 h1 {
-    color: white;
     font-weight: bold;
 }
 
@@ -31,3 +30,6 @@ button[aria-selected="false"]{
     width: 200px;
 }
 
+.purchase-ele {
+    background-color: rgba(221, 199, 187, 1);
+}

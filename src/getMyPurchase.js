@@ -63,43 +63,12 @@ async function retrieveUserOrders() {
         populateStoreDropdown(allOrders);
     });
 
-// Function to retrieve and display sales orders made by the current user
-// async function retrieveUserSOrders() {
-//     const pillSales = document.getElementById('pills-sales');
-
-//     onAuthStateChanged(auth, async (user) => {
-//         if (user) {
-//             const q = query(
-//                 collection(db, "sorder"),
-//                 where("uid", "==", user.uid),
-//                 orderBy("timestamp", "desc")
-//             );
-
-//             const querySnapshot = await getDocs(q);
-
-//             pillSales.innerHTML = "";
-
-//             if (querySnapshot.empty) {
-//                 pillSales.innerHTML = "<p>You do not have any orders.</p>";
-//             } else {
-//                 querySnapshot.forEach((doc) => {
-//                     const salesData = doc.data();
-//                     displayPOrder(doc.id, salesData, pillSales);
-//                 });
-//             }
-//         } else {
-//             pillSales.innerHTML = "<p>Please log in to see your orders.</p>";
-//             setTimeout(() => {
-//                 window.location.href = "/login.html";
-//             }, 2000);
-//         }
-//     });
 }
 
 // Function to dynamically create and display purchase elements, including a detail button [not done]
 function displayPOrder(purchaseId, purchaseData, container) {
     const purchaseElement = document.createElement('div');
-    purchaseElement.classList.add("mt-5", "me-5", "row", "bg-light", "border", "rounded", "d-flex");
+    purchaseElement.classList.add("mt-5", "me-5", "row", "border", "rounded-4", "d-flex", "purchase-ele");
     
     const purchaseElementHead = document.createElement('div');
     purchaseElementHead.classList.add("row", "col-6", "ms-2", "mt-2");
@@ -109,7 +78,7 @@ function displayPOrder(purchaseId, purchaseData, container) {
     purchaseElementOnoDiv.classList.add("col-3");
 
     const purchaseElementOnoLbl = document.createElement('span');
-    purchaseElementOnoLbl.classList.add("fw-bold");
+    purchaseElementOnoLbl.classList.add("fw-bold", "fs-2");
     purchaseElementOnoLbl.innerText = "Order Number";
 
     const purchaseElementOnoCtn = document.createElement('div');
@@ -183,7 +152,7 @@ function displayPOrder(purchaseId, purchaseData, container) {
 
     // Iterate item from Items Map
     const orderItems = purchaseData.Items; 
-    // console.log("iterate", purchaseData.Items)
+    console.log("iterate", purchaseData.Items)
     
     // Iterate over the map 
     for (const key in orderItems) {
@@ -235,38 +204,6 @@ function displayPOrder(purchaseId, purchaseData, container) {
     }
 }
 
-// Function to dynamically create and display sales elements, including a complete button [not done]
-function displaySOrder(postId, postData, container) {
-    const postElement = document.createElement('div');
-    postElement.classList.add('post-item');
-
-    const itemName = document.createElement('h3');
-    itemName.textContent = postData.itemName;
-
-    const image = document.createElement('img');
-    image.src = postData.imageUrl;
-    image.alt = postData.itemName;
-    image.classList.add('post-image');
-
-    const account = document.createElement('p');
-    account.textContent = `Posted by: ${postData.account}`;
-
-    // Create and configure the delete button
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = "Delete Post";
-    deleteButton.classList.add('btn', 'btn-danger', 'mt-2');
-    deleteButton.onclick = () => deletePost(postId, container);
-
-    // Append elements to the post element
-    postElement.appendChild(image);
-    postElement.appendChild(itemName);
-    postElement.appendChild(account);
-    postElement.appendChild(deleteButton);
-
-    container.appendChild(postElement);
-}
-
-
 
 function filterOrdersByMonth() {
     const postsContainer = document.getElementById('purchase-container');
@@ -316,35 +253,13 @@ const populateStoreDropdown = (purchaseData) => {
         const option = document.createElement('option'); 
         option.value = store; 
         option.textContent = store; 
-        storeNameSelect.appendChild(option); 
+        storeNameSelect.appendChild(option);
     }); 
 };
 
 const filterOrdersByStore = () => { 
     const postsContainer = document.getElementById('purchase-container');
     const storeName = document.getElementById('storeName').value; 
-    // const filteredOrders = allOrders.map(order => { 
-    //     const filteredItems = {}; 
-    //     if (storeName == '') {
-    //         return { allOrders }; 
-    //     }
-    //     else {
-    //         for (o in order) { 
-    //             if (order.sellaccount === storeName) { 
-    //                 filteredItems[o] = order[o]; 
-    //             } 
-    //         }
-    //         return { ...order, o: filteredItems }; 
-    //     }  
-    // }).filter(order => Object.keys(order.Items) > 0); 
-    // // displayOrders(filteredOrders);
-    // if (filteredOrders.length == 0) {
-    //     postsContainer.innerText = 'No matching orders';
-    // } else {
-    //     console.log('filtered orders', filteredOrders);
-    //     postsContainer.innerText = '';
-    //     filteredOrders.forEach(order => displayPOrder(order.OrderID, order, postsContainer));
-    // }
     const filteredPosts = allOrders.filter(order => {
         return storeName === '' || order.sellaccount === storeName;
     });

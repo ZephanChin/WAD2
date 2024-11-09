@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, collection, getDocs, query, where, orderBy, deleteDoc, doc } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, where, orderBy, deleteDoc, doc, updateDoc } from "firebase/firestore";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -29,36 +29,65 @@ var allOrders = [];
 // Function to retrieve and display sales orders made by the current user
 async function retrieveUserOrders() {
     // console.log('called sales order');
-    const salesOrder = document.getElementById('sales-order');
+    // const salesOrder = document.getElementById('sales-order');
+    const salesAll = document.getElementById('pills-all');
+    const salesPending = document.getElementById('pills-pending');
+    const salesCompleted = document.getElementById('pills-completed');
+    const salesRejected = document.getElementById('pills-rejected');
     const user = auth.currentUser;
     // console.log("User is authenticated:", user);
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             const q = query(
                 collection(db, "porders"),
+                where("selluid", "==", user.uid),
                 orderBy("PlaceDate")
             );
             // const filteredResults = [];
             const querySnapshot = await getDocs(q);
             
-            salesOrder.innertext = "";
+            salesAll.innertext = "";
+            salesPending.innertext = "";
+            salesCompleted.innertext = "";
+            salesRejected.innertext = "";
+
             if (querySnapshot.empty) {
                 salesOrder.innertext = "<p>You do not have any orders.</p>";
             } else {
                 querySnapshot.forEach((doc) => {
                     const salesData = doc.data();
-                    // console.log("salesdata=", salesData)
+                    // console.log("s   alesdata=", salesData)
                     allOrders.push(salesData);
                     // const items = salesData.Items; 
-                    if (salesData.selluid == user.uid) { 
-                        // filteredItems.forEach(([key, item]) => { 
-                        //     filteredResults.push({ [key]: item }); 
-                        // }); 
-                        displaySOrder(doc.id, salesData, salesOrder);
+                    if (salesData.selluid == user.uid) {
+                        displaySOrder(doc.id, salesData, salesAll);
+                        if (salesData.status == "Pending"){
+                            displaySOrder(doc.id, salesData, salesPending);
+                        }
+                        if (salesData.status == "Completed"){
+                            displaySOrder(doc.id, salesData, salesCompleted); 
+                        }
+                        if (salesData.status == "Rejected"){
+                            displaySOrder(doc.id, salesData, salesRejected);
+                        }
                     }
-                    // console.log('All orders:', allOrders);
-                    populateStoreDropdown(allOrders);
                 });
+                const all = document.getElementById('pills-all');
+                const pend = document.getElementById('pills-pending');
+                const comp = document.getElementById('pills-completed');
+                const rej = document.getElementById('pills-rejected');
+                if (all.textContent.trim() === ''){
+                    all.innerText = "No Orders";
+                }
+                if (pend.textContent.trim() === ''){
+                    pend.innerText = "No Pending Orders";
+                }
+                if (comp.textContent.trim() === ''){
+                    comp.innerText = "No Completed Orders";
+                }
+                if (rej.textContent.trim() === ''){
+                    pend.innerText = "No Rejected Orders";
+                }
             }
         } else {
             salesOrder.innerHTML = "<p>Please log in to see your orders.</p>";
@@ -70,152 +99,206 @@ async function retrieveUserOrders() {
 }
 
 // Function to dynamically create and display purchase elements, including a detail button [not done]
-function displaySOrder(purchaseId, purchaseData, container) {
-    const purchaseElement = document.createElement('div');
-    purchaseElement.classList.add("mt-5", "me-5", "row", "bg-light", "border", "rounded", "d-flex");
+function displaySOrder(salesId, salesData, container) {
+    const salesElement = document.createElement('div');
+    salesElement.classList.add("mt-5", "me-5", "row", "bg-light", "border", "rounded", "d-flex");
     
-    const purchaseElementHead = document.createElement('div');
-    purchaseElementHead.classList.add("row", "col-4", "ms-2", "mt-2");
+    const salesElementHead = document.createElement('div');
+    salesElementHead.classList.add("row", "col-6", "ms-2", "mt-2");
 
     // Ono Element
-    const purchaseElementOnoDiv = document.createElement('div');
-    purchaseElementOnoDiv.classList.add("col-4");
+    const salesElementOnoDiv = document.createElement('div');
+    salesElementOnoDiv.classList.add("col-3");
 
-    const purchaseElementOnoLbl = document.createElement('span');
-    purchaseElementOnoLbl.classList.add("fw-bold");
-    purchaseElementOnoLbl.innerText = "Order Number";
+    const salesElementOnoLbl = document.createElement('span');
+    salesElementOnoLbl.classList.add("fw-bold");
+    salesElementOnoLbl.innerText = "Order Number";
 
-    const purchaseElementOnoCtn = document.createElement('div');
-    purchaseElementOnoCtn.textContent = purchaseId;
+    const salesElementOnoCtn = document.createElement('div');
+    salesElementOnoCtn.textContent = salesId;
 
-    purchaseElementOnoDiv.appendChild(purchaseElementOnoLbl);
-    purchaseElementOnoDiv.appendChild(purchaseElementOnoCtn);
+    salesElementOnoDiv.appendChild(salesElementOnoLbl);
+    salesElementOnoDiv.appendChild(salesElementOnoCtn);
 
     // DP Element
-    const purchaseElementDPDiv = document.createElement('div');
-    purchaseElementDPDiv.classList.add("col-4");
+    const salesElementDPDiv = document.createElement('div');
+    salesElementDPDiv.classList.add("col-3");
 
-    const purchaseElementDPLbl = document.createElement('span');
-    purchaseElementDPLbl.classList.add("fw-bold");
-    purchaseElementDPLbl.innerText = "Date Placed";
+    const salesElementDPLbl = document.createElement('span');
+    salesElementDPLbl.classList.add("fw-bold");
+    salesElementDPLbl.innerText = "Date Placed";
 
-    const purchaseElementDPCtn = document.createElement('div');
-    // console.log('line 192', purchaseData);
-    // console.log('line 193', purchaseData.PlaceDate.toDate());
-    purchaseElementDPCtn.textContent = purchaseData.PlaceDate.toDate().toLocaleDateString();
+    const salesElementDPCtn = document.createElement('div');
+    // console.log('line 131', salesData);
+    // console.log('line 132', salesData.PlaceDate.toDate());
+    salesElementDPCtn.textContent = salesData.PlaceDate.toDate().toLocaleDateString();
 
-    purchaseElementDPDiv.appendChild(purchaseElementDPLbl);
-    purchaseElementDPDiv.appendChild(purchaseElementDPCtn);
+    salesElementDPDiv.appendChild(salesElementDPLbl);
+    salesElementDPDiv.appendChild(salesElementDPCtn);
 
     // TA Element
-    const purchaseElementTADiv = document.createElement('div');
-    purchaseElementTADiv.classList.add("col-4");
+    const salesElementTADiv = document.createElement('div');
+    salesElementTADiv.classList.add("col-3");
 
-    const purchaseElementTALbl = document.createElement('span');
-    purchaseElementTALbl.classList.add("fw-bold");
-    purchaseElementTALbl.innerText = "Total Amount";
+    const salesElementTALbl = document.createElement('span');
+    salesElementTALbl.classList.add("fw-bold");
+    salesElementTALbl.innerText = "Total Amount";
 
-    const purchaseElementTACtn = document.createElement('div');
-    purchaseElementTACtn.textContent = `$ ${purchaseData.TotalPrice.toFixed(2)}`;
+    const salesElementTACtn = document.createElement('div');
+    salesElementTACtn.textContent = `$ ${salesData.TotalPrice.toFixed(2)}`;
 
-    purchaseElementTADiv.appendChild(purchaseElementTALbl);
-    purchaseElementTADiv.appendChild(purchaseElementTACtn);
+    salesElementTADiv.appendChild(salesElementTALbl);
+    salesElementTADiv.appendChild(salesElementTACtn);
+
+    // Shop Name Element
+    const salesElementShopDiv = document.createElement('div');
+    salesElementShopDiv.classList.add("col-3");
+
+    const salesElementShopLbl = document.createElement('span');
+    salesElementShopLbl.classList.add("fw-bold");
+    salesElementShopLbl.innerText = "Hustler";
+
+    const salesElementShopCtn = document.createElement('div');
+    salesElementShopCtn.textContent = salesData.sellaccount;
+
+    salesElementShopDiv.appendChild(salesElementShopLbl);
+    salesElementShopDiv.appendChild(salesElementShopCtn);
 
     // Filler Element
-    const purchaseElementFiller = document.createElement('div');
-    purchaseElementFiller.classList.add('col-8');
+    // const salesElementFiller = document.createElement('div');
+    // salesElementFiller.classList.add('col-6');
 
     // Append Elements to Order Head
-    purchaseElementHead.appendChild(purchaseElementOnoDiv);
-    purchaseElementHead.appendChild(purchaseElementDPDiv);
-    purchaseElementHead.appendChild(purchaseElementTADiv);
+    salesElementHead.appendChild(salesElementOnoDiv);
+    salesElementHead.appendChild(salesElementDPDiv);
+    salesElementHead.appendChild(salesElementTADiv);
+    salesElementHead.appendChild(salesElementShopDiv);
 
     // Append Elements to Order Element
-    purchaseElement.appendChild(purchaseElementHead);
-    container.appendChild(purchaseElement);
+    salesElement.appendChild(salesElementHead);
+    container.appendChild(salesElement);
 
     // filler div
     const purchaseitemfiller = document.createElement('div');
-    purchaseitemfiller.classList.add('col-8');
-    purchaseElement.appendChild(purchaseitemfiller);  
+    purchaseitemfiller.classList.add('col-6');
+    salesElement.appendChild(purchaseitemfiller);  
 
     // Iterate item from Items Map
-    const orderItems = purchaseData.Items; 
+    const orderItems = salesData.Items; 
+    // console.log("iterate", purchaseData.Items)
     
     // Iterate over the map 
-    const user = auth.currentUser;
     for (const key in orderItems) {
-        if (orderItems.hasOwnProperty(key) && orderItems[key][7] == user.uid) { 
+        if (orderItems.hasOwnProperty(key)) { 
             // console.log(`Key: ${key}`); 
             const item = orderItems[key]; 
-            // Iterate over each array 
-            // item.forEach(value => { 
-            //     console.log(` - Value: ${value}`); 
-            // }); 
+           
             // Item Details
 
             // Image Div
             const purchaseitemdiv = document.createElement('div');
             purchaseitemdiv.classList.add('col-2');
             const purchaseitemimg = document.createElement('img');
-            purchaseitemimg.src = item[6];
+            purchaseitemimg.src = item[4];
             purchaseitemimg.classList.add("ms-3", "my-2", "item-img");
             
             purchaseitemdiv.appendChild(purchaseitemimg);
-            purchaseElement.appendChild(purchaseitemdiv);
+            salesElement.appendChild(purchaseitemdiv);
 
             // Purchase Element Body
-            const purchaseElementBody = document.createElement('div');
-            purchaseElementBody.classList.add('row', 'col-10', 'mt-5');
-
-            // Shop Name Div
-            const purchaseElementStoreName = document.createElement('div');
-            purchaseElementStoreName.classList.add('col-4');
-            purchaseElementStoreName.textContent = item[0];
-
-            purchaseElementBody.appendChild(purchaseElementStoreName);
-
-            // Item Desc Div
-            const purchaseElementItemName = document.createElement('div');
-            purchaseElementItemName.classList.add('col-8');
-            purchaseElementItemName.textContent = item[2]; 
-
-            purchaseElementBody.appendChild(purchaseElementItemName);
+            const salesElementBody = document.createElement('div');
+            salesElementBody.classList.add('row', 'col-10', 'mt-5');
             
             // Item Price Div
-            const purchaseElementItemPrice = document.createElement('div');
-            purchaseElementItemPrice.classList.add('col-4');
-            purchaseElementItemPrice.textContent = `Price: $ ${item[3].toFixed(2)}`;
+            const salesElementItemPrice = document.createElement('div');
+            salesElementItemPrice.classList.add('col-4');
+            salesElementItemPrice.textContent = `Price: $ ${item[1].toFixed(2)}`;
 
-            purchaseElementBody.appendChild(purchaseElementItemPrice);
+            salesElementBody.appendChild(salesElementItemPrice);
 
             // Item Qty Div
-            const purchaseElementItemQty = document.createElement('div');
-            purchaseElementItemQty.classList.add('col-4');
-            purchaseElementItemQty.textContent = `Qty: ${item[4]}`;
+            const salesElementItemQty = document.createElement('div');
+            salesElementItemQty.classList.add('col-4');
+            salesElementItemQty.textContent = `Qty: ${item[2]}`;
 
-            purchaseElementBody.appendChild(purchaseElementItemQty);
+            salesElementBody.appendChild(salesElementItemQty);
 
             // Item Item Total Price Div
-            const purchaseElementTItemPrice = document.createElement('div');
-            purchaseElementTItemPrice.classList.add('col-4');
-            purchaseElementTItemPrice.textContent = `Total Price: $ ${item[5].toFixed(2)}`;
+            const salesElementTItemPrice = document.createElement('div');
+            salesElementTItemPrice.classList.add('col-4');
+            salesElementTItemPrice.textContent = `Total Price: $ ${item[3].toFixed(2)}`;
 
-            purchaseElementBody.appendChild(purchaseElementTItemPrice);
+            salesElementBody.appendChild(salesElementTItemPrice);
 
             // Body to Element
-            purchaseElement.appendChild(purchaseElementBody);
-            
-            // Create and configure the "Delete Post" button
-            const completeButton = document.createElement('button');
-            completeButton.textContent = "✔";
-            completeButton.classList.add('btn btn-success'); // Use CSS to style this button
-
-            completeButton.onclick = () => updateStatus(postId, container);
+            salesElement.appendChild(salesElementBody);
 
         }
     }
+    // Status
+    const salesElementStatDiv = document.createElement('div');
+    salesElementStatDiv.classList.add("col-3");
+
+    const salesElementStatLbl = document.createElement('span');
+    salesElementStatLbl.classList.add("fw-bold");
+    salesElementStatLbl.innerText = "Status";
+
+    const salesElementStatCtn = document.createElement('div');
+    salesElementStatCtn.textContent = salesData.status;
+    if (salesData.status == "Completed"){
+        salesElementStatCtn.classList.add('bg-success', 'text-light')
+    }
+    if (salesData.status == "Rejected"){
+        salesElementStatCtn.classList.add('bg-danger', 'text-light')
+    }
+
+    salesElementHead.appendChild(salesElementStatLbl);
+    salesElementHead.appendChild(salesElementStatCtn);
+
+    // Complete Button
+    const completeButton = document.createElement('button');
+    completeButton.textContent = "✓";
+    completeButton.classList.add('btn', 'btn-outline-success'); 
+    if (salesData.status != "Pending") {
+        completeButton.disabled = true;
+    }
+    salesElementHead.appendChild(completeButton);
+
+    completeButton.onclick = () => updateStatus(salesId, "status", "Completed");
+
+    // Reject Button
+    const rejectButton = document.createElement('button');
+    rejectButton.textContent = "𐤕";
+    if (salesData.status != "Pending") {
+        rejectButton.disabled = true;
+    }
+    rejectButton.classList.add('btn', 'btn-outline-danger');
+    salesElementHead.appendChild(rejectButton);
+
+    rejectButton.onclick = () => updateStatus(salesId, "status", "Rejected");
 }
+
+const updateStatus = async (salesId, field, newValue) => { 
+    if (newValue == "Completed"){
+        const confirmation = confirm("Are you sure you want to complete this order?");
+    }
+    else {
+        const confirmation = confirm("Are you sure you want to reject this order?");
+    }
+    if (confirmation) {
+        console.log(salesId, field, newValue);
+        const docRef = doc(db, "porders", salesId); 
+        try { 
+            await updateDoc(docRef, { 
+                [field]: newValue 
+            }); 
+            console.log("Order successfully updated!"); 
+        } 
+        catch (error) { 
+            console.error("Error updating document: ", error); 
+        } 
+    }
+};
 
 // Template function
 function template(postId, postData, container) {
@@ -248,18 +331,6 @@ function template(postId, postData, container) {
     container.appendChild(postElement);
 }
 
-const updateStatus = async () => { 
-    const docRef = doc(db, "porders", docID); 
-    try { 
-        // Assuming you want to update the first object in the nested array 
-        const fieldPath = "Items."+ nestedArray + ".8." + updatevalue; 
-        await updateDoc(docRef, { [fieldPath]: "newUpdatedValue" }); 
-        console.log("Document successfully updated!"); 
-    } 
-    catch (error) { 
-        console.error("Error updating document: ", error); 
-    } 
-};
 
 
 // Month Filter Function
@@ -286,7 +357,7 @@ function filterOrdersByMonth() {
     } else {
         console.log('filtered orders', filteredOrders);
         postsContainer.innerText = '';
-        filteredOrders.forEach(order => displayPOrder(order.OrderID, order, postsContainer));
+        filteredOrders.forEach(order => displaySOrder(order.OrderID, order, postsContainer));
     }
 }
 
@@ -298,67 +369,6 @@ filterButtons.forEach(button => {
     });
 });
 
-// Populate Store Dropdown
-const populateStoreDropdown = (purchaseData) => { 
-    // console.log('populate', purchaseData);
-    const storeNames = new Set(); 
-    purchaseData.forEach(order => { 
-        // console.log('populate order', order.Items)
-        for (const key in order.Items) { 
-            if (order.Items.hasOwnProperty(key)) { 
-                // console.log(`Key: ${key}`); 
-                const array = order.Items[key]; 
-                // array.forEach(value => { 
-                //     console.log(` - Value: ${value}`); 
-                // }); 
-                storeNames.add(array[0]); 
-            } 
-        }
-    }); 
-    // console.log('storenames:', allOrders);
-    const storeNameSelect = document.getElementById('storeName'); 
-    storeNames.forEach(store => { 
-        const option = document.createElement('option'); 
-        option.value = store; 
-        option.textContent = store; 
-        storeNameSelect.appendChild(option); 
-    }); 
-};
-
-// Store Drop Down Function
-const filterOrdersByStore = () => { 
-    const postsContainer = document.getElementById('pills-purchase');
-    const storeName = document.getElementById('storeName').value; 
-    const filteredOrders = allOrders.map(order => { 
-        const filteredItems = {}; 
-        if (storeName == '') {
-            for (const key in order.Items) { 
-                { 
-                    filteredItems[key] = order.Items[key]; 
-                } 
-            }
-            return { ...order, Items: filteredItems }; 
-        }
-        else {
-            for (const key in order.Items) { 
-                if (order.Items.hasOwnProperty(key) && order.Items[key][0] === storeName) { 
-                    filteredItems[key] = order.Items[key]; 
-                } 
-            }
-            return { ...order, Items: filteredItems }; 
-        }  
-    }).filter(order => Object.keys(order.Items).length > 0); 
-    // displayOrders(filteredOrders);
-    if (filteredOrders.length == 0) {
-        postsContainer.innerText = 'No matching orders';
-    } else {
-        console.log('filtered orders', filteredOrders);
-        postsContainer.innerText = '';
-        filteredOrders.forEach(order => displayPOrder(order.OrderID, order, postsContainer));
-    }
-};
-// Set event listener for filter store
-document.getElementById('storeName').addEventListener('input', filterOrdersByStore);
 
 
 const setMaxMonth = () => { 
