@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700&family=Poppins:wght@100;300;400;600;700&display=swap');
 body {
-    /* background-color: rgba(221, 199, 187, 1); */
-    font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 h1 {
+    color: #2B1B12;
     font-weight: bold;
 }
 

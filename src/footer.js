@@ -88,3 +88,4 @@ const vueApp = Vue.createApp({
 
 // Mount the Vue instance
 vueApp.mount('#app');
+
