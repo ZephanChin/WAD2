@@ -20,40 +20,39 @@
 
 <body>
 
- <!-- Navbar -->
- <div id="navbar"></div>
+  <!-- Navbar -->
+  <div id="navbar"></div>
 
   <!-- Featured Shop of the Week Section with Video Background -->
-  <div class="video-header-container">
-    <video autoplay muted loop>
+  <div class="video-header-container position-relative text-center text-white">
+    <video autoplay muted loop class="w-100">
       <source src="../assets/isellbracelets.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
-    <div class="overlay-background"></div>
+    <div class="overlay-background position-absolute top-0 w-100 h-100"></div>
     <h1 class="featured-title">Hustler of the week: iSellBracelets</h1>
   </div>
 
   <!-- Market Section -->
   <h1 id="anchor" class="hmarket">Hustler's Market</h1>
 
-  <div class="container hmbox mt-4" >
-      <div class="filter-container">
-        <button type="button" class="btn btn-primary filter-btn">All</button>
-        <button type="button" class="btn btn-secondary filter-btn">Fashion</button>
-        <button type="button" class="btn btn-success filter-btn">Crafts</button>
-        <button type="button" class="btn btn-danger filter-btn">Services</button>
-        <button type="button" class="btn btn-warning filter-btn">Food</button>
+  <div class="container hmbox mt-5">
+    <div class="filter-container">
+      <button type="button" class="btn btn-outline-dark filter-btn">All</button>
+      <button type="button" class="btn btn-outline-dark filter-btn">Fashion</button>
+      <button type="button" class="btn btn-outline-dark filter-btn">Crafts</button>
+      <button type="button" class="btn btn-outline-dark filter-btn">Services</button>
+      <button type="button" class="btn btn-outline-dark filter-btn">Food</button>
 
-        <div class="search-bar">
-          <input type="text" class="form-control" id="search-input" placeholder="Search" />
-        </div>
-
-        <button type="button" class="btn btn-primary add-post-btn" id="add-post-btn">Add a post</button>
+      <div class="search-bar">
+        <input type="text" class="form-control" id="search-input" placeholder="Search for listing" />
       </div>
 
-      <div class="row" id="posts-container" style="background-color: #DDC7BB;">
-        <!-- Dynamically loaded posts will appear here -->
-      </div>
+      <button type="button" class="btn add-post-btn" id="add-post-btn">+</button>
+    </div>
+
+    <div class="row g-3" id="posts-container" style="background-color: #DDC7BB;">
+    </div>
   </div>
 
   <div id="footer"> </div>
@@ -71,7 +70,7 @@
   <script>
     $('#navbar').load('navbar.html');
     $('#footer').load('footer.html');
-</script>
+  </script>
 
 </body>
 
