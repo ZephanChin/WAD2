@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth"; // Import getAuth and onAuthStateChanged
-import { getFirestore, collection, getDocs, query, orderBy } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, orderBy, where } from "firebase/firestore";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -85,18 +85,13 @@ function displayPost(postData, container) {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             const loggedInAccount = user.displayName; 
-            // console.log("Logged-in account name:", loggedInAccount);
-            // console.log("Post account name:", postData.account);
 
             if (postData.account === loggedInAccount) {
-                // console.log("This post belongs to the logged-in user. Redirecting to mymarketplace.html.");
                 accountLink.href = `/mymarketplace.html`;
             } else {
-                // console.log("This post belongs to another user. Redirecting to usermarketplace.html.");
                 accountLink.href = `usermarketplace.html?account=${encodeURIComponent(postData.account)}`;
             }
         } else {
-            // console.log("User is not logged in. Redirecting to usermarketplace.html.");
             accountLink.href = `usermarketplace.html?account=${encodeURIComponent(postData.account)}`;
         }
     });
@@ -132,6 +127,59 @@ function displayPost(postData, container) {
     container.appendChild(postElement);
 }
 
+// Function to filter posts based on the selected category
+function filterPosts(category) {
+    const postsContainer = document.getElementById('posts-container');
+    const filteredPosts = category === "All" 
+        ? allPosts // Show all posts if "All" is selected
+        : allPosts.filter(post => post.category === category);
+
+    // Clear existing posts
+    while (postsContainer.firstChild) {
+        postsContainer.removeChild(postsContainer.firstChild);
+    }
+
+    // Display filtered posts
+    filteredPosts.forEach(post => displayPost(post, postsContainer));
+
+    // If no posts match the selected category, display a message
+    if (filteredPosts.length === 0) {
+        const noResultsMessage = document.createElement('p');
+        noResultsMessage.textContent = `No posts found in the "${category}" category.`;
+        postsContainer.appendChild(noResultsMessage);
+    }
+}
+
+// Search and filter posts based on the search query
+function searchPosts(query) {
+    const postsContainer = document.getElementById('posts-container');
+    const filteredPosts = allPosts.filter(post => 
+        post.itemName.toLowerCase().includes(query.toLowerCase()) || 
+        post.account.toLowerCase().includes(query.toLowerCase())
+    );
+
+    const currentCategory = document.querySelector('.active-filter') ? document.querySelector('.active-filter').textContent : 'All';
+
+    // If a category is selected, filter by it as well
+    const finalFilteredPosts = currentCategory === 'All' 
+        ? filteredPosts 
+        : filteredPosts.filter(post => post.category === currentCategory);
+
+    // Clear existing posts
+    while (postsContainer.firstChild) {
+        postsContainer.removeChild(postsContainer.firstChild);
+    }
+
+    // Display filtered posts
+    finalFilteredPosts.forEach(post => displayPost(post, postsContainer));
+
+    // If no posts match the search query, display a message
+    if (finalFilteredPosts.length === 0) {
+        const noResultsMessage = document.createElement('p');
+        noResultsMessage.textContent = "No posts found for your search.";
+        postsContainer.appendChild(noResultsMessage);
+    }
+}
 
 // Event listeners for filter buttons
 document.addEventListener('DOMContentLoaded', () => {
@@ -139,14 +187,16 @@ document.addEventListener('DOMContentLoaded', () => {
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
             const category = button.textContent;
-            filterPosts(category);
+            filterPosts(category); // Call filterPosts to filter posts by category
+            filterButtons.forEach(btn => btn.classList.remove('active')); // Remove active class from all buttons
+            button.classList.add('active'); // Add active class to clicked button
         });
     });
 
     const searchInput = document.getElementById('search-input'); // Ensure you have an input field with this ID
     searchInput.addEventListener('input', (event) => {
         const searchQuery = event.target.value;
-        searchPosts(searchQuery);
+        searchPosts(searchQuery); // Call searchPosts when the user types in the search field
     });
 
     // Call the function to retrieve and display the posts when the page loads

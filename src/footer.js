@@ -48,42 +48,48 @@ const vueApp = Vue.createApp({
             // Check if the user is logged in
             if (!this.user) {
                 this.message = "You must be logged in to subscribe.";
-                // console.error("Error: User is not authenticated.");
                 return;
             }
-
-            // console.log("Authenticated User UID:", this.user.uid);
-            // console.log("Email entered for subscription:", this.email);
-
+    
+            // Ensure the email is not empty
+            if (!this.email) {
+                this.message = "Please enter a valid email address.";
+                return;
+            }
+    
+            // Check if the entered email matches the logged-in user's email
+            if (this.user.email !== this.email) {
+                this.message = "The email address entered does not match the logged-in user's email.";
+                return;
+            }
+    
             try {
                 // Reference to the specific document (user's UID as document ID)
                 const subscriberDocRef = doc(db, 'subscribers', this.user.uid);
-                console.log("Document Reference for the User:", subscriberDocRef);
-
+                
                 // Check if the user already has a subscription
                 const subscriberDocSnap = await getDoc(subscriberDocRef);
                 if (subscriberDocSnap.exists()) {
                     this.message = 'Email is already subscribed!';
-                    console.warn("Warning: User already subscribed.");
                     return;
                 }
-
+    
                 // Add subscription data to Firestore
                 await setDoc(subscriberDocRef, {
                     email: this.email,
                     timestamp: serverTimestamp()
                 });
-
-                console.log("Subscription successfully saved in Firestore.");
+    
                 this.message = 'Subscribed to Newsletter! Your newsletter will appear on the 1st of every month!';
                 this.email = ''; // Clear the email input
-
+    
             } catch (error) {
                 console.error("Error during subscription process:", error);
                 this.message = 'There was an error subscribing. Please try again.';
             }
         }
     }
+    
 });
 
 // Mount the Vue instance
