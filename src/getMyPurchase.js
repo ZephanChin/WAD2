@@ -68,7 +68,7 @@ async function retrieveUserOrders() {
 // Function to dynamically create and display purchase elements, including a detail button [not done]
 function displayPOrder(purchaseId, purchaseData, container) {
     const purchaseTable = document.createElement('Table');
-    purchaseTable.classList.add('table')
+    purchaseTable.classList.add('table');
     // table row [order id], "Ordered On", "Status"
     const purchaseTableRow1 = document.createElement('tr');
     purchaseTableRow1.classList.add('body-ele');
@@ -79,54 +79,66 @@ function displayPOrder(purchaseId, purchaseData, container) {
     const  purchaseTableValue1_2 = document.createElement('td');
     const  purchaseTableValue1_3 = document.createElement('td');
     const  purchaseTableValue1_4 = document.createElement('td');
+    const  purchaseTableValue1_5 = document.createElement('td');
+
     // purchaseTableValue1_3.classList.add('text-center');
     // purchaseTableValue1_3.colSpan = 2;
-    purchaseTableValue1_1.textContent = purchaseId;
-    purchaseTableValue1_2.textContent = "Ordered On";
-    purchaseTableValue1_3.textContent = "Hustler";
-    purchaseTableValue1_4.textContent = "Status";
+    purchaseTableValue1_1.classList.add('text-secondary');
+    purchaseTableValue1_3.classList.add('text-secondary');
+    purchaseTableValue1_4.classList.add('text-secondary');
+    purchaseTableValue1_5.classList.add('text-secondary');
+
+    purchaseTableValue1_1.textContent = "Order Number:";
+    purchaseTableValue1_2.textContent = "";
+    purchaseTableValue1_3.textContent = "Ordered On";
+    purchaseTableValue1_4.textContent = "Hustler";
+    purchaseTableValue1_5.textContent = "Status";
 
     purchaseTableRow1.appendChild(purchaseTableValue1_1);
     purchaseTableRow1.appendChild(purchaseTableValue1_2);
     purchaseTableRow1.appendChild(purchaseTableValue1_3);
     purchaseTableRow1.appendChild(purchaseTableValue1_4);
+    purchaseTableRow1.appendChild(purchaseTableValue1_5);
+
     purchaseTable.appendChild(purchaseTableRow1);
 
     // table row [sellaccount], [PlaceDate], [Status]
     const purchaseTableRow2 = document.createElement('tr');
     const  purchaseTableValue2_1 = document.createElement('td');
     purchaseTableValue2_1.classList.add('text-center', 'fs-5');
-
     const  purchaseTableValue2_2 = document.createElement('td');
-    purchaseTableValue2_2.classList.add('text-start', 'fs-5');
 
     const  purchaseTableValue2_3 = document.createElement('td');
-    purchaseTableValue2_3.classList.add('fs-5');
+    purchaseTableValue2_3.classList.add('text-start', 'fs-5');
 
     const  purchaseTableValue2_4 = document.createElement('td');
-    purchaseTableValue2_4.classList.add('text-start', 'fs-3', 'fw-bold');
-    // purchaseTableValue2_3.colSpan = 2;
+    purchaseTableValue2_4.classList.add('fs-5');
 
-    purchaseTableValue2_1.textContent = " ";
-    purchaseTableValue2_2.textContent = purchaseData.PlaceDate.toDate().toLocaleDateString();
-    purchaseTableValue2_3.textContent = purchaseData.sellaccount;
-    purchaseTableValue2_4.textContent = purchaseData.status;
+    const  purchaseTableValue2_5 = document.createElement('td');
+    purchaseTableValue2_5.classList.add('text-start', 'fs-3', 'fw-bold');
+
+    purchaseTableValue2_1.textContent = purchaseId.toUpperCase();
+    purchaseTableValue2_2.textContent = " ";
+    purchaseTableValue2_3.textContent = purchaseData.PlaceDate.toDate().toLocaleDateString();
+    purchaseTableValue2_4.textContent = purchaseData.sellaccount;
+    purchaseTableValue2_5.textContent = purchaseData.status;
 
 
-    if (purchaseData.status == "Pending"){
-        purchaseTableValue2_4.classList.add('text-warning');
+    if (purchaseData.status == "Ongoing"){
+        purchaseTableValue2_5.classList.add('text-warning');
     }
     if (purchaseData.status == "Completed"){
-        purchaseTableValue2_4.classList.add('text-success');
+        purchaseTableValue2_5.classList.add('text-success');
     }
     if (purchaseData.status == "Cancelled"){
-        purchaseTableValue2_4.classList.add('text-danger');
+        purchaseTableValue2_5.classList.add('text-danger');
     }
 
     purchaseTableRow2.appendChild(purchaseTableValue2_1);
     purchaseTableRow2.appendChild(purchaseTableValue2_2);
     purchaseTableRow2.appendChild(purchaseTableValue2_3);
     purchaseTableRow2.appendChild(purchaseTableValue2_4);
+    purchaseTableRow2.appendChild(purchaseTableValue2_5);
     purchaseTable.appendChild(purchaseTableRow2);
 
 
@@ -140,43 +152,53 @@ function displayPOrder(purchaseId, purchaseData, container) {
             // table row [itemImg], [itemPrice], [itemQty], [itemTotalPrice] 
             const purchaseTableRow3 = document.createElement('tr');
             const purchaseTableValue3_1 = document.createElement('td');
-            purchaseTableValue3_1.classList.add('text-center');
+            const purchaseTableValue3_1_Img = document.createElement('img');
+            purchaseTableValue3_1_Img.classList.add('item-img');
+            purchaseTableValue3_1.align = "center";
+            purchaseTableValue3_1.rowSpan = 2;
             const purchaseTableValue3_2 = document.createElement('td');
             const purchaseTableValue3_3 = document.createElement('td');
             const purchaseTableValue3_4 = document.createElement('td');
+            const purchaseTableValue3_5 = document.createElement('td');
 
             purchaseTableValue3_2.classList.add('text-secondary');
             purchaseTableValue3_3.classList.add('text-secondary');
             purchaseTableValue3_4.classList.add('text-secondary');
+            purchaseTableValue3_5.classList.add('text-secondary');
 
-            purchaseTableValue3_1.textContent = item[0];
-            purchaseTableValue3_2.textContent = "Item Price";
-            purchaseTableValue3_3.textContent = "Quantity";
-            purchaseTableValue3_4.textContent = "Item Total Price";
+            purchaseTableValue3_1_Img.src = item[4];
+            purchaseTableValue3_2.textContent = "Item Name";
+            purchaseTableValue3_3.textContent = "Item Price";
+            purchaseTableValue3_4.textContent = "Quantity";
+            purchaseTableValue3_5.textContent = "Item Total Price";
 
+            purchaseTableValue3_1.appendChild(purchaseTableValue3_1_Img);
             purchaseTableRow3.appendChild(purchaseTableValue3_1);
             purchaseTableRow3.appendChild(purchaseTableValue3_2);
             purchaseTableRow3.appendChild(purchaseTableValue3_3);
             purchaseTableRow3.appendChild(purchaseTableValue3_4);
+            purchaseTableRow3.appendChild(purchaseTableValue3_5);
+
 
             purchaseTable.appendChild(purchaseTableRow3);
 
             // actual values
             const purchaseTableRow4 = document.createElement('tr');
             const purchaseTableValue4_1 = document.createElement('td');
-            const purchaseTableValue4_1_Img = document.createElement('img');
-            purchaseTableValue4_1_Img.classList.add('item-img');
-            purchaseTableValue4_1.align = "center";
+            
             const purchaseTableValue4_2 = document.createElement('td');
             const purchaseTableValue4_3 = document.createElement('td');
             const purchaseTableValue4_4 = document.createElement('td');
+            // const purchaseTableValue4_5 = document.createElement('td');
             
+            purchaseTableValue4_1.classList.add('align-top', 'fs-5');
             purchaseTableValue4_2.classList.add('align-top', 'fs-5');
             purchaseTableValue4_3.classList.add('align-top', 'fs-5');
             purchaseTableValue4_4.classList.add('align-top', 'fs-5');
+            // purchaseTableValue4_5.classList.add('align-top', 'fs-5');
 
-            purchaseTableValue4_1_Img.src = item[4];
-            purchaseTableValue4_1.appendChild(purchaseTableValue4_1_Img);
+            // purchaseTableValue4_1.textContent = " ";
+            purchaseTableValue4_1.textContent = item[0];
             purchaseTableValue4_2.textContent = `SGD ${item[1].toFixed(2)}`;
             purchaseTableValue4_3.textContent = item[2];
             purchaseTableValue4_4.textContent = `SGD ${item[3].toFixed(2)}`;
@@ -185,6 +207,7 @@ function displayPOrder(purchaseId, purchaseData, container) {
             purchaseTableRow4.appendChild(purchaseTableValue4_2);
             purchaseTableRow4.appendChild(purchaseTableValue4_3);
             purchaseTableRow4.appendChild(purchaseTableValue4_4);
+            // purchaseTableRow4.appendChild(purchaseTableValue4_5);
             
             purchaseTable.appendChild(purchaseTableRow4);
 
@@ -193,10 +216,10 @@ function displayPOrder(purchaseId, purchaseData, container) {
     }
     const purchaseTableRow5 = document.createElement('tr');
     const purchaseTableValue5_1 = document.createElement('td');
-    purchaseTableValue5_1.classList.add('text-end', 'fs-4');
-    purchaseTableValue5_1.colSpan = 2;
+    purchaseTableValue5_1.classList.add('text-end', 'fs-2');
+    purchaseTableValue5_1.colSpan = 3;
     const purchaseTableValue5_2 = document.createElement('td');
-    purchaseTableValue5_2.classList.add('text-center', 'fs-4');
+    purchaseTableValue5_2.classList.add('text-center', 'fs-3');
     purchaseTableValue5_2.colSpan = 2;
     
     purchaseTableValue5_1.textContent = "Total Order Price:";
@@ -206,13 +229,13 @@ function displayPOrder(purchaseId, purchaseData, container) {
     purchaseTableRow5.appendChild(purchaseTableValue5_2);
     purchaseTable.appendChild(purchaseTableRow5);
 
-    purchaseTable.classList.add('w-75', 'border', 'centered-table')
+    purchaseTable.classList.add('w-75', 'border', 'centered-table');
 
     // const ele_tr = document.createElement('div');
     // ele_tr.classList.add('table-responsive');
     // ele_tr.appendChild(purchaseTable);
 
-    container.appendChild(purchaseTable)
+    container.appendChild(purchaseTable);
 
 
 

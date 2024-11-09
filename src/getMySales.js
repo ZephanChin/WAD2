@@ -31,7 +31,7 @@ async function retrieveUserOrders() {
     // console.log('called sales order');
     // const salesOrder = document.getElementById('sales-order');
     const salesAll = document.getElementById('pills-all');
-    const salesPending = document.getElementById('pills-pending');
+    const salesOngoing = document.getElementById('pills-ongoing');
     const salesCompleted = document.getElementById('pills-completed');
     const salesCancelled = document.getElementById('pills-cancelled');
     const user = auth.currentUser;
@@ -47,7 +47,7 @@ async function retrieveUserOrders() {
             const querySnapshot = await getDocs(q);
             
             salesAll.innertext = "";
-            salesPending.innertext = "";
+            salesOngoing.innertext = "";
             salesCompleted.innertext = "";
             salesCancelled.innertext = "";
 
@@ -61,8 +61,8 @@ async function retrieveUserOrders() {
                     // const items = salesData.Items; 
                     if (salesData.selluid == user.uid) {
                         displaySOrder(doc.id, salesData, salesAll);
-                        if (salesData.status == "Pending"){
-                            displaySOrder(doc.id, salesData, salesPending);
+                        if (salesData.status == "Ongoing"){
+                            displaySOrder(doc.id, salesData, salesOngoing);
                         }
                         if (salesData.status == "Completed"){
                             displaySOrder(doc.id, salesData, salesCompleted); 
@@ -73,14 +73,14 @@ async function retrieveUserOrders() {
                     }
                 });
                 const all = document.getElementById('pills-all');
-                const pend = document.getElementById('pills-pending');
+                const pend = document.getElementById('pills-ongoing');
                 const comp = document.getElementById('pills-completed');
                 const can = document.getElementById('pills-cancelled');
                 if (all.textContent.trim() === ''){
                     all.innerText = "No Orders";
                 }
                 if (pend.textContent.trim() === ''){
-                    pend.innerText = "No Pending Orders";
+                    pend.innerText = "No Ongoing Orders";
                 }
                 if (comp.textContent.trim() === ''){
                     comp.innerText = "No Completed Orders";
@@ -100,182 +100,189 @@ async function retrieveUserOrders() {
 
 // Function to dynamically create and display purchase elements, including a detail button [not done]
 function displaySOrder(salesId, salesData, container) {
-    const salesElement = document.createElement('div');
-    salesElement.classList.add("row", "rounded", "d-flex", "body-ele", "mb-2");
     
-    const salesElementHead = document.createElement('div');
-    salesElementHead.classList.add("row", "col-6", "ms-2", "mt-2");
+    const salesTable = document.createElement('Table');
+    salesTable.classList.add('table');
+    // table row "Order ID", "Date", "Total Amount", "Status"
+    const salesTableRow1 = document.createElement('tr');
+    
+    const salesTableValue1_1 = document.createElement('td');
+    // salesTableValue1_1.classList.add('text-center');
+    // salesTableValue1_1.rowspan = 2;
+    const salesTableValue1_2 = document.createElement('td');
+    const salesTableValue1_3 = document.createElement('td');
+    const salesTableValue1_4 = document.createElement('td');
+    const salesTableValue1_5 = document.createElement('td');
 
-    // Ono Element
-    const salesElementOnoDiv = document.createElement('div');
-    salesElementOnoDiv.classList.add("col-3");
+    salesTableValue1_1.classList.add('text-secondary');
+    salesTableValue1_2.classList.add('text-secondary');
+    salesTableValue1_3.classList.add('text-secondary');
+    salesTableValue1_4.classList.add('text-secondary');
+    salesTableValue1_5.classList.add('text-secondary');
 
-    const salesElementOnoLbl = document.createElement('span');
-    salesElementOnoLbl.classList.add("fw-bold");
-    salesElementOnoLbl.innerText = "Order Number";
+    salesTableValue1_1.textContent = "Order Number:";
+    salesTableValue1_2.textContent = "Order Date";
+    salesTableValue1_3.textContent = "Customer";
+    salesTableValue1_4.textContent = "Total Order Amount";
+    salesTableValue1_5.textContent = "Status";
 
-    const salesElementOnoCtn = document.createElement('div');
-    salesElementOnoCtn.textContent = salesId;
+    salesTableRow1.appendChild(salesTableValue1_1);
+    salesTableRow1.appendChild(salesTableValue1_2);
+    salesTableRow1.appendChild(salesTableValue1_3);
+    salesTableRow1.appendChild(salesTableValue1_4);
+    salesTableRow1.appendChild(salesTableValue1_5);
 
-    salesElementOnoDiv.appendChild(salesElementOnoLbl);
-    salesElementOnoDiv.appendChild(salesElementOnoCtn);
+    salesTable.append(salesTableRow1);
 
-    // DP Element
-    const salesElementDPDiv = document.createElement('div');
-    salesElementDPDiv.classList.add("col-3");
+    // Data for row one
+    const salesTableRow2 = document.createElement('tr');
+    const  salesTableValue2_1 = document.createElement('td');
+    // salesTableValue1_1.classList.add('text-center');
+    // salesTableValue1_1.rowspan = 2;
+    const salesTableValue2_2 = document.createElement('td');
+    const salesTableValue2_3 = document.createElement('td');
+    const salesTableValue2_4 = document.createElement('td');
+    const salesTableValue2_5 = document.createElement('td');
 
-    const salesElementDPLbl = document.createElement('span');
-    salesElementDPLbl.classList.add("fw-bold");
-    salesElementDPLbl.innerText = "Date Placed";
+    salesTableValue2_1.classList.add('fw-bold', 'fs-5');
+    salesTableValue2_2.classList.add('fw-bold', 'fs-5');
+    salesTableValue2_3.classList.add('fw-bold', 'fs-5');
+    salesTableValue2_4.classList.add('fw-bold', 'fs-5');
 
-    const salesElementDPCtn = document.createElement('div');
-    // console.log('line 131', salesData);
-    // console.log('line 132', salesData.PlaceDate.toDate());
-    salesElementDPCtn.textContent = salesData.PlaceDate.toDate().toLocaleDateString();
+    salesTableValue2_1.textContent = salesId.toUpperCase();
+    salesTableValue2_2.textContent = salesData.PlaceDate.toDate().toLocaleDateString();
+    salesTableValue2_3.textContent = salesData.account;
+    salesTableValue2_4.textContent = `SGD ${salesData.TotalPrice.toFixed(2)}`;
+    salesTableValue2_5.textContent = salesData.status;
 
-    salesElementDPDiv.appendChild(salesElementDPLbl);
-    salesElementDPDiv.appendChild(salesElementDPCtn);
+    salesTableValue2_5.classList.add('fs-3', 'fw-bold', 'text-center')
+    if (salesData.status == "Ongoing"){
+        salesTableValue2_5.classList.add('bg-warning', 'text-light');
+    }
+    if (salesData.status == "Completed"){
+        salesTableValue2_5.classList.add('bg-success', 'text-light');
+    }
+    if (salesData.status == "Cancelled"){
+        salesTableValue2_5.classList.add('bg-danger', 'text-light');
+    }
+    
 
-    // TA Element
-    const salesElementTADiv = document.createElement('div');
-    salesElementTADiv.classList.add("col-3");
+    salesTableRow2.appendChild(salesTableValue2_1);
+    salesTableRow2.appendChild(salesTableValue2_2);
+    salesTableRow2.appendChild(salesTableValue2_3);
+    salesTableRow2.appendChild(salesTableValue2_4);
+    salesTableRow2.appendChild(salesTableValue2_5);
 
-    const salesElementTALbl = document.createElement('span');
-    salesElementTALbl.classList.add("fw-bold");
-    salesElementTALbl.innerText = "Total Amount";
+    salesTable.append(salesTableRow2);
+    salesTable.classList.add('border', 'w-75', 'centered-table');
+    container.appendChild(salesTable);
 
-    const salesElementTACtn = document.createElement('div');
-    salesElementTACtn.textContent = `$ ${salesData.TotalPrice.toFixed(2)}`;
-
-    salesElementTADiv.appendChild(salesElementTALbl);
-    salesElementTADiv.appendChild(salesElementTACtn);
-
-    // Shop Name Element
-    const salesElementShopDiv = document.createElement('div');
-    salesElementShopDiv.classList.add("col-3");
-
-    const salesElementShopLbl = document.createElement('span');
-    salesElementShopLbl.classList.add("fw-bold");
-    salesElementShopLbl.innerText = "Hustler";
-
-    const salesElementShopCtn = document.createElement('div');
-    salesElementShopCtn.textContent = salesData.sellaccount;
-
-    salesElementShopDiv.appendChild(salesElementShopLbl);
-    salesElementShopDiv.appendChild(salesElementShopCtn);
-
-    // Filler Element
-    // const salesElementFiller = document.createElement('div');
-    // salesElementFiller.classList.add('col-6');
-
-    // Append Elements to Order Head
-    salesElementHead.appendChild(salesElementOnoDiv);
-    salesElementHead.appendChild(salesElementDPDiv);
-    salesElementHead.appendChild(salesElementTADiv);
-    salesElementHead.appendChild(salesElementShopDiv);
-
-    // Append Elements to Order Element
-    salesElement.appendChild(salesElementHead);
-    container.appendChild(salesElement);
-
-    // filler div
-    const purchaseitemfiller = document.createElement('div');
-    purchaseitemfiller.classList.add('col-6');
-    salesElement.appendChild(purchaseitemfiller);  
-
-    // Iterate item from Items Map
+    // Item Details
+    const salesTableRowItem = document.createElement('tr');
     const orderItems = salesData.Items; 
-    // console.log("iterate", purchaseData.Items)
-    
-    // Iterate over the map 
+    // const saleItemDiv = document.createElement('div');
+    // saleItemDiv.classList.add('d-flex', 'justify-content-around');
     for (const key in orderItems) {
+        const salesTableRowItem = document.createElement('tr');
+        // const salesItemCard_R = document.createElement('div');
+        // salesItemCard_R.classList.add('card', 'col-3');
         if (orderItems.hasOwnProperty(key)) { 
             // console.log(`Key: ${key}`); 
             const item = orderItems[key]; 
            
-            // Item Details
+            // Item Image Card
+            const saleItemImg = document.createElement('img');
+            saleItemImg.classList.add('item-img');
+            saleItemImg.src = item[4];
+            // salesItemCard_R.appendChild(saleItemImg);
+            const salesTableRowItem_1 = document.createElement('td');
+            salesTableRowItem_1.appendChild(saleItemImg);
+
+            // Sales Card Body
+            // const salesItemCardBody = document.createElement('div');
+            // salesItemCardBody.classList.add('card-body');
+            // salesItemCard_R.appendChild(salesItemCardBody);
+           
+            // Item Name
+            // const salesItemName = document.createElement('h5');
+            // salesItemName.classList.add('card-title');
+            // salesItemName.textContent = item[0];
+            // salesItemCardBody.appendChild(salesItemName);
+            const salesTableRowItem_2 = document.createElement('td');
+            salesTableRowItem_2.textContent = `${item[0]}`;
+             
+            // Item Price * Qty
+            // const salesItemTimes = document.createElement('p');
+            // salesItemTimes.textContent = `SGD ${item[1].toFixed(2)} x ${item[2]}`;
+            // salesItemCardBody.appendChild(salesItemTimes);
+            const salesTableRowItem_3 = document.createElement('td');
+            salesTableRowItem_3.textContent = `SGD ${item[1].toFixed(2)} x ${item[2]}`;
             
-            // Image Div
-            const purchaseitemdiv = document.createElement('div');
-            purchaseitemdiv.classList.add('col-2');
-            const purchaseitemimg = document.createElement('img');
-            purchaseitemimg.src = item[4];
-            purchaseitemimg.classList.add("ms-3", "my-2", "item-img");
-            
-            purchaseitemdiv.appendChild(purchaseitemimg);
-            salesElement.appendChild(purchaseitemdiv);
+            // = Total
+            // const salesItemEqual = document.createElement('p');
+            // salesItemEqual.classList.add('fs-5', 'fw-bold');
+            // salesItemEqual.textContent = `= SGD ${item[3].toFixed(2)}`;
+            // salesItemCardBody.appendChild(salesItemEqual);
+            const salesTableRowItem_4 = document.createElement('td');
+            salesTableRowItem_4.classList.add('fs-5', 'fw-bold');
+            salesTableRowItem_4.textContent = `= SGD ${item[3].toFixed(2)}`;
 
-            // Sales Element Body
-            const salesElementBody = document.createElement('div');
-            salesElementBody.classList.add('row', 'col-10', 'mt-5');
-            
-            // Item Price Div
-            const salesElementItemPrice = document.createElement('div');
-            salesElementItemPrice.classList.add('col-4');
-            salesElementItemPrice.textContent = `Price: $ ${item[1].toFixed(2)}`;
+            // Create Card
+            // salesTableValue3_R.appendChild(salesItemCard_R);
 
-            salesElementBody.appendChild(salesElementItemPrice);
+            // Add Card to row
+            // salesTableRowItem.appendChild(salesItemCard_R);
+            // salesTable.appendChild(salesTableRowItem);
+            // saleItemDiv.appendChild(salesItemCard_R);
 
-            // Item Qty Div
-            const salesElementItemQty = document.createElement('div');
-            salesElementItemQty.classList.add('col-4');
-            salesElementItemQty.textContent = `Qty: ${item[2]}`;
+            salesTableRowItem.appendChild(salesTableRowItem_1);
+            salesTableRowItem.appendChild(salesTableRowItem_2);
+            salesTableRowItem.appendChild(salesTableRowItem_3);
+            salesTableRowItem.appendChild(salesTableRowItem_4);
 
-            salesElementBody.appendChild(salesElementItemQty);
-
-            // Item Item Total Price Div
-            const salesElementTItemPrice = document.createElement('div');
-            salesElementTItemPrice.classList.add('col-4');
-            salesElementTItemPrice.textContent = `Total Price: $ ${item[3].toFixed(2)}`;
-
-            salesElementBody.appendChild(salesElementTItemPrice);
-
-            // Body to Element
-            salesElement.appendChild(salesElementBody);
-            
+            salesTable.appendChild(salesTableRowItem);
         }
     }
-    // Status
-    const salesElementStatDiv = document.createElement('div');
-    salesElementStatDiv.classList.add("col-3");
+    // saleItemDiv.classList.add('border')
+    // container.appendChild(saleItemDiv);
 
-    const salesElementStatLbl = document.createElement('span');
-    salesElementStatLbl.classList.add("fw-bold");
-    salesElementStatLbl.innerText = "Status";
 
-    const salesElementStatCtn = document.createElement('div');
-    salesElementStatCtn.textContent = salesData.status;
-    if (salesData.status == "Completed"){
-        salesElementStatCtn.classList.add('bg-success', 'text-light')
-    }
-    if (salesData.status == "Cancelled"){
-        salesElementStatCtn.classList.add('bg-danger', 'text-light')
-    }
-
-    salesElementHead.appendChild(salesElementStatLbl);
-    salesElementHead.appendChild(salesElementStatCtn);
-
+    // Button row
+    const salesButtonRow = document.createElement('tr');
+    const salesTableValue3_1 = document.createElement('td');
+    const salesTableValue3_2 = document.createElement('td');
+    
     // Complete Button
     const completeButton = document.createElement('button');
     completeButton.textContent = "✓";
-    completeButton.classList.add('btn', 'btn-outline-success'); 
-    if (salesData.status != "Pending") {
+    completeButton.classList.add('btn', 'btn-outline-success', 'w-100'); 
+    if (salesData.status != "Ongoing") {
         completeButton.disabled = true;
+        completeButton.hidden = true;
     }
-    salesElementHead.appendChild(completeButton);
+    salesTableValue3_1.appendChild(completeButton);
+    salesTableValue3_1.colSpan = 2;
 
     completeButton.onclick = () => updateStatus(salesId, "status", "Completed");
 
     // Reject Button
     const cancelButton = document.createElement('button');
     cancelButton.textContent = "𐤕";
-    if (salesData.status != "Pending") {
+    cancelButton.classList.add('btn', 'btn-outline-danger', 'w-100');
+    if (salesData.status != "Ongoing") {
         cancelButton.disabled = true;
+        cancelButton.hidden = true;
     }
-    cancelButton.classList.add('btn', 'btn-outline-danger');
-    salesElementHead.appendChild(cancelButton);
+    salesTableValue3_2.appendChild(cancelButton);
+    salesTableValue3_2.colSpan = 3;
 
     cancelButton.onclick = () => updateStatus(salesId, "status", "Cancelled");
+
+    salesButtonRow.appendChild(salesTableValue3_1);
+    salesButtonRow.appendChild(salesTableValue3_2);
+    salesTable.appendChild(salesButtonRow);
+    
+    container.appendChild(salesTable);
 }
 
 const updateStatus = async (salesId, field, newValue) => { 
@@ -311,6 +318,7 @@ const updateStatus = async (salesId, field, newValue) => {
             } 
         }
     }
+    location.reload();
 };
 
 // Template function
