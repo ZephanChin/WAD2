@@ -102,7 +102,7 @@ async function displayPostDetails() {
     }
 
     const postData = postSnap.data();
-    renderPostDetails(postDetailsContainer, postData);
+    renderPostDetails(postDetailsContainer, postData, postId);
     loadReviews(postId, postData);
     setupReviewForm(postData);
 }
@@ -121,36 +121,39 @@ function renderPostDetails(container, postData) {
 
     const category = container.querySelector(".post-category");
     category.textContent = "Category: ";
-
     const categoryContent = document.createElement("span");
     categoryContent.classList.add("editable-content");
     categoryContent.textContent = postData.category;
     category.appendChild(categoryContent);
 
+    const categoryDropdown = document.createElement("select");
+    categoryDropdown.classList.add("category-dropdown");
+    categoryDropdown.style.display = "none"; // Initially hidden
+    ["Crafts", "Fashion", "Food", "Services"].forEach(optionText => {
+        const option = document.createElement("option");
+        option.value = optionText;
+        option.textContent = optionText;
+        if (postData.category === optionText) {
+            option.selected = true;
+        }
+        categoryDropdown.appendChild(option);
+    });
+    category.appendChild(categoryDropdown);
     // Price setup - keep it as a static text
     const price = container.querySelector(".post-price");
-    price.textContent = `Price: SGD ${postData.price}`; // Display as static text
-
-    // Ensure the price is not editable
-    price.contentEditable = "false"; // Explicitly set contentEditable to false
-    price.classList.remove("editable-field"); // Remove any editable styles if previously added
-
+    price.textContent = `Price: SGD${postData.price}`; // No editable part
     const account = container.querySelector(".post-account");
     account.textContent = `Posted by: ${postData.account}`;
-
     const image = container.querySelector(".post-image");
     image.src = postData.imageUrl;
     image.alt = postData.itemName;
-
     const addToCartButton = document.getElementById("addToCartButton");
     if (addToCartButton) {
         addToCartButton.addEventListener("click", () => addToCart(postData));
     }
-
     if (postData.mrtStationName) {
         loadGoogleMapsScript(postData.mrtStationName);
     }
-
     onAuthStateChanged(auth, (user) => {
         if (user && user.uid === postData.uid) {
             addEditAndDeleteOptions();
@@ -199,10 +202,8 @@ function initMapWithGeocoding(locationName) {
 // Add edit, delete, and save buttons at the end of the review section
 function addEditAndDeleteOptions() {
     const reviewFormContainer = document.getElementById("review-input-section");
-
     const buttonsContainer = document.createElement("div");
     buttonsContainer.classList.add("buttons-container");
-
     const editButton = document.createElement("button");
     editButton.textContent = "Edit Post";
     editButton.classList.add("btn", "btn-warning");
@@ -220,60 +221,52 @@ function addEditAndDeleteOptions() {
     saveButton.addEventListener("click", () => savePostChanges(postId));
 
     buttonsContainer.append(editButton, deleteButton, saveButton);
-    reviewFormContainer.insertAdjacentElement("afterend", buttonsContainer);
 
+    reviewFormContainer.insertAdjacentElement("afterend", buttonsContainer);
     buttonsContainer.saveButton = saveButton;
 }
-
 // Enable editing for post details (title and description only) and show Save button
 function enableEditing() {
     const title = document.querySelector(".post-title");
     const descriptionContent = document.querySelector(".post-description .editable-content");
     const categoryDropdown = document.querySelector(".post-category .category-dropdown");
-    const price = document.querySelector(".post-price");
-
-    [title, descriptionContent, price].forEach(field => {
-        field.contentEditable = "true";
-        field.classList.add("editable-field"); // Add the editable-field class
-    });
-
-    categoryContent.style.display = "none"; // Hide the text content
-    categoryDropdown.style.display = "inline-block"; // Show the dropdown
-    categoryDropdown.disabled = false;
-
+    // Make only title and description editable
+    title.contentEditable = "true";
+    title.classList.add("editable-field"); // Add the editable-field class
+    descriptionContent.contentEditable = "true"; // Make description editable
+    descriptionContent.classList.add("editable-field"); // Add the editable-field class
+    // Hide the current category content and show dropdown    
+    const categoryContent = document.querySelector(".post-category .editable-content");
+    categoryContent.style.display = "none"; // Hide current category    
+    categoryDropdown.style.display = "inline-block"; // Show dropdown
+    categoryDropdown.disabled = false; // Enable dropdown
     const addToCartButton = document.getElementById("addToCartButton");
     if (addToCartButton) {
-        addToCartButton.style.display = "none"; // Hide Add to Cart button while editing
+        addToCartButton.style.display = "none"; // Hide Add to Cart button while editing    
     }
-
     const buttonsContainer = document.querySelector(".buttons-container");
     buttonsContainer.saveButton.style.display = "inline-block"; // Show Save button
 }
-
 
 // Save changes to post details
 async function savePostChanges(postId) {
     const title = document.querySelector(".post-title");
     const descriptionContent = document.querySelector(".post-description .editable-content");
     const categoryDropdown = document.querySelector(".post-category .category-dropdown");
-
     try {
         await updateDoc(doc(db, "posts", postId), {
             itemName: title.textContent,
             postDescription: descriptionContent.textContent,
-            category: categoryDropdown.value,
-            // Price is no longer included
+            category: categoryDropdown.value,            // Price is no longer included
         });
         alert("Post updated successfully!");
         location.reload(); // Reload the page to reflect changes
-
-        // Remove editable styles from title, description, and category
+        // Remove editable styles from title, description, and category        
         [title, descriptionContent].forEach(field => {
             field.classList.remove("editable-field");
             field.contentEditable = "false"; // Set contentEditable to false
         });
-
-        // Show the category content and hide the dropdown
+        // Show the category content and hide the dropdown        
         document.querySelector(".post-category .editable-content").style.display = "inline";
         categoryDropdown.style.display = "none";
         categoryDropdown.disabled = true;
