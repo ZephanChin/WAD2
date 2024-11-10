@@ -103,6 +103,7 @@ async function displayPostDetails() {
 
     const postData = postSnap.data();
     renderPostDetails(postDetailsContainer, postData, postId);
+    renderPostDetails(postDetailsContainer, postData, postId);
     loadReviews(postId, postData);
     setupReviewForm(postData);
 }
@@ -141,7 +142,7 @@ function renderPostDetails(container, postData) {
     category.appendChild(categoryDropdown);
     // Price setup - keep it as a static text
     const price = container.querySelector(".post-price");
-    price.textContent = `Price: SGD${postData.price}`; // No editable part
+    price.textContent = `Price: SGD ${postData.price}`; // No editable part
     const account = container.querySelector(".post-account");
     account.textContent = `Posted by: ${postData.account}`;
     const image = container.querySelector(".post-image");
@@ -434,12 +435,23 @@ async function deleteReview(reviewId, postId, reviewData, account) {
     }
 }
 
-// Set up review submission only for authenticated users
+// Set up review submission only for authenticated users and prevent self-reviews
 function setupReviewForm(postData) {
     const reviewFormContainer = document.getElementById("review-input-section");
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
+            // Check if the logged-in user is the owner of the post
+            if (user.uid === postData.uid) {
+                // If the user is trying to review their own post, show a warning message
+                const warningMessage = document.createElement("p");
+                warningMessage.classList.add("alert", "alert-warning");
+                warningMessage.textContent = "You cannot leave a review on your own post.";
+                reviewFormContainer.appendChild(warningMessage);
+                return; // Prevent the review form from being displayed if the user is the post owner
+            }
+
+            // Create review form elements for non-owners
             const reviewTextArea = document.createElement("textarea");
             reviewTextArea.id = "review-text";
             reviewTextArea.classList.add("form-control");
@@ -447,7 +459,7 @@ function setupReviewForm(postData) {
             reviewTextArea.placeholder = "Write your review here...";
 
             const stars = document.createElement("span");
-            stars.innerText = "Stars (rate from 1 to 5): "
+            stars.innerText = "Stars (rate from 1 to 5): ";
 
             const reviewStar = document.createElement("select");
             reviewStar.id = "review-star";
@@ -464,7 +476,6 @@ function setupReviewForm(postData) {
                 reviewStar.appendChild(option);
             }
 
-
             const submitButton = document.createElement("button");
             submitButton.id = "submit-review";
             submitButton.classList.add("btn", "btn-primary", "mt-2");
@@ -475,16 +486,18 @@ function setupReviewForm(postData) {
             reviewFormContainer.appendChild(reviewStar);
             reviewFormContainer.appendChild(submitButton);
 
+            // Handle review submission
             submitButton.addEventListener("click", async () => {
                 const reviewText = reviewTextArea.value;
                 const reviewStarValue = parseInt(reviewStar.value); // Convert star rating to an integer
 
                 if (reviewText.trim()) {
-                    await submitReview(postId, reviewText, reviewStarValue, postData.account); // Pass the star rating to `submitReview`
-                    reviewTextArea.value = "";
+                    await submitReview(postData.id, reviewText, reviewStarValue, postData.account); // Pass the star rating to `submitReview`
+                    reviewTextArea.value = ""; // Clear the review text area after submission
                 }
             });
         } else {
+            // If the user is not logged in, show a warning message
             const warningMessage = document.createElement("p");
             warningMessage.classList.add("alert", "alert-warning");
             warningMessage.textContent = "You must be logged in to leave a review.";
@@ -492,6 +505,7 @@ function setupReviewForm(postData) {
         }
     });
 }
+
 
 // Function to get current value, modify it, and update the document
 async function addGood(starRating, account) {

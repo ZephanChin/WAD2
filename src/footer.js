@@ -31,7 +31,6 @@ const db = getFirestore(app);
 const vueApp = Vue.createApp({
     data() {
         return {
-            email: '',
             message: '',
             user: null // Holds the current user state
         };
@@ -50,38 +49,25 @@ const vueApp = Vue.createApp({
                 this.message = "You must be logged in to subscribe.";
                 return;
             }
-    
-            // Ensure the email is not empty
-            if (!this.email) {
-                this.message = "Please enter a valid email address.";
-                return;
-            }
-    
-            // Check if the entered email matches the logged-in user's email
-            if (this.user.email !== this.email) {
-                this.message = "The email address entered does not match the logged-in user's email.";
-                return;
-            }
-    
+
             try {
                 // Reference to the specific document (user's UID as document ID)
                 const subscriberDocRef = doc(db, 'subscribers', this.user.uid);
                 
-                // Check if the user already has a subscription
+                // Check subscribtion
                 const subscriberDocSnap = await getDoc(subscriberDocRef);
                 if (subscriberDocSnap.exists()) {
                     this.message = 'Email is already subscribed!';
                     return;
                 }
-    
-                // Add subscription data to Firestore
+
+                // set subscribtion using the email
                 await setDoc(subscriberDocRef, {
-                    email: this.email,
+                    email: this.user.email,
                     timestamp: serverTimestamp()
                 });
     
                 this.message = 'Subscribed to Newsletter! Your newsletter will appear on the 1st of every month!';
-                this.email = ''; // Clear the email input
     
             } catch (error) {
                 console.error("Error during subscription process:", error);
@@ -94,4 +80,3 @@ const vueApp = Vue.createApp({
 
 // Mount the Vue instance
 vueApp.mount('#app');
-
