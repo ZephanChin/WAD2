@@ -1,31 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700&family=Poppins:wght@100;300;400;600;700&display=swap');
 
-nav {
-    background-color: #DDC7BB;
-}
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
-
 }
 
 body {
-    background-color: white;
+    background-color: #f4e0d5;
     height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin: 0;
+    position: relative; 
 }
 
 .login-container {
-    background-color: #f4e0d5;
-    padding: 50px 200px;
+    padding: 50px 20px;
+    max-width: 400px;
+    flex-direction: column;
+    align-items: center;
     border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: absolute; 
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 h2 {
@@ -44,6 +45,7 @@ label {
     color: #4d3329;
 }
 
+input[type="text"],
 input[type="email"],
 input[type="password"] {
     width: 100%;
@@ -57,7 +59,6 @@ input[type="password"] {
 input[type="email"]:focus,
 input[type="password"]:focus {
     outline: none;
-    border-color: #c9a58b;
 }
 
 .login-btn {
@@ -77,6 +78,7 @@ input[type="password"]:focus {
 }
 
 p {
+    display: block;
     margin-top: 20px;
     color: #4d3329;
 }
