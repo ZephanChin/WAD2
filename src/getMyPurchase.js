@@ -68,239 +68,313 @@ async function retrieveUserOrders() {
 // Function to dynamically create and display purchase elements, including a detail button [not done]
 function displayPOrder(purchaseId, purchaseData, container) {
     const purchaseTable = document.createElement('Table');
-    purchaseTable.classList.add('table', 'table-bordered')
+    purchaseTable.classList.add('table');
     // table row [order id], "Ordered On", "Status"
     const purchaseTableRow1 = document.createElement('tr');
+    purchaseTableRow1.classList.add('body-ele');
+
     const  purchaseTableValue1_1 = document.createElement('td');
+    purchaseTableValue1_1.classList.add('text-center');
+    purchaseTableValue1_1.rowspan = 2;
     const  purchaseTableValue1_2 = document.createElement('td');
     const  purchaseTableValue1_3 = document.createElement('td');
-    purchaseTableValue1_1.textContent = purchaseId;
-    purchaseTableValue1_2.textContent = "Orderd On";
-    purchaseTableValue1_3.textContent = "Status";
+    const  purchaseTableValue1_4 = document.createElement('td');
+    const  purchaseTableValue1_5 = document.createElement('td');
+
+    // purchaseTableValue1_3.classList.add('text-center');
+    // purchaseTableValue1_3.colSpan = 2;
+    purchaseTableValue1_1.classList.add('text-secondary');
+    purchaseTableValue1_3.classList.add('text-secondary');
+    purchaseTableValue1_4.classList.add('text-secondary');
+    purchaseTableValue1_5.classList.add('text-secondary');
+
+    purchaseTableValue1_1.textContent = "Order Number:";
+    purchaseTableValue1_2.textContent = "";
+    purchaseTableValue1_3.textContent = "Ordered On";
+    purchaseTableValue1_4.textContent = "Hustler";
+    purchaseTableValue1_5.textContent = "Status";
 
     purchaseTableRow1.appendChild(purchaseTableValue1_1);
     purchaseTableRow1.appendChild(purchaseTableValue1_2);
     purchaseTableRow1.appendChild(purchaseTableValue1_3);
+    purchaseTableRow1.appendChild(purchaseTableValue1_4);
+    purchaseTableRow1.appendChild(purchaseTableValue1_5);
+
     purchaseTable.appendChild(purchaseTableRow1);
 
     // table row [sellaccount], [PlaceDate], [Status]
     const purchaseTableRow2 = document.createElement('tr');
     const  purchaseTableValue2_1 = document.createElement('td');
+    purchaseTableValue2_1.classList.add('text-center', 'fs-5');
     const  purchaseTableValue2_2 = document.createElement('td');
+
     const  purchaseTableValue2_3 = document.createElement('td');
-    purchaseTableValue2_1.textContent = purchaseData.sellaccount;
-    purchaseTableValue2_2.textContent = purchaseData.PlaceDate.toDate().toLocaleDateString();
-    purchaseTableValue2_3.textContent = purchaseData.status;
+    purchaseTableValue2_3.classList.add('text-start', 'fs-5');
+
+    const  purchaseTableValue2_4 = document.createElement('td');
+    purchaseTableValue2_4.classList.add('fs-5');
+
+    const  purchaseTableValue2_5 = document.createElement('td');
+    purchaseTableValue2_5.classList.add('text-start', 'fs-3', 'fw-bold');
+
+    purchaseTableValue2_1.textContent = purchaseId.toUpperCase();
+    purchaseTableValue2_2.textContent = " ";
+    purchaseTableValue2_3.textContent = purchaseData.PlaceDate.toDate().toLocaleDateString();
+    purchaseTableValue2_4.textContent = purchaseData.sellaccount;
+    purchaseTableValue2_5.textContent = purchaseData.status;
+
+
+    if (purchaseData.status == "Ongoing"){
+        purchaseTableValue2_5.classList.add('text-warning');
+    }
+    if (purchaseData.status == "Completed"){
+        purchaseTableValue2_5.classList.add('text-success');
+    }
+    if (purchaseData.status == "Cancelled"){
+        purchaseTableValue2_5.classList.add('text-danger');
+    }
 
     purchaseTableRow2.appendChild(purchaseTableValue2_1);
     purchaseTableRow2.appendChild(purchaseTableValue2_2);
     purchaseTableRow2.appendChild(purchaseTableValue2_3);
+    purchaseTableRow2.appendChild(purchaseTableValue2_4);
+    purchaseTableRow2.appendChild(purchaseTableValue2_5);
     purchaseTable.appendChild(purchaseTableRow2);
 
 
-    // table row [itemImg], [itemPrice], [itemQty], [itemTotalPrice]
+    const orderItems = purchaseData.Items; 
     // Iterate over the map 
     for (const key in orderItems) {
         if (orderItems.hasOwnProperty(key)) { 
             // console.log(`Key: ${key}`); 
             const item = orderItems[key]; 
-           
-            // Item Details
 
-            // Image Div
-            const purchaseitemdiv = document.createElement('div');
-            purchaseitemdiv.classList.add('col-2');
-            const purchaseitemimg = document.createElement('img');
-            purchaseitemimg.src = item[4];
-            purchaseitemimg.classList.add("ms-3", "my-2", "item-img");
-            
-            purchaseitemdiv.appendChild(purchaseitemimg);
-            purchaseElement.appendChild(purchaseitemdiv);
-
-            // Purchase Element Body
-            const purchaseElementBody = document.createElement('div');
-            purchaseElementBody.classList.add('row', 'col-10', 'mt-5');
-            
-            // Item Price Div
-            const purchaseElementItemPrice = document.createElement('div');
-            purchaseElementItemPrice.classList.add('col-4');
-            purchaseElementItemPrice.textContent = `Price: $ ${item[1].toFixed(2)}`;
-
-            purchaseElementBody.appendChild(purchaseElementItemPrice);
-
-            // Item Qty Div
-            const purchaseElementItemQty = document.createElement('div');
-            purchaseElementItemQty.classList.add('col-4');
-            purchaseElementItemQty.textContent = `Qty: ${item[2]}`;
-
-            purchaseElementBody.appendChild(purchaseElementItemQty);
-
-            // Item Item Total Price Div
-            const purchaseElementTItemPrice = document.createElement('div');
-            purchaseElementTItemPrice.classList.add('col-4');
-            purchaseElementTItemPrice.textContent = `Total Price: $ ${item[3].toFixed(2)}`;
-
-            purchaseElementBody.appendChild(purchaseElementTItemPrice);
-
-            // Body to Element
-            purchaseElement.appendChild(purchaseElementBody);
-
+            // table row [itemImg], [itemPrice], [itemQty], [itemTotalPrice] 
             const purchaseTableRow3 = document.createElement('tr');
-            const  purchaseTableValue3_1 = document.createElement('td');
-            const  purchaseTableValue3_2 = document.createElement('td');
-            const  purchaseTableValue3_3 = document.createElement('td');
-            purchaseTableValue3_1.textContent = purchaseData.sellaccount;
-            purchaseTableValue3_2.textContent = purchaseData.PlaceDate.toDate().toLocaleDateString();
-            purchaseTableValue3_3.textContent = purchaseData.status;
+            const purchaseTableValue3_1 = document.createElement('td');
+            const purchaseTableValue3_1_Img = document.createElement('img');
+            purchaseTableValue3_1_Img.classList.add('item-img');
+            purchaseTableValue3_1.align = "center";
+            purchaseTableValue3_1.rowSpan = 2;
+            const purchaseTableValue3_2 = document.createElement('td');
+            const purchaseTableValue3_3 = document.createElement('td');
+            const purchaseTableValue3_4 = document.createElement('td');
+            const purchaseTableValue3_5 = document.createElement('td');
 
+            purchaseTableValue3_2.classList.add('text-secondary');
+            purchaseTableValue3_3.classList.add('text-secondary');
+            purchaseTableValue3_4.classList.add('text-secondary');
+            purchaseTableValue3_5.classList.add('text-secondary');
+
+            purchaseTableValue3_1_Img.src = item[4];
+            purchaseTableValue3_2.textContent = "Item Name";
+            purchaseTableValue3_3.textContent = "Item Price";
+            purchaseTableValue3_4.textContent = "Quantity";
+            purchaseTableValue3_5.textContent = "Item Total Price";
+
+            purchaseTableValue3_1.appendChild(purchaseTableValue3_1_Img);
             purchaseTableRow3.appendChild(purchaseTableValue3_1);
             purchaseTableRow3.appendChild(purchaseTableValue3_2);
             purchaseTableRow3.appendChild(purchaseTableValue3_3);
+            purchaseTableRow3.appendChild(purchaseTableValue3_4);
+            purchaseTableRow3.appendChild(purchaseTableValue3_5);
+
+
             purchaseTable.appendChild(purchaseTableRow3);
 
+            // actual values
+            const purchaseTableRow4 = document.createElement('tr');
+            const purchaseTableValue4_1 = document.createElement('td');
+            
+            const purchaseTableValue4_2 = document.createElement('td');
+            const purchaseTableValue4_3 = document.createElement('td');
+            const purchaseTableValue4_4 = document.createElement('td');
+            // const purchaseTableValue4_5 = document.createElement('td');
+            
+            purchaseTableValue4_1.classList.add('align-top', 'fs-5');
+            purchaseTableValue4_2.classList.add('align-top', 'fs-5');
+            purchaseTableValue4_3.classList.add('align-top', 'fs-5');
+            purchaseTableValue4_4.classList.add('align-top', 'fs-5');
+            // purchaseTableValue4_5.classList.add('align-top', 'fs-5');
+
+            // purchaseTableValue4_1.textContent = " ";
+            purchaseTableValue4_1.textContent = item[0];
+            purchaseTableValue4_2.textContent = `SGD ${item[1].toFixed(2)}`;
+            purchaseTableValue4_3.textContent = item[2];
+            purchaseTableValue4_4.textContent = `SGD ${item[3].toFixed(2)}`;
+
+            purchaseTableRow4.appendChild(purchaseTableValue4_1);
+            purchaseTableRow4.appendChild(purchaseTableValue4_2);
+            purchaseTableRow4.appendChild(purchaseTableValue4_3);
+            purchaseTableRow4.appendChild(purchaseTableValue4_4);
+            // purchaseTableRow4.appendChild(purchaseTableValue4_5);
+            
+            purchaseTable.appendChild(purchaseTableRow4);
+
         }
+        
     }
-
-    container.appendChild(purchaseTable)
-
-
-
-
-    const purchaseElement = document.createElement('div');
-    purchaseElement.classList.add("mt-5",  "row", "border", "rounded-4", "d-flex", "body-ele");
+    const purchaseTableRow5 = document.createElement('tr');
+    const purchaseTableValue5_1 = document.createElement('td');
+    purchaseTableValue5_1.classList.add('text-end', 'fs-2');
+    purchaseTableValue5_1.colSpan = 3;
+    const purchaseTableValue5_2 = document.createElement('td');
+    purchaseTableValue5_2.classList.add('text-center', 'fs-3');
+    purchaseTableValue5_2.colSpan = 2;
     
-    const purchaseElementHead = document.createElement('div');
-    purchaseElementHead.classList.add("row", "col-6", "ms-2", "mt-2");
-
-    // Ono Element
-    const purchaseElementOnoDiv = document.createElement('div');
-    purchaseElementOnoDiv.classList.add("col-3");
-
-    // const purchaseElementOnoLbl = document.createElement('span');
-    // purchaseElementOnoLbl.classList.add("fw-bold", "fs-2");
-    // purchaseElementOnoLbl.innerText = "Order Number";
-
-    const purchaseElementOnoCtn = document.createElement('div');
-    purchaseElementOnoCtn.textContent = purchaseId;
-
-    // purchaseElementOnoDiv.appendChild(purchaseElementOnoLbl);
-    purchaseElementOnoDiv.appendChild(purchaseElementOnoCtn);
-
-    // DP Element
-    const purchaseElementDPDiv = document.createElement('div');
-    purchaseElementDPDiv.classList.add("col-3");
-
-    const purchaseElementDPLbl = document.createElement('span');
-    purchaseElementDPLbl.classList.add("fw-bold");
-    purchaseElementDPLbl.innerText = "Date Placed";
-
-    const purchaseElementDPCtn = document.createElement('div');
-    console.log('line 131', purchaseData);
-    console.log('line 132', purchaseData.PlaceDate.toDate());
-    purchaseElementDPCtn.textContent = purchaseData.PlaceDate.toDate().toLocaleDateString();
-
-    purchaseElementDPDiv.appendChild(purchaseElementDPLbl);
-    purchaseElementDPDiv.appendChild(purchaseElementDPCtn);
-
-    // TA Element
-    const purchaseElementTADiv = document.createElement('div');
-    purchaseElementTADiv.classList.add("col-3");
-
-    const purchaseElementTALbl = document.createElement('span');
-    purchaseElementTALbl.classList.add("fw-bold");
-    purchaseElementTALbl.innerText = "Total Amount";
-
-    const purchaseElementTACtn = document.createElement('div');
-    purchaseElementTACtn.textContent = `$ ${purchaseData.TotalPrice.toFixed(2)}`;
-
-    purchaseElementTADiv.appendChild(purchaseElementTALbl);
-    purchaseElementTADiv.appendChild(purchaseElementTACtn);
-
-    // Shop Name Element
-    const purchaseElementShopDiv = document.createElement('div');
-    purchaseElementShopDiv.classList.add("col-3");
-
-    const purchaseElementShopLbl = document.createElement('span');
-    purchaseElementShopLbl.classList.add("fw-bold");
-    purchaseElementShopLbl.innerText = "Hustler";
-
-    const purchaseElementShopCtn = document.createElement('div');
-    purchaseElementShopCtn.textContent = purchaseData.sellaccount;
-
-    purchaseElementShopDiv.appendChild(purchaseElementShopLbl);
-    purchaseElementShopDiv.appendChild(purchaseElementShopCtn);
-
-    // Filler Element
-    // const purchaseElementFiller = document.createElement('div');
-    // purchaseElementFiller.classList.add('col-6');
-
-    // Append Elements to Order Head
-    purchaseElementHead.appendChild(purchaseElementOnoDiv);
-    purchaseElementHead.appendChild(purchaseElementDPDiv);
-    purchaseElementHead.appendChild(purchaseElementTADiv);
-    purchaseElementHead.appendChild(purchaseElementShopDiv);
-
-    // Append Elements to Order Element
-    purchaseElement.appendChild(purchaseElementHead);
-    container.appendChild(purchaseElement);
-
-    // filler div
-    const purchaseitemfiller = document.createElement('div');
-    purchaseitemfiller.classList.add('col-6');
-    purchaseElement.appendChild(purchaseitemfiller);  
-
-    // Iterate item from Items Map
-    const orderItems = purchaseData.Items; 
-    // console.log("iterate", purchaseData.Items)
+    purchaseTableValue5_1.textContent = "Total Order Price:";
+    purchaseTableValue5_2.textContent = `SGD ${purchaseData.TotalPrice.toFixed(2)}`;
     
-    // Iterate over the map 
-    for (const key in orderItems) {
-        if (orderItems.hasOwnProperty(key)) { 
-            // console.log(`Key: ${key}`); 
-            const item = orderItems[key]; 
+    purchaseTableRow5.appendChild(purchaseTableValue5_1);
+    purchaseTableRow5.appendChild(purchaseTableValue5_2);
+    purchaseTable.appendChild(purchaseTableRow5);
+
+    purchaseTable.classList.add('w-75', 'border', 'centered-table');
+
+    // const ele_tr = document.createElement('div');
+    // ele_tr.classList.add('table-responsive');
+    // ele_tr.appendChild(purchaseTable);
+
+    container.appendChild(purchaseTable);
+
+
+
+
+    // const purchaseElement = document.createElement('div');
+    // purchaseElement.classList.add("mt-5",  "row", "border", "rounded-4", "d-flex", "body-ele");
+    
+    // const purchaseElementHead = document.createElement('div');
+    // purchaseElementHead.classList.add("row", "col-6", "ms-2", "mt-2");
+
+    // // Ono Element
+    // const purchaseElementOnoDiv = document.createElement('div');
+    // purchaseElementOnoDiv.classList.add("col-3");
+
+    // // const purchaseElementOnoLbl = document.createElement('span');
+    // // purchaseElementOnoLbl.classList.add("fw-bold", "fs-2");
+    // // purchaseElementOnoLbl.innerText = "Order Number";
+
+    // const purchaseElementOnoCtn = document.createElement('div');
+    // purchaseElementOnoCtn.textContent = purchaseId;
+
+    // // purchaseElementOnoDiv.appendChild(purchaseElementOnoLbl);
+    // purchaseElementOnoDiv.appendChild(purchaseElementOnoCtn);
+
+    // // DP Element
+    // const purchaseElementDPDiv = document.createElement('div');
+    // purchaseElementDPDiv.classList.add("col-3");
+
+    // const purchaseElementDPLbl = document.createElement('span');
+    // purchaseElementDPLbl.classList.add("fw-bold");
+    // purchaseElementDPLbl.innerText = "Date Placed";
+
+    // const purchaseElementDPCtn = document.createElement('div');
+    // console.log('line 131', purchaseData);
+    // console.log('line 132', purchaseData.PlaceDate.toDate());
+    // purchaseElementDPCtn.textContent = purchaseData.PlaceDate.toDate().toLocaleDateString();
+
+    // purchaseElementDPDiv.appendChild(purchaseElementDPLbl);
+    // purchaseElementDPDiv.appendChild(purchaseElementDPCtn);
+
+    // // TA Element
+    // const purchaseElementTADiv = document.createElement('div');
+    // purchaseElementTADiv.classList.add("col-3");
+
+    // const purchaseElementTALbl = document.createElement('span');
+    // purchaseElementTALbl.classList.add("fw-bold");
+    // purchaseElementTALbl.innerText = "Total Amount";
+
+    // const purchaseElementTACtn = document.createElement('div');
+    // purchaseElementTACtn.textContent = `$ ${purchaseData.TotalPrice.toFixed(2)}`;
+
+    // purchaseElementTADiv.appendChild(purchaseElementTALbl);
+    // purchaseElementTADiv.appendChild(purchaseElementTACtn);
+
+    // // Shop Name Element
+    // const purchaseElementShopDiv = document.createElement('div');
+    // purchaseElementShopDiv.classList.add("col-3");
+
+    // const purchaseElementShopLbl = document.createElement('span');
+    // purchaseElementShopLbl.classList.add("fw-bold");
+    // purchaseElementShopLbl.innerText = "Hustler";
+
+    // const purchaseElementShopCtn = document.createElement('div');
+    // purchaseElementShopCtn.textContent = purchaseData.sellaccount;
+
+    // purchaseElementShopDiv.appendChild(purchaseElementShopLbl);
+    // purchaseElementShopDiv.appendChild(purchaseElementShopCtn);
+
+    // // Filler Element
+    // // const purchaseElementFiller = document.createElement('div');
+    // // purchaseElementFiller.classList.add('col-6');
+
+    // // Append Elements to Order Head
+    // purchaseElementHead.appendChild(purchaseElementOnoDiv);
+    // purchaseElementHead.appendChild(purchaseElementDPDiv);
+    // purchaseElementHead.appendChild(purchaseElementTADiv);
+    // purchaseElementHead.appendChild(purchaseElementShopDiv);
+
+    // // Append Elements to Order Element
+    // purchaseElement.appendChild(purchaseElementHead);
+    // container.appendChild(purchaseElement);
+
+    // // filler div
+    // const purchaseitemfiller = document.createElement('div');
+    // purchaseitemfiller.classList.add('col-6');
+    // purchaseElement.appendChild(purchaseitemfiller);  
+
+    // // Iterate item from Items Map
+    // // const orderItems = purchaseData.Items; 
+    // // console.log("iterate", purchaseData.Items)
+    
+    // // Iterate over the map 
+    // for (const key in orderItems) {
+    //     if (orderItems.hasOwnProperty(key)) { 
+    //         // console.log(`Key: ${key}`); 
+    //         const item = orderItems[key]; 
            
-            // Item Details
+    //         // Item Details
 
-            // Image Div
-            const purchaseitemdiv = document.createElement('div');
-            purchaseitemdiv.classList.add('col-2');
-            const purchaseitemimg = document.createElement('img');
-            purchaseitemimg.src = item[4];
-            purchaseitemimg.classList.add("ms-3", "my-2", "item-img");
+    //         // Image Div
+    //         const purchaseitemdiv = document.createElement('div');
+    //         purchaseitemdiv.classList.add('col-2');
+    //         const purchaseitemimg = document.createElement('img');
+    //         purchaseitemimg.src = item[4];
+    //         purchaseitemimg.classList.add("ms-3", "my-2", "item-img");
             
-            purchaseitemdiv.appendChild(purchaseitemimg);
-            purchaseElement.appendChild(purchaseitemdiv);
+    //         purchaseitemdiv.appendChild(purchaseitemimg);
+    //         purchaseElement.appendChild(purchaseitemdiv);
 
-            // Purchase Element Body
-            const purchaseElementBody = document.createElement('div');
-            purchaseElementBody.classList.add('row', 'col-10', 'mt-5');
+    //         // Purchase Element Body
+    //         const purchaseElementBody = document.createElement('div');
+    //         purchaseElementBody.classList.add('row', 'col-10', 'mt-5');
             
-            // Item Price Div
-            const purchaseElementItemPrice = document.createElement('div');
-            purchaseElementItemPrice.classList.add('col-4');
-            purchaseElementItemPrice.textContent = `Price: $ ${item[1].toFixed(2)}`;
+    //         // Item Price Div
+    //         const purchaseElementItemPrice = document.createElement('div');
+    //         purchaseElementItemPrice.classList.add('col-4');
+    //         purchaseElementItemPrice.textContent = `Price: $ ${item[1].toFixed(2)}`;
 
-            purchaseElementBody.appendChild(purchaseElementItemPrice);
+    //         purchaseElementBody.appendChild(purchaseElementItemPrice);
 
-            // Item Qty Div
-            const purchaseElementItemQty = document.createElement('div');
-            purchaseElementItemQty.classList.add('col-4');
-            purchaseElementItemQty.textContent = `Qty: ${item[2]}`;
+    //         // Item Qty Div
+    //         const purchaseElementItemQty = document.createElement('div');
+    //         purchaseElementItemQty.classList.add('col-4');
+    //         purchaseElementItemQty.textContent = `Qty: ${item[2]}`;
 
-            purchaseElementBody.appendChild(purchaseElementItemQty);
+    //         purchaseElementBody.appendChild(purchaseElementItemQty);
 
-            // Item Item Total Price Div
-            const purchaseElementTItemPrice = document.createElement('div');
-            purchaseElementTItemPrice.classList.add('col-4');
-            purchaseElementTItemPrice.textContent = `Total Price: $ ${item[3].toFixed(2)}`;
+    //         // Item Item Total Price Div
+    //         const purchaseElementTItemPrice = document.createElement('div');
+    //         purchaseElementTItemPrice.classList.add('col-4');
+    //         purchaseElementTItemPrice.textContent = `Total Price: $ ${item[3].toFixed(2)}`;
 
-            purchaseElementBody.appendChild(purchaseElementTItemPrice);
+    //         purchaseElementBody.appendChild(purchaseElementTItemPrice);
 
-            // Body to Element
-            purchaseElement.appendChild(purchaseElementBody);
+    //         // Body to Element
+    //         purchaseElement.appendChild(purchaseElementBody);
 
-        }
-    }
+    //     }
+    // }
 }
 
 

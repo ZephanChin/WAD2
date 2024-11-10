@@ -165,7 +165,7 @@ async function displayCartItems(user) {
     const checkoutButton = document.createElement("button");
     checkoutButton.textContent = "Checkout";
     checkoutButton.classList.add("btn", "checkout-button");
-    checkoutButton.addEventListener("click", () => { 
+    checkoutButton.addEventListener("click", () => {
         // console.log("HELP", localdata);
         addToOrder(localdata);
         console.log("Proceeding to checkout.");
@@ -188,37 +188,34 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-const addToOrder = async (itemData) => { 
+const addToOrder = async (itemData) => {
     itemData.sort((a, b) => a.sellerUid - b.sellerUid);
     const user = auth.currentUser;
-    // console.log(itemData)
-    const c1 = user.uid.substring(0, 3);
-    const c2 = user.uid.substring(10, 13);
+    const userDisplayName = auth.currentUser.displayName;
+    const userId = user.uid;
+    const c1 = userId.substring(0, 3);
+    const c2 = userId.substring(10, 13);
     const c3 = new Date().toISOString();
-    // console.log(c3)
     let docid = "";
 
-    let grouped = {}; 
-    itemData.forEach(obj => { 
-        let selluid = obj.sellerUid; 
-        if (!grouped[selluid]) { 
-            grouped[selluid] = []; 
-        } 
-        grouped[selluid].push(obj); 
+    let grouped = {};
+    itemData.forEach(obj => {
+        let selluid = obj.sellerUid;
+        if (!grouped[selluid]) {
+            grouped[selluid] = [];
+        }
+        grouped[selluid].push(obj);
     });
-    // console.log("GROUPED", grouped);
 
+    // Process each group (grouped by sellerUid)
     for (const [key, value] of Object.entries(grouped)) {
-        // create order level
         const c4 = value[0].sellerUid.substring(0, 3);
         docid = c1 + c2 + c3.substring(8, 13) + c3.substring(20, 24) + c4;
-        console.log("docid", docid);
-        
+
         let ttprice = 0;
         let count = 0;
         let datamap = {};
         value.forEach(item => {
-            // item level
             const itemarr = [];
             itemarr.push(item.itemName);
             itemarr.push(item.itemPrice);
@@ -230,35 +227,41 @@ const addToOrder = async (itemData) => {
             ttprice += item.totalPrice;
             count += 1;
         });
-        
 
-        let fields = { 
-            OrderID: "extraValue1", 
-            PlaceDate: new Date(), 
-            TotalPrice: ttprice, 
-            account: "", 
+        let fields = {
+            OrderID: docid,
+            PlaceDate: new Date(),
+            TotalPrice: ttprice,
+            account: userDisplayName,
             sellaccount: value[0].account,
-            selluid: key, 
-            status: "Pending", 
-            uid: user.uid
+            selluid: key,
+            status: "Ongoing",
+            uid: userId
         };
 
-        let documentData = { 
-            Items: datamap, 
-            ...fields 
+        let documentData = {
+            Items: datamap,
+            ...fields
         };
 
-        try { 
-            await setDoc(doc(collection(db, "porders"), docid), documentData); 
-            console.log(`Document ${docid} successfully written!`); 
-        } 
-        catch (error) { 
-            console.error(`Error writing document ${docid}: `, error); 
+        try {
+            await setDoc(doc(collection(db, "porders"), docid), documentData);
+            console.log(`Document ${docid} successfully written!`);
+        }
+        catch (error) {
+            console.error(`Error writing document ${docid}: `, error);
         }
     }
 
+    // Clear all items from the user's cart
 
+
+
+    // Redirect to the checkout page
+    window.location.href = "/checkout.html";
 };
+
+
 
 
 
