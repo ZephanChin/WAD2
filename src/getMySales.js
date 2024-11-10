@@ -52,7 +52,14 @@ async function retrieveUserOrders() {
             salesCancelled.innertext = "";
 
             if (querySnapshot.empty) {
-                salesOrder.innertext = "<p>You do not have any orders.</p>";
+                const noMatchingOrders = document.createElement('div');
+                noMatchingOrders.classList.add('text-center', 'my-5', 'fs-4', 'fw-bold');
+                noMatchingOrders.textContent = 'No Orders';
+
+                salesAll.appendChild(noMatchingOrders);
+                salesOngoing.appendChild(noMatchingOrders);
+                salesCompleted.appendChild(noMatchingOrders);
+                salesCancelled.appendChild(noMatchingOrders);
             } else {
                 querySnapshot.forEach((doc) => {
                     const salesData = doc.data();
@@ -77,8 +84,12 @@ async function retrieveUserOrders() {
                 const comp = document.getElementById('pills-completed');
                 const can = document.getElementById('pills-cancelled');
                 if (all.textContent.trim() === ''){
-                    
-                    all.innerText = "No Orders";
+                    const noMatchingOrders = document.createElement('div');
+                    noMatchingOrders.classList.add('text-center', 'my-5', 'fs-4', 'fw-bold');
+                    noMatchingOrders.textContent = 'No Orders';
+
+                    all.appendChild(noMatchingOrders);
+                    // all.innerText = "No Orders";
                 }
                 if (pend.textContent.trim() === ''){
                     const noMatchingOrders = document.createElement('div');
@@ -89,10 +100,20 @@ async function retrieveUserOrders() {
                     // pend.innerText = "No Ongoing Orders";
                 }
                 if (comp.textContent.trim() === ''){
-                    comp.innerText = "No Completed Orders";
+                    const noMatchingOrders = document.createElement('div');
+                    noMatchingOrders.classList.add('text-center', 'my-5', 'fs-4', 'fw-bold');
+                    noMatchingOrders.textContent = 'No Completed Orders';
+
+                    comp.appendChild(noMatchingOrders);
+                    // comp.innerText = "No Completed Orders";
                 }
                 if (can.textContent.trim() === ''){
-                    pend.innerText = "No Cancelled Orders";
+                    const noMatchingOrders = document.createElement('div');
+                    noMatchingOrders.classList.add('text-center', 'my-5', 'fs-4', 'fw-bold');
+                    noMatchingOrders.textContent = 'No Cancelled Orders';
+
+                    can.appendChild(noMatchingOrders);
+                    // can.innerText = "No Cancelled Orders";
                 }
             }
         } else {
