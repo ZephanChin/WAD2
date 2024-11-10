@@ -1,0 +1,158 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700&family=Poppins:wght@100;300;400;600;700&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+#posts-container {
+    display: flex;
+    flex-direction: column; /* Display posts in a single column */
+    align-items: center; /* Center-align posts */
+    gap: 15px; /* Space between each post */
+    padding: 20px;
+    max-width: 600px; /* Optional: Limit the width of the posts container */
+    margin: 0 auto; /* Center the container */
+}
+
+/* Post container */
+.post-item {
+    width: 100%; /* Full width within the container */
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center-align content inside each post */
+    text-align: center;
+}
+
+/* Post title styling */
+.post-item h3 {
+    margin: 10px 0 5px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Styling for the image inside each post */
+.post-image {
+    width: 100%; /* Full width within the post container */
+    max-width: 400px; /* Optional: Limit maximum width of images */
+    height: auto;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* Styling for account name */
+.post-item p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Styling for the delete button */
+.btn-danger {
+    background-color: #d9534f;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-danger:hover {
+    background-color: #c9302c; /* Darken on hover */
+}
+
+/* Main container styling for posts */
+#posts-container {
+    display: flex;
+    flex-direction: column; /* Display posts in a single column */
+    align-items: center; /* Center-align posts */
+    gap: 15px; /* Space between each post */
+    padding: 20px;
+    max-width: 600px; /* Optional: Limit the width of the posts container */
+    margin: 0 auto; /* Center the container */
+}
+
+/* Post container */
+.post-item {
+    width: 100%; /* Full width within the container */
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center-align content inside each post */
+    text-align: center;
+}
+
+/* Image container with overlay styling for "More Details" button */
+.image-container {
+    position: relative;
+    overflow: hidden;
+    height: 250px; /* Set a fixed height */
+    width: 100%;
+    max-width: 400px; /* Optional: Limit the maximum width of images */
+}
+
+/* Styling for Post Images */
+.post-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* More Details Button */
+.more-details {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    background-color: #DDC7BB;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.image-container:hover .more-details {
+    opacity: 1;
+}
+
+/* Styling for account name */
+.post-item p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Delete Button */
+.delete-button {
+    background-color: #d9534f;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.delete-button:hover {
+    background-color: #c9302c;
+}
+.mp-title {
+    text-align: center;
+    margin-top: 10px;
+}

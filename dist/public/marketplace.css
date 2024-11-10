@@ -1,0 +1,304 @@
+/* General Styles */
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+.featured-title {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+/* Card Styling */
+.featured-card {
+  border-radius: 20px;
+  overflow: hidden;
+  background-image: url('img/placeholder.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 400px;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Overlay Styling for Card Body */
+.overlay {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+/* Cart Icon Styling */
+.cart-icon {
+  margin-top: 5px;
+  margin-right: 250px;
+  font-size: 35px;
+  margin-bottom: 25px;
+}
+
+/* Marketplace Heading Styling */
+.hmarket {
+  margin-top: 40px;
+  font-size: 40px;
+  font-weight: bold;
+  margin-left: 125px;
+}
+
+/* Content Box Styling */
+.hmbox {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between elements */
+}
+
+.filter-btn, 
+#search-input, 
+.add-post-btn {
+  height: 40px; /* Set a uniform height */
+}
+
+#search-input {
+  width: 100%;
+  max-width: 300px;
+  padding: 0 10px; /* Adjust padding to align with height */
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#search-input:focus {
+  outline: none;
+  border-color: #442f23;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.add-post-btn {
+  border-radius: 5px;
+  width: 40px;
+  background-color: #2B1B12;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-post-btn:hover {
+  background-color: #c9b5a8;
+}
+
+
+/* Filter Button Container */
+.filter-container {
+  display: flex;
+  justify-content: left;
+  margin-bottom: 20px;
+}
+
+/* Styling for the boxes */
+.box {
+  background-color: lightgray;
+  height: 250px;
+  border-radius: 10px;
+}
+
+/* Add spacing between boxes */
+.box + .box {
+  margin-top: 10px;
+}
+
+/* Container for Posts */
+#posts-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  /* Align items to the left */
+  gap: 10px;
+  /* Adjust gap for spacing */
+  padding: 10px;
+  max-width: 1300px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+
+/* Post container with consistent colors and shadow */
+.post-item {
+  flex: 0 0 calc(33.33% - 10px);
+  /* Fixed width for each item */
+  max-width: calc(33.33% - 10px);
+  padding: 15px;
+  border: 5px solid #ddd;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+  height: 370px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  text-align: left;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  gap: 10px; /* Add spacing between children */
+}
+
+/* Content Container for Text and Button */
+.content-container {
+  display: flex; /* Enable flexbox */
+  flex-direction: column; /* Stack children vertically */
+  align-items: flex-start; /* Align text to the left */
+  position: relative; /* Allow positioning for child elements */
+}
+
+/* Consistent Image container styling */
+.image-container {
+  position: relative;
+  overflow: hidden;
+  height: 250px;
+  /* Consistent height */
+  width: 100%;
+}
+
+/* Styling for Post Images */
+.post-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+/* More Details Button Styling */
+.more-details {
+  position: relative;  /* Change from absolute to relative */
+  margin-top: 10px;  /* Move button below the image */
+  transition: opacity 0.3s ease;
+  font-size: 0.8rem;
+  padding: 5px 10px;
+  background-color: #DDC7BB;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 2;  /* Ensure it is above other content */
+}
+
+/* Styling for Post Titles */
+.post-item h3 {
+  margin: 10px 0 5px;
+  margin-left: 0px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333;
+  text-align: left;
+}
+
+/* Styling for Account Name */
+.post-item p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .post-item {
+    flex: 1 1 calc(48% - 10px);
+    /* 2 items per row on smaller screens */
+    max-width: calc(48% - 10px);
+  }
+
+  .more-details {
+    font-size: 0.7rem;  /* Smaller font size on smaller screens */
+    padding: 5px 8px;  /* Adjust padding for better fit */
+  }
+}
+
+@media (max-width: 480px) {
+  .post-item {
+    flex: 1 1 100%;
+    /* 1 item per row on very small screens */
+    max-width: 100%;
+  }
+
+  .more-details {
+    font-size: 0.7rem;
+    padding: 5px 10px;
+    margin-top: 10px; /* Adjust margin on small screens */
+  }
+}
+
+.search-bar {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+/* Search Input Styling */
+#search-input {
+  width: 100%;
+  max-width: 400px;   /* Limit the width of the search bar */
+  padding: 10px 20px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+#search-input:focus {
+  outline: none;
+  border-color: #442f23;  /* Change border color on focus */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);  /* Add shadow effect on focus */
+}
+
+.video-header-container {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.video-header-container video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+/* Overlay text styling */
+.featured-title {
+  position: relative;
+  color: white;
+  font-size: 2.5rem;
+  text-align: center;
+  z-index: 2;
+}
+
+.overlay-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  /* Semi-transparent overlay */
+  z-index: 1;
+}
