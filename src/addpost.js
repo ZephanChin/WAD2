@@ -37,18 +37,31 @@ const mrtStationInput = document.getElementById('mrtStation');
 const itemImageInput = document.getElementById('itemImage');
 const statusDiv = document.getElementById('status');
 
-// Handle form submission
 postForm.addEventListener('submit', async (e) => {
     e.preventDefault(); // Prevent form from reloading the page
 
     const itemName = itemNameInput.value;
     const postDescription = postDescriptionInput.value;
     const category = categorySelect.value;
-    const price = parseFloat(priceInput.value);
+    const priceInputValue = priceInput.value;
     const mrtStationName = mrtStationInput.value; // Just the name of MRT station
     const file = itemImageInput.files[0];
 
-    if (itemName && postDescription && category && !isNaN(price) && mrtStationName && file) {
+    // Validate the price input to ensure it's a valid number, not a string or empty, and has up to 2 decimal places
+    let price = parseFloat(priceInputValue);
+
+    if (isNaN(price) || price <= 0) {
+        statusDiv.textContent = "Please enter a valid positive price.";
+        return; // Exit the function early if price is invalid
+    }
+
+    // Round the price to 2 decimal places
+    price = Math.round(price * 100) / 100;
+
+    // Ensure the price is properly rounded and formatted to two decimal places
+    priceInput.value = price.toFixed(2); // Update the input value with the correctly formatted price
+
+    if (itemName && postDescription && category && price && mrtStationName && file) {
         // Display uploading status
         statusDiv.textContent = "Uploading post...";
 
