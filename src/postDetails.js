@@ -98,7 +98,7 @@ function renderPostDetails(container, postData) {
 
     const addToCartButton = document.getElementById("addToCartButton");
     if (addToCartButton) {
-        addToCartButton.addEventListener("click", () => addToCart(postData));
+        addToCartButton.addEventListener("click", () => addToCart(postData)); // Ensure this function exists and is added here
     }
 
     if (postData.mrtStationName) {
@@ -237,7 +237,6 @@ async function savePostChanges() {
     }
 }
 
-
 // Function to delete the post
 async function deletePost(postId) {
     if (confirm("Are you sure you want to delete this post?")) {
@@ -254,3 +253,53 @@ async function deletePost(postId) {
 
 // Initialize display of post details on page load
 window.onload = displayPostDetails;
+
+async function addToCart(postData) {
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            try {
+                const cartRef = collection(db, `users/${user.uid}/cart`);
+                const cartSnapshot = await getDocs(cartRef);
+                let existingItemDoc = null;
+
+                // Check if the item already exists in the cart
+                cartSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.itemId === postId) {
+                        existingItemDoc = doc; // Store the document reference if the item is found
+                    }
+                });
+
+                if (existingItemDoc) {
+                    // Item exists in the cart, update the quantity and total price
+                    const newQuantity = existingItemDoc.data().quantity + 1; // Increase quantity
+                    const newTotalPrice = postData.price * newQuantity; // Update total price
+
+                    await updateDoc(doc(db, `users/${user.uid}/cart`, existingItemDoc.id), {
+                        quantity: newQuantity,
+                        totalPrice: newTotalPrice // Store the updated total price
+                    });
+                    alert("Item quantity updated in cart!");
+                } else {
+                    // Item does not exist, add it to the cart
+                    await addDoc(cartRef, {
+                        itemId: postId,
+                        itemName: postData.itemName,
+                        itemPrice: postData.price,
+                        itemImage: postData.imageUrl,
+                        account: postData.account,
+                        sellerUid: postData.uid,
+                        quantity: 1, // Start with quantity of 1
+                        totalPrice: postData.price, // Store initial total price
+                        timestamp: new Date()
+                    });
+                    alert("Item added to cart!");
+                }
+            } catch (error) {
+                console.error("Error adding to cart:", error);
+            }
+        } else {
+            window.location.href = "/login.html";
+        }
+    });
+}

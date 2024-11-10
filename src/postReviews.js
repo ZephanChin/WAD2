@@ -27,6 +27,7 @@ if (!getApps().length) {
 const auth = getAuth();
 const db = getFirestore();
 
+
 // Load reviews for a specific post
 export async function loadReviews(postId, postData) {
     const reviewsList = document.getElementById("reviews-list");
