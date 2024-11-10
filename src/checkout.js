@@ -163,6 +163,13 @@ async function displaySellerUids(userId) {
 
                 uidContainer.appendChild(uidElement);
             }
+            const purchaseHistoryButton = document.createElement("button");
+            purchaseHistoryButton.textContent = "Go to Purchase History";
+            purchaseHistoryButton.classList.add("btn", "payment");
+            purchaseHistoryButton.addEventListener("click", () => {
+                window.location.href = "./mypurchase.html"
+            });
+
             const totalContainer = document.createElement("div");
             totalContainer.classList.add("payment");
             const paymentMadeButton = document.createElement("button");
@@ -171,8 +178,13 @@ async function displaySellerUids(userId) {
             paymentMadeButton.addEventListener("click", () => {
                 deleteAllCart(userId)
                 console.log("Cleared.");
+                alert("Thank you for your purchase!");
+                //setTimeout(window.location.href = "./mypurchase.html", 5000);
+                totalContainer.appendChild(purchaseHistoryButton);
             });
+
             totalContainer.appendChild(paymentMadeButton);
+
             uidContainer.appendChild(totalContainer);
         } else {
             const messageElement = document.createElement("p");
