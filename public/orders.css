@@ -25,8 +25,10 @@ h1 {
 }
 
 .item-img {
-    height: 300px;
-    width: 300px;
+    width: auto;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
 }
 
 .body-ele {

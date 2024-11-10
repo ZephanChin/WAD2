@@ -181,6 +181,7 @@ async function displaySellerUids(userId) {
                 alert("Thank you for your purchase!");
                 //setTimeout(window.location.href = "./mypurchase.html", 5000);
                 totalContainer.appendChild(purchaseHistoryButton);
+                paymentMadeButton.hidden = true;
             });
 
             totalContainer.appendChild(paymentMadeButton);

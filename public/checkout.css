@@ -1,7 +1,7 @@
 .payment {
     padding: 10px 16px;
     color: white !important;
-    background-color: #28a745 !important;
+    background-color: #218838  !important;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -10,5 +10,5 @@
 }
 
 .payment:hover {
-    background-color: #218838 !important;
+    background-color: #28a745 !important;
 }
