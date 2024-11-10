@@ -108,7 +108,6 @@ async function displayPostDetails() {
     setupReviewForm(postData);
 }
 
-// Function to render post details and add the Add to Cart button
 function renderPostDetails(container, postData) {
     const title = container.querySelector(".post-title");
     title.textContent = postData.itemName;
@@ -140,21 +139,38 @@ function renderPostDetails(container, postData) {
         categoryDropdown.appendChild(option);
     });
     category.appendChild(categoryDropdown);
+
     // Price setup - keep it as a static text
     const price = container.querySelector(".post-price");
     price.textContent = `Price: SGD ${postData.price}`; // No editable part
+
     const account = container.querySelector(".post-account");
     account.textContent = `Posted by: ${postData.account}`;
+
     const image = container.querySelector(".post-image");
     image.src = postData.imageUrl;
     image.alt = postData.itemName;
+
     const addToCartButton = document.getElementById("addToCartButton");
     if (addToCartButton) {
+        // Hide "Add to Cart" button if the user is the post owner
+        onAuthStateChanged(auth, (user) => {
+            if (user && user.uid === postData.uid) {
+                // If the logged-in user is the post owner, hide the "Add to Cart" button
+                addToCartButton.style.display = "none";
+            } else {
+                // Otherwise, show the "Add to Cart" button
+                addToCartButton.style.display = "block";
+            }
+        });
+
         addToCartButton.addEventListener("click", () => addToCart(postData));
     }
+
     if (postData.mrtStationName) {
         loadGoogleMapsScript(postData.mrtStationName);
     }
+
     onAuthStateChanged(auth, (user) => {
         if (user && user.uid === postData.uid) {
             addEditAndDeleteOptions();
