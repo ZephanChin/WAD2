@@ -102,16 +102,16 @@ async function fetchData() {
             // Fetch and display profile picture and QR code
             await fetchAndDisplayDoc("profilePictures", uid, "profileImage", "default-profile.jpg", "profileUploadSection", "editProfileImageButton");
             await fetchAndDisplayDoc("qrCodes", uid, "uploadedQRCode", "", "qrCodeUploadSection", "editQRCodeButton");
-            await fetchStats(name);
+            await fetchStats(uid);
         } else {
             console.log("User is not signed in.");
         }
     });
 }
 
-async function fetchStats(name) {
+async function fetchStats(uid) {
     try {
-        const docRef = doc(db, "report", name);
+        const docRef = doc(db, "report", uid);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {

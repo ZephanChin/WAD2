@@ -54,8 +54,8 @@ async function displayPostDetails() {
 
     const postData = postSnap.data();
     renderPostDetails(postDetailsContainer, postData);
-    loadReviews(postId); // Load reviews for the post
-    setupReviewForm(postId); // Set up review form for the post
+    loadReviews(postId, postData); // Load reviews for the post
+    setupReviewForm(postId, postData); // Set up review form for the post
 
     // Check if the current user is the post creator and hide the "Add to Cart" button if so
     onAuthStateChanged(auth, (user) => {
