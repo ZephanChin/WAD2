@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home-Based Business Guide</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47"></script>
+
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700&family=Poppins:wght@100;300;400;600;700&display=swap');
+
+        body {
+  font-family: 'Poppins', sans-serif;
+        }
+
+        .gallery-title {
+            font-size: 36px;
+            color: #2B1B12;
+            text-align: center;
+            font-weight: 500;
+            margin-bottom: 70px;
+        }
+
+        .filter-button {
+            font-size: 18px;
+            border: 1px solid #2B1B12;
+            border-radius: 5px;
+            color: #2B1B12;
+            margin-bottom: 30px;
+        }
+
+        .filter-button:hover {
+            color: #ffffff;
+            background-color: #2B1B12;
+        }
+
+        .port-image {
+            width: 100%;
+        }
+
+        .gallery_product {
+            margin-bottom: 30px;
+        }
+
+        .promo-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        .promo-table th,
+        .promo-table td {
+            border: 1px solid #2B1B12;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .promo-table th {
+            background-color: #2B1B12;
+            color: white;
+        }
+
+        .promo-table tr:nth-child(even) {
+            background-color: #b7a79e;
+        }
+
+        .benefits-section {
+            background-color: #2b1b1250;
+            padding: 50px;
+            margin: 50px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .benefits-section h2 {
+            font-size: 32px;
+            color: #2B1B12;
+            margin-bottom: 30px;
+        }
+
+        .benefits-section p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #2B1B12;
+        }
+
+        .benefits-steps {
+            list-style-type:circle;
+            padding: 0;
+            margin: 0 auto;
+            max-width: 600px;
+            text-align: left;
+        }
+
+        .benefits-steps li {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #333;
+        }
+        
+
+    </style>
+</head>
+
+<body>
+    <div id="navbar"></div>
+    <div class="container mt-5">
+        <div class="text-center mb-4">
+            <h1>How to Start Your Home-Based Business?</h1>
+            <h4>Guidelines</h4>
+        </div>
+        <ul class="list-group mb-5">
+            <li class="list-group-item">Business Address: HDB flat addresses cannot be registered, but private
+                residences can.</li>
+            <li class="list-group-item">Business Activities:
+                <ol class="ml-3">
+                    <li>Should not adversely affect your neighbours' living environment.</li>
+                    <li>Should not involve the use of heavy equipment or appliances.</li>
+                    <li>Should not require additional workers or staff.</li>
+                    <li>Should not require storage or movement of goods.</li>
+                </ol>
+            </li>
+            <li class="list-group-item">Advertising: No physical or paid advertising.</li>
+            <li class="list-group-item">Rules & Regulation: Depends on the type of business you're setting up.</li>
+        </ul>
+        <div class="benefits-section">
+            <h2>Unlock Your Potential with Our Platform</h2>
+            <p>By using our platform, you gain access to tools and resources that simplify starting a business from home. Follow these steps to kickstart your journey and enjoy exclusive benefits that help you succeed.</p>
+            <ol class="benefits-steps">
+                <li>Sign up and set up your profile to establish your business presence.</li>
+                <li>Create your first product listing and start attracting customers immediately.</li>
+                <li>Utilize our resources to learn about promoting and growing your business.</li>
+                <li>Connect with other entrepreneurs through our marketplace and chat features.</li>
+                <li>Earn rewards and build your reputation as you grow your business on our platform.</li>
+            </ol>
+            <br>
+        </div>
+
+        <div class="text-center mb-4">
+            <h1>Useful Websites</h1>
+            <div class="button-container mb-4">
+                <a href="https://www.sba.gov/" class="btn btn-outline-dark me-2">Small Business Administration</a>
+                <a href="https://www.irs.gov/businesses/small-businesses-self-employed"
+                    class="btn btn-outline-dark me-2">IRS Small Business Center</a>
+                <a href="https://www.score.org/" class="btn btn-outline-dark">SCORE - Mentoring for Small Business</a>
+            </div>
+        </div>
+
+        <div class="gallery mb-5">
+            <h1 class="gallery-title">Singapore's Very Own Home-Based Businesses</h1>
+            <div class="d-flex justify-content-center mb-4">
+                <button class="btn btn-outline-dark filter-button" data-filter="all">All</button>
+                <button class="btn btn-outline-dark filter-button" data-filter="fashion">Fashion</button>
+                <button class="btn btn-outline-dark filter-button" data-filter="crafts">Crafts</button>
+                <button class="btn btn-outline-dark filter-button" data-filter="service">Services</button>
+                <button class="btn btn-outline-dark filter-button" data-filter="food">Food</button>
+            </div>
+
+            <div class="row">
+                <!-- Example Product Entries -->
+                <div class="gallery_product col-lg-4 col-md-4 col-sm-6 filter fashion">
+                    <a href="https://www.instagram.com/homebasedsalons/p/C96vIXhTJby/?img_index=1">@homebasedsalons<img src="./../assets/guide-hbs.png" class="img-fluid" alt="Home Based Salons">
+                    </a>
+                </div>
+                <div class="gallery_product col-lg-4 col-md-4 col-sm-6 filter food">
+                    <a href="https://www.instagram.com/asweetmesssg/">@asweetmesssg<img
+                            src="./../assets/guide-sweetmess.png" class="img-fluid" alt="Sweet Mess SG"></a>
+                </div>
+                <div class="gallery_product col-lg-4 col-md-4 col-sm-6 filter fashion">
+                    <a href="https://www.instagram.com/pretty.by.lyn/p/CrkK3ZhJxXP/?img_index=1">@pretty.by.lyn<img
+                            src="./../assets/guide-lyn.png" class="img-fluid" alt="Pretty by Lyn"></a>
+                </div>
+                <div class="gallery_product col-lg-4 col-md-4 col-sm-6 filter crafts">
+                    <a href="https://www.instagram.com/craftscorner.sg/p/DB8DuRTSZDp/">@craftscorner.sg<img
+                            src="./../assets/guide-cc.png" class="img-fluid" alt="Crafts Corner SG"></a>
+                </div>
+                <div class="gallery_product col-lg-4 col-md-4 col-sm-6 filter service">
+                    <a href="https://www.instagram.com/peachesonlysg/">@peachesonlysg<img
+                            src="./../assets/guide-peach.png" class="img-fluid" alt="Peaches Only SG"></a>
+                </div>
+                <div class="gallery_product col-lg-4 col-md-4 col-sm-6 filter food">
+                    <a href="https://www.instagram.com/anyhaobao/?hl=en">@anyhaobao<img
+                            src="./../assets/guide-anyhaobao.png" class="img-fluid" alt="Any Haobao"></a>
+                </div>
+                <div class="gallery_product col-lg-4 col-md-4 col-sm-6 filter service">
+                    <a href="https://www.instagram.com/nailsby.ys/">@nailsby.ys <img src="./../assets/guide-nailsys.png"
+                            class="img-fluid" alt="Nails by YS"></a>
+                </div>
+                <div class="gallery_product col-lg-4 col-md-4 col-sm-6 filter food">
+                    <a href="https://www.instagram.com/ediblesbakeshop/?hl=en">@ediblescakeshop<img
+                            src="./../assets/guide-ebs.png" class="img-fluid" alt="Edibles Bake Shop"></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mb-5">
+            <h2>3 Final Tips to Promote Your Home-Based Business</h2>
+            <table class="promo-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tip</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Leverage social media to reach your audience.</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Offer discounts for first-time customers.</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Create a referral program to encourage word-of-mouth.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h1 class="container mx-auto text-center">GOOD LUCK, HUSTLERS!</h1>
+    </div>
+    <div id="footer"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+
+<script>
+    $(document).ready(function () {
+
+        $(".filter-button").click(function () {
+            var value = $(this).attr('data-filter');
+
+            if (value == "all") {
+                //$('.filter').removeClass('hidden');
+                $('.filter').show('1000');
+            }
+            else {
+                $(".filter").not('.' + value).hide('3000');
+                $('.filter').filter('.' + value).show('3000');
+            }
+        });
+
+        if ($(".filter-button").removeClass("active")) {
+            $(this).removeClass("active");
+        }
+        $(this).addClass("active");
+
+    });
+
+    $('#navbar').load('navbar.html');
+    $('#footer').load('footer.html');
+    
+</script>
+
+
+
+</html>

@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700&family=Poppins:wght@100;300;400;600;700&display=swap');
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+h1 {
+    color: #2B1B12;
+    font-weight: bold;
+}
+
+/* Jh's */
+.nav-link[aria-selected="false"]{
+    background-color: white;
+    color: rgba(221, 199, 187, 1);
+}
+
+.nav-link[aria-selected="true"]{
+    background-color: rgba(221, 199, 187, 1);
+    color: white;
+}
+
+.nav-pills .nav-item .active {
+    background-color: rgba(221, 199, 187, 1);
+    color: white;
+}
+
+.item-img {
+    height: 300px;
+    width: 300px;
+}
+
+.body-ele {
+    background-color: rgba(221, 199, 187, 1);
+}
+
+.centered-table { 
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
