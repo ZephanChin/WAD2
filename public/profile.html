@@ -55,6 +55,7 @@
 </head>
 
 <body>
+    <div id="navbar"></div>
     <div class="container my-4">
         <!-- Profile Section -->
         <div class="profile-section">
@@ -75,7 +76,7 @@
             <div id="qrCodeDisplaySection">
                 <img id="uploadedQRCode" class="profile-image"
                     style="display: none; width: 150px; height: 150px; margin-top: 20px;" alt="Uploaded QR Code">
-                <button id="editQRCodeButton" style="display: none;" class="btn btn-secondary mt-2">Edit QR
+                <button id="editQRCodeButton" style="display: none;" class="btn btn-secondary mt-2">Change QR
                     Code</button>
             </div>
 
@@ -123,6 +124,13 @@
             </div>
         </div>
     </div>
+
+    <div id="footer"> </div>
+
+    <script>
+        $('#navbar').load('navbar.html');
+        $('#footer').load('footer.html');
+    </script>
 
     <script type="module" src="../src/getreview.js"></script>
 </body>

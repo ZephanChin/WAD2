@@ -57,13 +57,23 @@ async function fetchAndDisplayDoc(collection, uid, elementId, defaultSrc, upload
             }
 
             const editButton = document.getElementById(editButtonId);
-            if (editButton) editButton.style.display = "inline";
+            if (editButton) {
+                editButton.style.display = "inline";
+                editButton.style.display = "inline-block";
+                editButton.style.margin = "0 auto";
+            }
         } else {
             console.warn(`No document found in collection '${collection}' for user '${uid}'.`);
             const element = document.getElementById(elementId);
             if (element) {
-                element.src = defaultSrc || "";
-                element.style.display = "none"; // Hide if no document found
+                if (elementId == "profileImage") {
+                    const imgEle = ref(storage, `profilePictures/${defaultSrc}`);
+                    const proPicUrl = await getDownloadURL(imgEle);
+                    element.src = proPicUrl || "";
+                } else {
+                    element.src = defaultSrc || "";
+                    //element.style.display = "none"; // Hide if no document found
+                }
             }
 
             const uploadSection = document.getElementById(uploadSectionId);

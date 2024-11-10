@@ -99,14 +99,24 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             // Reference to the 'users' collection and the document with user.uid
             const userRef = doc(collection(db, 'users_chat'), user.uid);
-    
+
             // Set user data in Firestore
             await setDoc(userRef, {
                 uid: user.uid,
                 displayName: user.displayName,
                 email: user.email,
             });
-    
+
+            const reportRef = doc(collection(db, 'report'), user.uid);
+            await setDoc(reportRef, {
+                bad: 0,
+                good: 0,
+                items_sold: 0,
+                reviews: 0,
+                sales: 0,
+                total_stars: 0
+            });
+
             // console.log('User saved successfully!');
         } catch (error) {
             // console.error('Error saving user:', error);
