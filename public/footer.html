@@ -61,7 +61,7 @@
             border: 1px solid #2B1B12;
             outline: none;
             background-color: #2B1B12;
-            color: white;
+            color: #cdac9a;
             cursor: pointer;
             padding: 10px 15px 10px 15px;
             border-radius: 50%;
@@ -70,6 +70,31 @@
 
         #myBtn:hover {
             background-color: #cdac9a;
+        }
+        
+        .add-post-btn {
+        background-color: #f4e0d5;
+        }
+
+        /* Marketplace Add Button */
+        .add-post-btn:hover {
+        background-color: #4d3329;
+        }
+        
+        /* Sales Tab Css */
+        .nav-link[aria-selected="false"]{
+            background-color: white;
+            color: rgba(221, 199, 187, 1);
+        }
+
+        .nav-link[aria-selected="true"]{
+            background-color: rgba(221, 199, 187, 1);
+            color: white;
+        }
+
+        .nav-pills .nav-item .active {
+            background-color: rgba(221, 199, 187, 1);
+            color: white;
         }
     </style>
 </head>
@@ -89,16 +114,7 @@
                         Singapore has to offer, delivered directly to your inbox. By sharing your email address with us,
                         you'll gain access to a curated selection of local treasures that showcase the creativity and
                         passion of our community.</p>
-                    <form @submit.prevent="subscribe">
-                        <div class="form-group">
-                            <label for="exampleInputEmail1" class="form-label">Email address:</label>
-                            <input type="email" class="form-control" v-model="email" id="exampleInputEmail1"
-                                placeholder="Enter your email address..." required>
-                            <small id="emailHelp" class="form-text text-muted col-lg-4">Receive the top trends on the
-                                1st of every month!</small>
-                        </div>
-                        <button type="submit" class="btn btn-custom-1 mt-3">Subscribe</button>
-                    </form>
+                    <button class="btn btn-custom-1 mt-3" @click="subscribe">Subscribe</button>
                     <div class="subscription-message" v-if="message">{{ message }}</div>
                 </div>
                 <div class="col-2"></div>
