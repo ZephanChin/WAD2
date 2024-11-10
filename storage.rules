@@ -1,68 +1,12 @@
 rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
 
-    // Public read access for posts, restricted write access
-    match /posts/{document=**} {
-      allow read: if true; // Public read
-      allow write: if request.auth != null; // Only authenticated users can write
+// Craft rules based on data in your Firestore database
+// allow write: if firestore.get(
+//    /databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin;
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
     }
-    
-    match /posts/{postId}/reviews/{reviewId} {
-      allow read: if true;  // Public read access for reviews (optional)
-      allow write: if request.auth != null; // Only authenticated users can write reviews
-    }
-
-    // Public read access for orders, restricted write access
-    match /porders/{document=**} {
-      allow read: if true; // Public read
-      allow write: if request.auth != null; // Only authenticated users can write
-    }
-
-    // Reports collection: restrict write access if needed
-    match /report/{document=**} {
-      allow read: if true; // Public read
-      allow write: if request.auth != null; // Only authenticated users can write
-    }
-
-    // Restrict access to users' own documents
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId; // Authenticated user can only access their own documents
-    }
-        // Allow authenticated users to read and write to users_chat
-    match /users_chat/{userId} {
-      allow read, write: if request.auth != null;
-    }
-
-    // Allow authenticated users to read messages in chats
-    match /chats/{chatId}/messages/{messageId} {
-      allow read, write: if request.auth != null;
-    }
-
-    // User-specific cart management
-    match /users/{userId}/cart/{cartItemId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId; // Only authenticated user can manage their own cart
-    }
-
-    // Restrict access to subscribers' own documents
-    match /subscribers/{documentId} {
-      allow read, write: if request.auth != null && request.auth.uid == documentId; // Only the specific authenticated subscriber can access
-    }
-
-    // Allow users to access their own profilePictures document
-    match /profilePictures/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId; // Only authenticated users can access their own profile picture document
-    }
-
-    // Allow users to access their own qrCodes document
-    match /qrCodes/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId; // Only authenticated users can access their own QR code document
-    }
-    // User-specific cart management
-    match /users/{userId}/cart {
-      allow read, write: if request.auth != null && request.auth.uid == userId; // Only authenticated user can manage their own cart
-    }
-
   }
 }
-
