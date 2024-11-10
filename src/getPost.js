@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore, collection, getDocs, query, orderBy } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth"; // Import getAuth and onAuthStateChanged
+import { getFirestore, collection, getDocs, query, orderBy, where } from "firebase/firestore";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -22,6 +23,7 @@ if (!getApps().length) {
 }
 
 const db = getFirestore(app);
+const auth = getAuth(app); // Initialize Firebase Auth
 let allPosts = []; // Array to store all posts
 
 // Function to retrieve posts from Firestore
@@ -58,7 +60,6 @@ async function retrievePosts() {
     }
 }
 
-// Function to dynamically create and display post elements
 function displayPost(postData, container) {
     if (!postData.itemName || !postData.imageUrl || !postData.account) {
         console.warn("Incomplete post data:", postData);
@@ -73,7 +74,29 @@ function displayPost(postData, container) {
     itemName.textContent = postData.itemName;
 
     const account = document.createElement('p');
-    account.textContent = `Posted by: ${postData.account}`;
+    account.textContent = "Posted by: ";
+
+    const accountLink = document.createElement('a');
+    accountLink.textContent = postData.account; // Only the account name is clickable
+    accountLink.classList.add('account-link');
+
+    // Check if the post belongs to the logged-in user
+    const auth = getAuth(app);
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            const loggedInAccount = user.displayName; 
+
+            if (postData.account === loggedInAccount) {
+                accountLink.href = `/mymarketplace.html`;
+            } else {
+                accountLink.href = `usermarketplace.html?account=${encodeURIComponent(postData.account)}`;
+            }
+        } else {
+            accountLink.href = `usermarketplace.html?account=${encodeURIComponent(postData.account)}`;
+        }
+    });
+
+    account.appendChild(accountLink); // Append the link to the paragraph
 
     const moreDetailsButton = document.createElement('button');
     moreDetailsButton.textContent = "More Details";
@@ -104,48 +127,57 @@ function displayPost(postData, container) {
     container.appendChild(postElement);
 }
 
-// Function to filter posts based on selected category
+// Function to filter posts based on the selected category
 function filterPosts(category) {
     const postsContainer = document.getElementById('posts-container');
+    const filteredPosts = category === "All" 
+        ? allPosts // Show all posts if "All" is selected
+        : allPosts.filter(post => post.category === category);
 
-    // Clear current posts safely
+    // Clear existing posts
     while (postsContainer.firstChild) {
         postsContainer.removeChild(postsContainer.firstChild);
     }
 
-    const filteredPosts = allPosts.filter(post => category === 'All' || post.category === category);
+    // Display filtered posts
+    filteredPosts.forEach(post => displayPost(post, postsContainer));
 
+    // If no posts match the selected category, display a message
     if (filteredPosts.length === 0) {
         const noResultsMessage = document.createElement('p');
-        noResultsMessage.textContent = "No posts found for this category.";
+        noResultsMessage.textContent = `No posts found in the "${category}" category.`;
         postsContainer.appendChild(noResultsMessage);
-    } else {
-        filteredPosts.forEach(post => displayPost(post, postsContainer));
     }
 }
 
-// Function to filter posts based on search input
+// Search and filter posts based on the search query
 function searchPosts(query) {
     const postsContainer = document.getElementById('posts-container');
+    const filteredPosts = allPosts.filter(post => 
+        post.itemName.toLowerCase().includes(query.toLowerCase()) || 
+        post.account.toLowerCase().includes(query.toLowerCase())
+    );
 
-    // Clear current posts safely
+    const currentCategory = document.querySelector('.active-filter') ? document.querySelector('.active-filter').textContent : 'All';
+
+    // If a category is selected, filter by it as well
+    const finalFilteredPosts = currentCategory === 'All' 
+        ? filteredPosts 
+        : filteredPosts.filter(post => post.category === currentCategory);
+
+    // Clear existing posts
     while (postsContainer.firstChild) {
         postsContainer.removeChild(postsContainer.firstChild);
     }
 
-    const filteredPosts = allPosts.filter(post => {
-        return (
-            post.itemName.toLowerCase().includes(query.toLowerCase()) ||
-            (post.postDescription && post.postDescription.toLowerCase().includes(query.toLowerCase()))
-        );
-    });
+    // Display filtered posts
+    finalFilteredPosts.forEach(post => displayPost(post, postsContainer));
 
-    if (filteredPosts.length === 0) {
+    // If no posts match the search query, display a message
+    if (finalFilteredPosts.length === 0) {
         const noResultsMessage = document.createElement('p');
-        noResultsMessage.textContent = "No matching posts found.";
+        noResultsMessage.textContent = "No posts found for your search.";
         postsContainer.appendChild(noResultsMessage);
-    } else {
-        filteredPosts.forEach(post => displayPost(post, postsContainer));
     }
 }
 
@@ -155,14 +187,16 @@ document.addEventListener('DOMContentLoaded', () => {
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
             const category = button.textContent;
-            filterPosts(category);
+            filterPosts(category); // Call filterPosts to filter posts by category
+            filterButtons.forEach(btn => btn.classList.remove('active')); // Remove active class from all buttons
+            button.classList.add('active'); // Add active class to clicked button
         });
     });
 
     const searchInput = document.getElementById('search-input'); // Ensure you have an input field with this ID
     searchInput.addEventListener('input', (event) => {
         const searchQuery = event.target.value;
-        searchPosts(searchQuery);
+        searchPosts(searchQuery); // Call searchPosts when the user types in the search field
     });
 
     // Call the function to retrieve and display the posts when the page loads

@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { getFirestore, collection, getDocs, deleteDoc, doc, setDoc } from "firebase/firestore";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -67,8 +67,11 @@ async function displayCartItems(user) {
     const itemsBySeller = {};
     let totalCartPrice = 0; // Initialize total price for the cart
 
+    // Local ItemData
+    let localdata = [];
     cartSnapshot.forEach((doc) => {
         const itemData = doc.data();
+        localdata.push(itemData);
         const cartItemId = doc.id; // Get document ID for deletion
         const sellerAccount = itemData.account;
 
@@ -100,7 +103,6 @@ async function displayCartItems(user) {
         const sellerTitle = document.createElement("h2");
         sellerTitle.textContent = `Make Purchase from: ${seller}`;
         sellerSection.appendChild(sellerTitle);
-
         for (const itemKey in itemsBySeller[seller]) {
             const item = itemsBySeller[seller][itemKey];
             const { quantity, itemPrice, itemName, itemImage, cartItemId } = item;
@@ -164,8 +166,10 @@ async function displayCartItems(user) {
     checkoutButton.textContent = "Checkout";
     checkoutButton.classList.add("btn", "checkout-button");
     checkoutButton.addEventListener("click", () => {
+        // console.log("HELP", localdata);
+        addToOrder(localdata);
         console.log("Proceeding to checkout.");
-        window.location.href = "/checkout.html"; // Adjust the URL as needed
+        // window.location.href = "/checkout.html"; // Adjust the URL as needed
     });
     totalContainer.appendChild(checkoutButton);
 
@@ -183,3 +187,81 @@ onAuthStateChanged(auth, (user) => {
         window.location.href = "/login.html";
     }
 });
+
+const addToOrder = async (itemData) => {
+    itemData.sort((a, b) => a.sellerUid - b.sellerUid);
+    const user = auth.currentUser;
+    const userDisplayName = auth.currentUser.displayName;
+    const userId = user.uid;
+    const c1 = userId.substring(0, 3);
+    const c2 = userId.substring(10, 13);
+    const c3 = new Date().toISOString();
+    let docid = "";
+
+    let grouped = {};
+    itemData.forEach(obj => {
+        let selluid = obj.sellerUid;
+        if (!grouped[selluid]) {
+            grouped[selluid] = [];
+        }
+        grouped[selluid].push(obj);
+    });
+
+    // Process each group (grouped by sellerUid)
+    for (const [key, value] of Object.entries(grouped)) {
+        const c4 = value[0].sellerUid.substring(0, 3);
+        docid = c1 + c2 + c3.substring(8, 13) + c3.substring(20, 24) + c4;
+
+        let ttprice = 0;
+        let count = 0;
+        let datamap = {};
+        value.forEach(item => {
+            const itemarr = [];
+            itemarr.push(item.itemName);
+            itemarr.push(item.itemPrice);
+            itemarr.push(item.quantity);
+            itemarr.push(item.totalPrice);
+            itemarr.push(item.itemImage);
+            const k = 'Item' + count.toString();
+            datamap[k] = itemarr;
+            ttprice += item.totalPrice;
+            count += 1;
+        });
+
+        let fields = {
+            OrderID: docid,
+            PlaceDate: new Date(),
+            TotalPrice: ttprice,
+            account: userDisplayName,
+            sellaccount: value[0].account,
+            selluid: key,
+            status: "Ongoing",
+            uid: userId
+        };
+
+        let documentData = {
+            Items: datamap,
+            ...fields
+        };
+
+        try {
+            await setDoc(doc(collection(db, "porders"), docid), documentData);
+            console.log(`Document ${docid} successfully written!`);
+        }
+        catch (error) {
+            console.error(`Error writing document ${docid}: `, error);
+        }
+    }
+
+    // Clear all items from the user's cart
+
+
+
+    // Redirect to the checkout page
+    window.location.href = "/checkout.html";
+};
+
+
+
+
+

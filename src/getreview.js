@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // Firebase configuration
@@ -12,7 +12,7 @@ const firebaseConfig = {
     storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
     messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
     appId: import.meta.env.VITE_APP_ID,
-    measurementId: import.meta.env.VITE_MEASUREMENT_ID
+    measurementId: import.meta.env.VITE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
@@ -21,91 +21,162 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
+// Helper function to upload files to Firebase Storage and update Firestore
+async function uploadFile(collection, filePath, file, uid) {
+    const storageRef = ref(storage, filePath);
+    try {
+        await uploadBytes(storageRef, file);
+        const fileUrl = await getDownloadURL(storageRef);
+        const docRef = doc(db, collection, uid);
+        await setDoc(docRef, { url: fileUrl, uploadedAt: Date.now() }, { merge: true });
+        return fileUrl;
+    } catch (error) {
+        console.error(`Error uploading ${collection}:`, error.message);
+        throw error;
+    }
+}
+
+// Helper function to fetch and display Firestore documents
+async function fetchAndDisplayDoc(collection, uid, elementId, defaultSrc, uploadSectionId, editButtonId) {
+    try {
+        console.log(`Fetching document from collection: ${collection}, for user: ${uid}`);
+        const docRef = doc(db, collection, uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const { url } = docSnap.data();
+            console.log("Document fetched successfully. URL:", url);
+
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.src = url;
+                element.onload = () => {
+                    element.style.display = "block"; // Ensure it's visible after loading
+                    console.log("QR Code loaded and displayed.");
+                };
+            }
+
+            const editButton = document.getElementById(editButtonId);
+            if (editButton) editButton.style.display = "inline";
+        } else {
+            console.warn(`No document found in collection '${collection}' for user '${uid}'.`);
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.src = defaultSrc || "";
+                element.style.display = "none"; // Hide if no document found
+            }
+
+            const uploadSection = document.getElementById(uploadSectionId);
+            if (uploadSection) uploadSection.style.display = "block";
+        }
+    } catch (error) {
+        console.error(`Error fetching document from ${collection} for user ${uid}:`, error.message);
+    }
+}
+
+// Fetch and display user data on page load
 async function fetchData() {
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            let documentId = user.displayName;
+            const uid = user.uid;
+            const name = user.displayName
+            console.log("Authenticated user:", uid);
 
-            document.getElementById('username').textContent = documentId || "Username";
-            document.getElementById('profileImage').src = `profile/${documentId}.jpg`;
-
-            try {
-                // Check if an additional uploaded image exists
-                const uploadedImageRef = ref(storage, `additionalImages/${documentId}.jpg`);
-                const uploadedImageUrl = await getDownloadURL(uploadedImageRef);
-
-                document.getElementById('uploadedImage').src = uploadedImageUrl;
-                document.getElementById('uploadedImage').style.display = 'block';
-                document.getElementById('editImageButton').style.display = 'inline';
-                document.getElementById('uploadSection').style.display = 'none';
-
-            } catch (error) {
-                console.log("No additional uploaded image found.");
-                document.getElementById('uploadSection').style.display = 'block';
+            const usernameElement = document.getElementById("username");
+            if (usernameElement) {
+                usernameElement.textContent = user.displayName || "Username";
+            } else {
+                console.warn("Username element not found in the DOM.");
             }
-            try {
-                // Reference to the specific document based on the user's display name
-                const docRef = doc(db, "report", documentId);
-                const docSnap = await getDoc(docRef);
 
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-
-                    // Update HTML elements with data
-                    document.getElementById('sales').textContent = data.sales || 0;
-                    document.getElementById('itemsSold').textContent = data.items_sold || 0;
-                    document.getElementById('reviewsReceived').textContent = data.reviews || 0;
-                    document.getElementById('goodReviews').textContent = data.good || 0;
-                    document.getElementById('badReviews').textContent = data.bad || 0;
-                    document.getElementById('stars').textContent = (data.total_stars / data.reviews).toFixed(2) || 0;
-                }
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
+            // Fetch and display profile picture and QR code
+            await fetchAndDisplayDoc("profilePictures", uid, "profileImage", "default-profile.jpg", "profileUploadSection", "editProfileImageButton");
+            await fetchAndDisplayDoc("qrCodes", uid, "uploadedQRCode", "", "qrCodeUploadSection", "editQRCodeButton");
+            await fetchStats(name);
         } else {
             console.log("User is not signed in.");
         }
     });
 }
 
-async function uploadImage(file) {
-    const user = auth.currentUser;
-    if (user) {
-        const documentId = user.displayName;
-        const imageRef = ref(storage, `additionalImages/${documentId}.jpg`);
+async function fetchStats(name) {
+    try {
+        const docRef = doc(db, "report", name);
+        const docSnap = await getDoc(docRef);
 
-        try {
-            await uploadBytes(imageRef, file);
-            // console.log("Image uploaded successfully.");
-
-            // Get the download URL and display the uploaded image
-            const imageUrl = await getDownloadURL(imageRef);
-            document.getElementById('uploadedImage').src = imageUrl;
-            document.getElementById('uploadedImage').style.display = 'block';
-
-            // Hide the upload section after a successful upload
-            document.getElementById('uploadSection').style.display = 'none';
-            document.getElementById('editImageButton').style.display = 'inline';
-        } catch (error) {
-            console.error("Error uploading image:", error);
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            document.getElementById('sales').textContent = data.sales || 0;
+            document.getElementById('itemsSold').textContent = data.items_sold || 0;
+            document.getElementById('reviewsReceived').textContent = data.reviews || 0;
+            document.getElementById('goodReviews').textContent = data.good || 0;
+            document.getElementById('badReviews').textContent = data.bad || 0;
+            document.getElementById('stars').textContent = (data.total_stars / data.reviews).toFixed(2) || 0;
         }
+    } catch (error) {
+        console.error("Error fetching data:", error);
     }
 }
 
-// Toggle the upload section when "Edit Image" button is clicked
-document.getElementById('editImageButton').addEventListener('click', () => {
-    document.getElementById('uploadSection').style.display = 'block';
-});
-
-// Event listener for the upload button
-document.getElementById('uploadButton').addEventListener('click', () => {
-    const file = document.getElementById('imageUpload').files[0];
-    if (file) {
-        uploadImage(file);
+// Functions to handle uploads
+async function uploadProfilePicture(file) {
+    const user = auth.currentUser;
+    if (user) {
+        const uid = user.uid;
+        const filePath = `profilePictures/${uid}`;
+        try {
+            const url = await uploadFile("profilePictures", filePath, file, uid);
+            const element = document.getElementById("profileImage");
+            if (element) element.src = url;
+            console.log("Profile Picture uploaded successfully.");
+        } catch (error) {
+            alert("Failed to upload Profile Picture. Please try again.");
+        }
     } else {
-        alert("Please select an image to upload.");
+        alert("You must be signed in to upload a Profile Picture.");
     }
+}
+
+async function uploadQRCode(file) {
+    const user = auth.currentUser;
+    if (user) {
+        const uid = user.uid;
+        const filePath = `qrCodes/${uid}`;
+        try {
+            const url = await uploadFile("qrCodes", filePath, file, uid);
+            const element = document.getElementById("uploadedQRCode");
+            if (element) {
+                element.src = url;
+                element.style.display = "block"; // Make it visible
+            }
+            console.log("QR Code uploaded successfully.");
+        } catch (error) {
+            alert("Failed to upload QR Code. Please try again.");
+        }
+    } else {
+        alert("You must be signed in to upload a QR Code.");
+    }
+}
+
+// Event listeners for profile picture upload
+document.getElementById("editProfileImageButton").addEventListener("click", () => {
+    document.getElementById("profileUploadSection").style.display = "block";
+});
+document.getElementById("uploadProfileButton").addEventListener("click", () => {
+    const file = document.getElementById("profileImageUpload").files[0];
+    if (file) uploadProfilePicture(file);
+    else alert("Please select a Profile Picture to upload.");
 });
 
-// Call fetchData to load data when the page loads
+// Event listeners for QR code upload
+document.getElementById("editQRCodeButton").addEventListener("click", () => {
+    document.getElementById("qrCodeUploadSection").style.display = "block";
+});
+document.getElementById("uploadQRCodeButton").addEventListener("click", () => {
+    const file = document.getElementById("qrCodeUpload").files[0];
+    if (file) uploadQRCode(file);
+    else alert("Please select a QR Code image to upload.");
+});
+
+// Fetch data on page load
 fetchData();

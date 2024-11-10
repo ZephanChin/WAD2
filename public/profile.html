@@ -58,26 +58,35 @@
     <div class="container my-4">
         <!-- Profile Section -->
         <div class="profile-section">
-            <img src="profile/profilepic.jpg" alt="Profile Image" class="profile-image .container-lg-6"
-                id="profileImage">
+            <img src="default-profile.jpg" alt="Profile Image" class="profile-image" id="profileImage">
+            <button id="editProfileImageButton" class="btn btn-secondary mt-2">Edit Profile Image</button>
+
+            <!-- Profile Image Upload Section -->
+            <div id="profileUploadSection" style="display: none;">
+                <input type="file" id="profileImageUpload" accept="image/*">
+                <button id="uploadProfileButton" class="btn btn-primary mt-2">Upload Profile Image</button>
+            </div>
+
             <div>
-                <div class="username .container-lg-6" id="username">Username</div>
+                <div class="username" id="username">Username</div>
             </div>
 
-            <div id="imageDisplaySection">
-                <img id="uploadedImage" style="display: none; width: 150px; height: 150px; margin-top: 20px;"
-                    alt="Uploaded Image">
-                <button id="editImageButton" style="display: none;">Edit Image</button>
+            <!-- QR Code Section -->
+            <div id="qrCodeDisplaySection">
+                <img id="uploadedQRCode" class="profile-image"
+                    style="display: none; width: 150px; height: 150px; margin-top: 20px;" alt="Uploaded QR Code">
+                <button id="editQRCodeButton" style="display: none;" class="btn btn-secondary mt-2">Edit QR
+                    Code</button>
             </div>
 
-            <!-- Upload section -->
-            <div id="uploadSection">
-                <input type="file" id="imageUpload" accept="image/*">
-                <button id="uploadButton" class="btn btn-primary mt-2">Upload Image</button>
+            <!-- QR Code Upload Section -->
+            <div id="qrCodeUploadSection" style="display: none;">
+                <input type="file" id="qrCodeUpload" accept="image/*">
+                <button id="uploadQRCodeButton" class="btn btn-primary mt-2">Upload QR Code</button>
             </div>
         </div>
-        <!-- Bootstrap Container -->
-        <!-- Reviews onwards -->
+
+        <!-- Reviews Section -->
         <div class="content-container text-center">
             <h2 style="text-align: left;">For this month:</h2>
             <div class="row mb-4">
@@ -95,6 +104,7 @@
                 </div>
             </div>
         </div>
+
         <div class="content-container text-center">
             <h3 style="text-align: left;">Reviews statistics:</h3>
             <div class="row">

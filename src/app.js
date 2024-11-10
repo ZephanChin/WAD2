@@ -24,11 +24,11 @@ function handleLogout(event) {
     event.preventDefault();
     signOut(auth)
         .then(() => {
-            console.log('User signed out successfully');
+            // console.log('User signed out successfully');
             window.location.href = 'login.html';
         })
         .catch((error) => {
-            console.error('Error during sign-out:', error);
+            // console.error('Error during sign-out:', error);
         });
 }
 
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = '/index.html'; // Redirect after signup
 
             } catch (error) {
-                console.error('Error during sign-up:', error.message);
+                // console.error('Error during sign-up:', error.message);
                 alert(`Error: ${error.message}`);
             }
         });
@@ -85,11 +85,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then((userCredential) => {
                     const user = userCredential.user;
                     alert('Login successful!');
-                    console.log('Logged in:', user);
+                    // console.log('Logged in:', user);
                     window.location.href = '/index.html';
                 })
                 .catch((error) => {
-                    console.error('Error during login:', error.message);
+                    // console.error('Error during login:', error.message);
                     alert(`Error: ${error.message}`);
                 });
         });
@@ -107,21 +107,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 email: user.email,
             });
     
-            console.log('User saved successfully!');
+            // console.log('User saved successfully!');
         } catch (error) {
-            console.error('Error saving user:', error);
+            // console.error('Error saving user:', error);
         }
     }
 
     // Check Authentication Status
     onAuthStateChanged(auth, (user) => {
-        console.log('onAuthStateChanged triggered');
+        // console.log('onAuthStateChanged triggered');
 
         const welcomeMessage = document.getElementById('welcome-message');
         const loginLogoutBtn = document.getElementById('login-logout-btn');
 
         if (user) {
-            console.log('User detected:', user);
+            // console.log('User detected:', user);
             if (welcomeMessage) {
                 welcomeMessage.textContent = `Welcome back, ${user.displayName || user.email}!`;
             }
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loginLogoutBtn.addEventListener('click', handleLogout);
             }
         } else {
-            console.log('No user detected');
+            // console.log('No user detected');
             if (welcomeMessage) {
                 welcomeMessage.textContent = 'Welcome, Guest!';
             }
