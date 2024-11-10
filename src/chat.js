@@ -18,7 +18,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);  
+const db = getFirestore(app);
 const storage = getStorage();
 
 let allUsers = [];
@@ -287,8 +287,8 @@ function sendMessage(chatId) {
         return;
     }
 
-    const messageData = { 
-        senderId: currentUser.uid, 
+    const messageData = {
+        senderId: currentUser.uid,
         timestamp: serverTimestamp(),
         seen: false // Mark as unseen initially
     };
@@ -308,7 +308,7 @@ function sendMessage(chatId) {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     messageData.imageUrl = downloadURL;
                     addMessageToFirestore(chatId, messageData);
-                    
+
                     // Change the button text to "Image Uploaded" after upload completes
                     uploadImageButton.textContent = "Upload Image";
                 });
@@ -321,7 +321,7 @@ function sendMessage(chatId) {
     // Clear input fields after sending the message
     messageInput.value = '';
     imageInput.value = '';
-    
+
     // Reset the button text when a new file is selected
     imageInput.addEventListener("change", () => {
         uploadImageButton.textContent = "Upload Image";
@@ -342,12 +342,8 @@ function addMessageToFirestore(chatId, messageData) {
 
 auth.onAuthStateChanged(user => {
     if (user) {
-        // Fetch all users first, then load them
-        fetchAllUsers(() => {
-            loadUsers();  // Load all users after fetching
-        });
+        fetchAllUsers();
     } else {
-        localStorage.clear();
         window.location.href = "login.html";
     }
 });
