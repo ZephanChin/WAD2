@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Sales Overview</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700&family=Poppins:wght@100;300;400;600;700&display=swap');
+
+        body {
+            background-color: #d9b8a9;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #fff;
+            margin-bottom: 10px;
+        }
+
+        .username {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+        }
+
+        h2,
+        h3 {
+            margin-bottom: 20px;
+            color: #000;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .brownbtn {
+    background-color:#442f23; /* Brown color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.brownbtn:hover {
+    background-color: #A0522D; /* Slightly lighter shade of brown for hover effect */
+    color: white;
+}
+
+.bordered-shadow {
+    border: 2px solid #ccc; /* Light gray border */
+    border-radius: 8px; /* Optional: rounded corners */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow */
+    padding: 10px; /* Optional: space inside the border */
+    transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transition for hover */
+    margin: 10px;
+}
+
+.bordered-shadow:hover {
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3); /* Darker shadow on hover */
+    transform: scale(1.02); /* Slight zoom effect on hover */
+}
+
+    </style>
+</head>
+
+<body>
+    <div id="navbar"></div>
+    <div class="container my-4">
+        <!-- Profile Section -->
+        <div class="profile-section">
+            <img src="default-profile.jpg" alt="Profile Image" class="profile-image" id="profileImage">
+            <button id="editProfileImageButton" class="brownbtn mt-2">Edit Profile Image</button>
+
+            <!-- Profile Image Upload Section -->
+            <div id="profileUploadSection" style="display: none;">
+                <input type="file" id="profileImageUpload" accept="image/*">
+                <button id="uploadProfileButton" class="brownbtn mt-2">Upload Profile Image</button>
+            </div>
+
+            <div>
+                <div class="username" id="username">Username</div>
+            </div>
+
+            <!-- QR Code Section -->
+            <div id="qrCodeDisplaySection">
+                <img id="uploadedQRCode" class="profile-image"
+                    style="display: none; width: 150px; height: 150px; margin-top: 20px;" alt="Uploaded QR Code">
+                <button id="editQRCodeButton" style="display: none;" class="brownbtn mt-2">Change QR
+                    Code</button>
+            </div>
+
+            <!-- QR Code Upload Section -->
+            <div id="qrCodeUploadSection" style="display: none;">
+                <input type="file" id="qrCodeUpload" accept="image/*">
+                <button id="uploadQRCodeButton" class="brownbtn mt-2">Upload QR Code</button>
+            </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="content-container bordered-shadow text-center ">
+            <h2 style="text-align: left;">For this month:</h2>
+            <div class="row mb-4">
+                <div class="col stat-box">
+                    <span class="stat-number" id="sales">0</span>
+                    <div>Sales</div>
+                </div>
+                <div class="col stat-box">
+                    <span class="stat-number" id="itemsSold">0</span>
+                    <div>Items sold</div>
+                </div>
+                <div class="col stat-box">
+                    <span class="stat-number" id="reviewsReceived">0</span>
+                    <div>Reviews received</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-container bordered-shadow text-center">
+            <h3 style="text-align: left;">Reviews statistics:</h3>
+            <div class="row">
+                <div class="col stat-box">
+                    <span class="stat-number" id="goodReviews">0</span>
+                    <div>Good reviews</div>
+                </div>
+                <div class="col stat-box">
+                    <span class="stat-number" id="badReviews">0</span>
+                    <div>Bad reviews</div>
+                </div>
+                <div class="col stat-box">
+                    <span class="stat-number" id="stars">0</span>
+                    <div>Stars</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer"> </div>
+
+    <script>
+        $('#navbar').load('navbar.html');
+        $('#footer').load('footer.html');
+    </script>
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+          crossorigin="anonymous"></script>
+
+    <script type="module" src="./getreview.js"></script>
+</body>
+
+</html>

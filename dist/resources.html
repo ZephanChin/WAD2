@@ -9,10 +9,10 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Poppins:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700&family=Poppins:wght@100;300;400;600;700&display=swap');
 
         body {
-            font-family: 'Montserrat', sans-serif;
+  font-family: 'Poppins', sans-serif;
         }
 
         .gallery-title {
@@ -65,6 +65,46 @@
         .promo-table tr:nth-child(even) {
             background-color: #b7a79e;
         }
+
+        .benefits-section {
+            background-color: #2b1b1250;
+            padding: 50px;
+            margin: 50px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .benefits-section h2 {
+            font-size: 32px;
+            color: #2B1B12;
+            margin-bottom: 30px;
+        }
+
+        .benefits-section p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #2B1B12;
+        }
+
+        .benefits-steps {
+            list-style-type:circle;
+            padding: 0;
+            margin: 0 auto;
+            max-width: 600px;
+            text-align: left;
+        }
+
+        .benefits-steps li {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #333;
+        }
+        
+
     </style>
 </head>
 
@@ -87,8 +127,20 @@
                 </ol>
             </li>
             <li class="list-group-item">Advertising: No physical or paid advertising.</li>
-            <li class="list-group-item">Rules & Regulation: Depends on the type of business you’re setting up.</li>
+            <li class="list-group-item">Rules & Regulation: Depends on the type of business you're setting up.</li>
         </ul>
+        <div class="benefits-section">
+            <h2>Unlock Your Potential with Our Platform</h2>
+            <p>By using our platform, you gain access to tools and resources that simplify starting a business from home. Follow these steps to kickstart your journey and enjoy exclusive benefits that help you succeed.</p>
+            <ol class="benefits-steps">
+                <li>Sign up and set up your profile to establish your business presence.</li>
+                <li>Create your first product listing and start attracting customers immediately.</li>
+                <li>Utilize our resources to learn about promoting and growing your business.</li>
+                <li>Connect with other entrepreneurs through our marketplace and chat features.</li>
+                <li>Earn rewards and build your reputation as you grow your business on our platform.</li>
+            </ol>
+            <br>
+        </div>
 
         <div class="text-center mb-4">
             <h1>Useful Websites</h1>

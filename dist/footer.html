@@ -7,10 +7,12 @@
     <title>Footer</title>
     <!-- JQuery for navbar and footer -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
 
         body {
             font-family: 'Poppins', 'Montserrat', Serif;
@@ -45,6 +47,7 @@
         }
 
         /* Hover effect for the custom button */
+
         .btn-custom-1:hover {
             background-color: white;
             color: #2B1B12;
@@ -59,7 +62,7 @@
             border: 1px solid #2B1B12;
             outline: none;
             background-color: #2B1B12;
-            color: white;
+            color: #cdac9a;
             cursor: pointer;
             padding: 10px 15px 10px 15px;
             border-radius: 50%;
@@ -69,7 +72,36 @@
         #myBtn:hover {
             background-color: #cdac9a;
         }
+
+        .add-post-btn {
+        background-color: #f4e0d5;
+        }
+
+        /* Marketplace Add Button */
+
+        .add-post-btn:hover {
+        background-color: #4d3329;
+        }
+
+        /* Sales Tab Css */
+
+        .nav-link[aria-selected="false"]{
+            background-color: white;
+            color: rgba(221, 199, 187, 1);
+        }
+
+        .nav-link[aria-selected="true"]{
+            background-color: rgba(221, 199, 187, 1);
+            color: white;
+        }
+
+        .nav-pills .nav-item .active {
+            background-color: rgba(221, 199, 187, 1);
+            color: white;
+        }
     </style>
+  <script type="module" crossorigin src="assets/js/modulepreload-polyfill.B5Qt9EMX.js"></script>
+  <script type="module" crossorigin src="assets/js/footer.CWmDzjbo.js"></script>
 </head>
 
 <body>
@@ -87,16 +119,7 @@
                         Singapore has to offer, delivered directly to your inbox. By sharing your email address with us,
                         you'll gain access to a curated selection of local treasures that showcase the creativity and
                         passion of our community.</p>
-                    <form @submit.prevent="subscribe">
-                        <div class="form-group">
-                            <label for="exampleInputEmail1" class="form-label">Email address:</label>
-                            <input type="email" class="form-control" v-model="email" id="exampleInputEmail1"
-                                placeholder="Enter your email address..." required>
-                            <small id="emailHelp" class="form-text text-muted col-lg-4">Receive the top trends on the
-                                1st of every month!</small>
-                        </div>
-                        <button type="submit" class="btn btn-custom-1 mt-3">Subscribe</button>
-                    </form>
+                    <button class="btn btn-custom-1 mt-3" @click="subscribe">Subscribe</button>
                     <div class="subscription-message" v-if="message">{{ message }}</div>
                 </div>
                 <div class="col-2"></div>
@@ -121,6 +144,9 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 
+    <!-- Import your external footer.js file as a module -->
+
+
     <script>
         let mybutton = document.getElementById("myBtn");
 
@@ -137,31 +163,6 @@
         function topFunction() {
             document.documentElement.scrollTop = 0;
         }
-
-        const app = Vue.createApp({
-            data() {
-                return {
-                    email: '',
-                    subscribedEmails: [],
-                    message: ''
-                };
-            },
-            methods: {
-                subscribe() {
-                    if (this.subscribedEmails.includes(this.email)) {
-                        this.message = 'Email is already subscribed!';
-                    } else {
-                        this.subscribedEmails.push(this.email);
-                        this.message = 'Subscribed to Newsletter! Your newsletter will appear on the 1st of every month!';
-                        this.email = '';
-                    }
-                }
-            }
-        });
-
-        app.mount('#app');
-
-
     </script>
 </body>
 
