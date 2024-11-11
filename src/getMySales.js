@@ -52,14 +52,23 @@ async function retrieveUserOrders() {
             salesCancelled.innertext = "";
 
             if (querySnapshot.empty) {
-                const noMatchingOrders = document.createElement('div');
-                noMatchingOrders.classList.add('text-center', 'my-5', 'fs-4', 'fw-bold');
-                noMatchingOrders.textContent = 'No Orders';
+                const noMatchingOrders1 = document.createElement('div');
+                noMatchingOrders1.classList.add('text-center', 'my-5', 'fs-4', 'fw-bold');
+                noMatchingOrders1.textContent = 'No Orders Yet';
+                const noMatchingOrders2 = document.createElement('div');
+                noMatchingOrders2.classList.add('text-center', 'my-5', 'fs-4', 'fw-bold');
+                noMatchingOrders2.textContent = 'No Ongoing Orders';
+                const noMatchingOrders3 = document.createElement('div');
+                noMatchingOrders3.classList.add('text-center', 'my-5', 'fs-4', 'fw-bold');
+                noMatchingOrders3.textContent = 'No Completed Orders';
+                const noMatchingOrders4 = document.createElement('div');
+                noMatchingOrders4.classList.add('text-center', 'my-5', 'fs-4', 'fw-bold');
+                noMatchingOrders4.textContent = 'No Cancelled Orders';
 
-                salesAll.appendChild(noMatchingOrders);
-                salesOngoing.appendChild(noMatchingOrders);
-                salesCompleted.appendChild(noMatchingOrders);
-                salesCancelled.appendChild(noMatchingOrders);
+                salesAll.appendChild(noMatchingOrders1);
+                salesOngoing.appendChild(noMatchingOrders2);
+                salesCompleted.appendChild(noMatchingOrders3);
+                salesCancelled.appendChild(noMatchingOrders4);
             } else {
                 querySnapshot.forEach((doc) => {
                     const salesData = doc.data();
