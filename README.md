@@ -1,7 +1,8 @@
 # WAD2
 
-# User login and passwords
-# All passwords are "123456"
+User login and passwords
+
+All passwords are "123456"
 
 Display name: Stylish Cuts
 
