@@ -45,11 +45,7 @@ async function retrieveUserOrders() {
             purchaseCont.innertext = "";
 
             if (querySnapshot.empty) {
-                const noMatchingOrders = document.createElement('div');
-                noMatchingOrders.classList.add('text-center', 'my-5', 'fs-4', 'fw-bold');
-                noMatchingOrders.textContent = 'No Orders';
-
-                purchaseCont.appendChild(noMatchingOrders);
+                purchaseCont.innertext = "<p>You do not have any orders.</p>";
             } else {
                 querySnapshot.forEach((doc) => {
                     const purchaseData = doc.data();
