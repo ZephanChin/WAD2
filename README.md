@@ -4,12 +4,15 @@
 # All passwords are "123456"
 
 Display name: Stylish Cuts
+
 User email: test6@gmail.com
 
 Display name: iSellBracelets
+
 User email: test2@gmail.com
 
 Display name: GrainGain
+
 User email: test3@gmail.com
 
 For running our app:
