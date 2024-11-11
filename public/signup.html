@@ -27,7 +27,8 @@
         <h2>Welcome!</h2>
         <form @submit.prevent="handleSubmit" id="signup-form">
             <div class="input-container">
-                <input type="text" v-model="displayName" id="displayName" name="displayName" placeholder="Display Name" required>
+                <input type="text" v-model="displayName" id="displayName" name="displayName" placeholder="Display Name"
+                    required>
             </div>
             <div class="input-container">
                 <input type="email" v-model="email" id="email" name="email" placeholder="Email address" required>
@@ -39,7 +40,8 @@
                 </p>
             </div>
             <div class="input-container">
-                <input type="password" v-model="confirmPassword" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+                <input type="password" v-model="confirmPassword" id="confirmPassword" name="confirmPassword"
+                    placeholder="Confirm Password" required>
                 <p :style="{ color: passwordMatchMessageColor, fontSize: '0.85em' }">
                     {{ passwordMatchMessage }}
                 </p>
@@ -68,62 +70,62 @@
 
         // Vue App Initialization
         const app = Vue.createApp({
-    data() {
-        return {
-            displayName: '',
-            email: '',
-            password: '',
-            confirmPassword: ''
-        };
-    },
-    computed: {
-        passwordLengthMessage() {
-            if (this.password === "") {
-                return ""; // No message if password is empty
+            data() {
+                return {
+                    displayName: '',
+                    email: '',
+                    password: '',
+                    confirmPassword: ''
+                };
+            },
+            computed: {
+                passwordLengthMessage() {
+                    if (this.password === "") {
+                        return ""; // No message if password is empty
+                    }
+                    const remainingChars = 6 - this.password.length;
+                    if (remainingChars > 0) {
+                        return `Your password needs ${remainingChars} more character${remainingChars > 1 ? 's' : ''}`;
+                    } else {
+                        return "Password length is sufficient";
+                    }
+                },
+                passwordLengthMessageColor() {
+                    if (this.password === "") {
+                        return ""; // No color if password is empty
+                    }
+                    return this.password.length >= 6 ? "green" : "red";
+                },
+                passwordMatchMessage() {
+                    if (this.password === "" || this.confirmPassword === "") {
+                        return ""; // No message if either field is empty
+                    }
+                    return this.password === this.confirmPassword
+                        ? "Passwords match"
+                        : "Passwords do not match";
+                },
+                passwordMatchMessageColor() {
+                    if (this.password === "" || this.confirmPassword === "") {
+                        return ""; // No color if either field is empty
+                    }
+                    return this.password === this.confirmPassword ? "green" : "red";
+                },
+                isSubmitDisabled() {
+                    return this.password.length < 6 || this.password !== this.confirmPassword;
+                }
+            },
+            methods: {
+                handleSubmit() {
+                    if (this.password.length >= 6 && this.password === this.confirmPassword) {
+                        //alert("Form submitted successfully!");
+                    } else {
+                        alert("Please correct the errors before submitting.");
+                    }
+                }
             }
-            const remainingChars = 6 - this.password.length;
-            if (remainingChars > 0) {
-                return `Your password needs ${remainingChars} more character${remainingChars > 1 ? 's' : ''}`;
-            } else {
-                return "Password length is sufficient";
-            }
-        },
-        passwordLengthMessageColor() {
-            if (this.password === "") {
-                return ""; // No color if password is empty
-            }
-            return this.password.length >= 6 ? "green" : "red";
-        },
-        passwordMatchMessage() {
-            if (this.password === "" || this.confirmPassword === "") {
-                return ""; // No message if either field is empty
-            }
-            return this.password === this.confirmPassword
-                ? "Passwords match"
-                : "Passwords do not match";
-        },
-        passwordMatchMessageColor() {
-            if (this.password === "" || this.confirmPassword === "") {
-                return ""; // No color if either field is empty
-            }
-            return this.password === this.confirmPassword ? "green" : "red";
-        },
-        isSubmitDisabled() {
-            return this.password.length < 6 || this.password !== this.confirmPassword;
-        }
-    },
-    methods: {
-        handleSubmit() {
-            if (this.password.length >= 6 && this.password === this.confirmPassword) {
-                alert("Form submitted successfully!");
-            } else {
-                alert("Please correct the errors before submitting.");
-            }
-        }
-    }
-});
+        });
 
-app.mount('#app');
+        app.mount('#app');
 
     </script>
 
